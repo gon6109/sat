@@ -1,0 +1,629 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PhysicAltseed</name>
+    </assembly>
+    <members>
+        <member name="T:PhysicAltseed.PhysicalTextureObject2D">
+            <summary>
+            物理対応TextureObject2D
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalTextureObject2D.CollisionShape">
+            <summary>
+            制御用Shape
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalTextureObject2D.Texture">
+            <summary>
+            テクスチャ
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalTextureObject2D.Position">
+            <summary>
+            表示する座標
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalTextureObject2D.CenterPosition">
+            <summary>
+            回転の中心座標(ローカル)
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalTextureObject2D.Angle">
+            <summary>
+            回転
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalTextureObject2D.IsCollisionShapeVisible">
+            <summary>
+            衝突用Shapeを表示する
+            </summary>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalTextureObject2D.#ctor(PhysicAltseed.PhysicalShapeType,PhysicAltseed.PhysicalWorld)">
+            <summary>
+            コンストラクタ
+            </summary>
+            <param name="shapeType">物理形状タイプ</param>
+            <param name="world">登録するワールド</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalTextureObject2D.SetTexture(System.String,System.Single)">
+            <summary>
+            テクスチャを設定する
+            </summary>
+            <param name="path">テクスチャへのパス</param>
+            <param name="accuracy">ポリゴンの精度</param>
+        </member>
+        <member name="T:PhysicAltseed.PhysicalCircleShape">
+            <summary>
+            物理対応円
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalCircleShape.Position">
+            <summary>
+            角度
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalCircleShape.OuterDiameter">
+            <summary>
+            密度
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalCircleShape.Angle">
+            <summary>
+            角度
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalCircleShape.Density">
+            <summary>
+            密度
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalCircleShape.Restitution">
+            <summary>
+            反発係数
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalCircleShape.Friction">
+            <summary>
+            摩擦係数
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalCircleShape.Velocity">
+            <summary>
+            速度
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalCircleShape.AngularVelocity">
+            <summary>
+            角速度
+            </summary>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalCircleShape.#ctor(PhysicAltseed.PhysicalShapeType,PhysicAltseed.PhysicalWorld)">
+            <summary>
+            初期化
+            </summary>
+            <param name="shapeType">物理形状タイプ</param>
+            <param name="world">登録するワールド</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalCircleShape.Dispose">
+            <summary>
+            削除する
+            </summary>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalCircleShape.SetForce(asd.Vector2DF,asd.Vector2DF)">
+            <summary>
+            力を加える
+            </summary>
+            <param name="vector">力を加える方向</param>
+            <param name="position">力を加えるローカル位置</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalCircleShape.SetImpulse(asd.Vector2DF,asd.Vector2DF)">
+            <summary>
+            衝撃を加える
+            </summary>
+            <param name="vector">衝撃を加える方向</param>
+            <param name="position">衝撃を加えるローカル位置</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalCircleShape.GetIsCollidedWith(PhysicAltseed.PhysicalShape)">
+            <summary>
+            衝突判定
+            </summary>
+            <param name="shape">衝突判定対象</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalCircleShape.GetIsCollidedWith(PhysicAltseed.PhysicalShape,System.Collections.Generic.List{asd.Vector2DF}@)">
+            <summary>
+            衝突判定
+            </summary>
+            <param name="shape">衝突判定対象</param>
+            <param name="points">衝突点</param>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalCircleShape.IsActive">
+            <summary>
+            物理シミュレーションをするか否か
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalCircleShape.GroupIndex">
+            <summary>
+            衝突判定グループ
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalCircleShape.CategoryBits">
+            <summary>
+            衝突判定カテゴリー
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalCircleShape.MaskBits">
+            <summary>
+            どのカテゴリーと衝突するか
+            </summary>
+        </member>
+        <member name="T:PhysicAltseed.PhysicalRectangleShape">
+            <summary>
+            物理対応四角形
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalRectangleShape.DrawingArea">
+            <summary>
+            描画範囲
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalRectangleShape.CenterPosition">
+            <summary>
+            DrawingArea.Sizeの半分のベクトル
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalRectangleShape.Angle">
+            <summary>
+            角度
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalRectangleShape.Density">
+            <summary>
+            密度
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalRectangleShape.Restitution">
+            <summary>
+            反発係数
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalRectangleShape.Friction">
+            <summary>
+            摩擦係数
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalRectangleShape.Velocity">
+            <summary>
+            速度
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalRectangleShape.AngularVelocity">
+            <summary>
+            角速度
+            </summary>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalRectangleShape.#ctor(PhysicAltseed.PhysicalShapeType,PhysicAltseed.PhysicalWorld)">
+            <summary>
+            初期化
+            </summary>
+            <param name="shapeType">物理形状タイプ</param>
+            <param name="world">登録するワールド</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalRectangleShape.Dispose">
+            <summary>
+            削除する
+            </summary>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalRectangleShape.SetForce(asd.Vector2DF,asd.Vector2DF)">
+            <summary>
+            力を加える
+            </summary>
+            <param name="vector">力を加える方向</param>
+            <param name="position">力を加えるローカル位置</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalRectangleShape.SetImpulse(asd.Vector2DF,asd.Vector2DF)">
+            <summary>
+            衝撃を加える
+            </summary>
+            <param name="vector">衝撃を加える方向</param>
+            <param name="position">衝撃を加えるローカル位置</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalRectangleShape.GetIsCollidedWith(PhysicAltseed.PhysicalShape)">
+            <summary>
+            衝突判定
+            </summary>
+            <param name="shape">衝突判定対象</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalRectangleShape.GetIsCollidedWith(PhysicAltseed.PhysicalShape,System.Collections.Generic.List{asd.Vector2DF}@)">
+            <summary>
+            衝突判定
+            </summary>
+            <param name="shape">衝突判定対象</param>
+            <param name="points">衝突点</param>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalRectangleShape.IsActive">
+            <summary>
+            物理シミュレーションをするか否か
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalRectangleShape.GroupIndex">
+            <summary>
+            衝突判定グループ
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalRectangleShape.CategoryBits">
+            <summary>
+            衝突判定カテゴリー
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalRectangleShape.MaskBits">
+            <summary>
+            どのカテゴリーと衝突するか
+            </summary>
+        </member>
+        <member name="T:PhysicAltseed.PhysicalConvert">
+            <summary>
+            Altseed-Box2D変換系
+            </summary>
+        </member>
+        <member name="T:PhysicAltseed.PhysicalShape">
+            <summary>
+            物理対応図形
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalShape.Angle">
+            <summary>
+            角度
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalShape.Density">
+            <summary>
+            密度
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalShape.Restitution">
+            <summary>
+            反発係数
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalShape.Friction">
+            <summary>
+            摩擦係数
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalShape.Velocity">
+            <summary>
+            速度
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalShape.AngularVelocity">
+            <summary>
+            角速度
+            </summary>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalShape.Dispose">
+            <summary>
+            削除する
+            </summary>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalShape.SetForce(asd.Vector2DF,asd.Vector2DF)">
+            <summary>
+            力を加える
+            </summary>
+            <param name="vector">力を加える方向</param>
+            <param name="position">力を加えるローカル位置</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalShape.SetImpulse(asd.Vector2DF,asd.Vector2DF)">
+            <summary>
+            衝撃を加える
+            </summary>
+            <param name="vector">衝撃を加える方向</param>
+            <param name="position">衝撃を加えるローカル位置</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalShape.GetIsCollidedWith(asd.Shape)">
+            <summary>
+            衝突判定
+            </summary>
+            <param name="shape">衝突判定対象</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalShape.GetIsCollidedWith(PhysicAltseed.PhysicalShape)">
+            <summary>
+            衝突判定
+            </summary>
+            <param name="shape">衝突判定対象</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalShape.GetIsCollidedWith(PhysicAltseed.PhysicalShape,System.Collections.Generic.List{asd.Vector2DF}@)">
+            <summary>
+            衝突判定
+            </summary>
+            <param name="shape">衝突判定対象</param>
+            <param name="points">衝突点</param>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalShape.IsActive">
+            <summary>
+            物理シミュレーションをするか否か
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalShape.GroupIndex">
+            <summary>
+            衝突判定グループ
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalShape.CategoryBits">
+            <summary>
+            衝突判定カテゴリー
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalShape.MaskBits">
+            <summary>
+            どのカテゴリーと衝突するか
+            </summary>
+        </member>
+        <member name="T:PhysicAltseed.PhysicalShapeType">
+            <summary>
+            物理形状タイプ
+            </summary>
+        </member>
+        <member name="T:PhysicAltseed.PhysicalTriangleShape">
+            <summary>
+            物理対応三角形
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalTriangleShape.Angle">
+            <summary>
+            角度
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalTriangleShape.CenterPosition">
+            <summary>
+            グローバル座標
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalTriangleShape.Density">
+            <summary>
+            密度
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalTriangleShape.Restitution">
+            <summary>
+            反発係数
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalTriangleShape.Friction">
+            <summary>
+            摩擦係数
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalTriangleShape.Velocity">
+            <summary>
+            速度
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalTriangleShape.AngularVelocity">
+            <summary>
+            角速度
+            </summary>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalTriangleShape.#ctor(PhysicAltseed.PhysicalShapeType,PhysicAltseed.PhysicalWorld)">
+            <summary>
+            初期化
+            </summary>
+            <param name="shapeType">物理形状タイプ</param>
+            <param name="world">登録するワールド</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalTriangleShape.Dispose">
+            <summary>
+            削除する
+            </summary>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalTriangleShape.SetPointByIndex(asd.Vector2DF,System.Int32)">
+            <summary>
+            三角形のローカル座標を設定する
+            </summary>
+            <param name="point">ローカル座標</param>
+            <param name="index">インデックス</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalTriangleShape.GetPointByIndex(System.Int32)">
+            <summary>
+            三角形のローカル座標を取得する
+            </summary>
+            <param name="index">インデックス</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalTriangleShape.SetForce(asd.Vector2DF,asd.Vector2DF)">
+            <summary>
+            力を加える
+            </summary>
+            <param name="vector">力を加える方向</param>
+            <param name="position">力を加えるローカル位置</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalTriangleShape.SetImpulse(asd.Vector2DF,asd.Vector2DF)">
+            <summary>
+            衝撃を加える
+            </summary>
+            <param name="vector">衝撃を加える方向</param>
+            <param name="position">衝撃を加えるローカル位置</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalTriangleShape.GetIsCollidedWith(PhysicAltseed.PhysicalShape)">
+            <summary>
+            衝突判定
+            </summary>
+            <param name="shape">衝突判定対象</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalTriangleShape.GetIsCollidedWith(PhysicAltseed.PhysicalShape,System.Collections.Generic.List{asd.Vector2DF}@)">
+            <summary>
+            衝突判定
+            </summary>
+            <param name="shape">衝突判定対象</param>
+            <param name="points">衝突点</param>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalTriangleShape.IsActive">
+            <summary>
+            物理シミュレーションをするか否か
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalTriangleShape.GroupIndex">
+            <summary>
+            衝突判定グループ
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalTriangleShape.CategoryBits">
+            <summary>
+            衝突判定カテゴリー
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalTriangleShape.MaskBits">
+            <summary>
+            どのカテゴリーと衝突するか
+            </summary>
+        </member>
+        <member name="T:PhysicAltseed.PhysicalWorld">
+            <summary>
+            物理演算を適用させるワールド
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalWorld.TimeStep">
+            <summary>
+            1ステップあたりの時間（秒）
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalWorld.VelocityItetions">
+            <summary>
+            速度更新頻度
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalWorld.PositionIterations">
+            <summary>
+            位置更新頻度
+            </summary>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalWorld.#ctor(asd.RectF,asd.Vector2DF)">
+            <summary>
+            ワールドを初期化
+            </summary>
+            <param name="worldRect">適用範囲</param>
+            <param name="gravity">重力</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalWorld.Update">
+            <summary>
+            物理演算を1ステップ実行する
+            </summary>
+        </member>
+        <member name="T:PhysicAltseed.PhysicalPolygonShape">
+            <summary>
+            物理対応多角形
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalPolygonShape.Angle">
+            <summary>
+            角度
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalPolygonShape.CenterPosition">
+            <summary>
+            グローバル座標
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalPolygonShape.Density">
+            <summary>
+            密度
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalPolygonShape.Restitution">
+            <summary>
+            反発係数
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalPolygonShape.Friction">
+            <summary>
+            摩擦係数
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalPolygonShape.Velocity">
+            <summary>
+            速度
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalPolygonShape.AngularVelocity">
+            <summary>
+            角速度
+            </summary>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalPolygonShape.#ctor(PhysicAltseed.PhysicalShapeType,PhysicAltseed.PhysicalWorld)">
+            <summary>
+            初期化
+            </summary>
+            <param name="shapeType">物理形状タイプ</param>
+            <param name="world">登録するワールド</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalPolygonShape.Dispose">
+            <summary>
+            削除する
+            </summary>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalPolygonShape.AddVertex(asd.Vector2DF)">
+            <summary>
+            多角形を構成する頂点を追加する
+            </summary>
+            <param name="vertex">追加する頂点</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalPolygonShape.ClearVertexes">
+            <summary>
+            多角形を構成する頂点を全て削除する
+            </summary>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalPolygonShape.SetForce(asd.Vector2DF,asd.Vector2DF)">
+            <summary>
+            力を加える
+            </summary>
+            <param name="vector">力を加える方向</param>
+            <param name="position">力を加えるローカル位置</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalPolygonShape.SetImpulse(asd.Vector2DF,asd.Vector2DF)">
+            <summary>
+            衝撃を加える
+            </summary>
+            <param name="vector">衝撃を加える方向</param>
+            <param name="position">衝撃を加えるローカル位置</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalPolygonShape.GetIsCollidedWith(PhysicAltseed.PhysicalShape)">
+            <summary>
+            衝突判定
+            </summary>
+            <param name="shape">衝突判定対象</param>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalPolygonShape.GetIsCollidedWith(PhysicAltseed.PhysicalShape,System.Collections.Generic.List{asd.Vector2DF}@)">
+            <summary>
+            衝突判定
+            </summary>
+            <param name="shape">衝突判定対象</param>
+            <param name="points">衝突点</param>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalPolygonShape.IsActive">
+            <summary>
+            物理シミュレーションをするか否か
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalPolygonShape.GroupIndex">
+            <summary>
+            衝突判定グループ
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalPolygonShape.CategoryBits">
+            <summary>
+            衝突判定カテゴリー
+            </summary>
+        </member>
+        <member name="P:PhysicAltseed.PhysicalPolygonShape.MaskBits">
+            <summary>
+            どのカテゴリーと衝突するか
+            </summary>
+        </member>
+        <member name="M:PhysicAltseed.PhysicalPolygonShape.ImageToPolygon(System.String,System.Single)">
+            <summary>
+            画像の透過情報からポリゴンに変換
+            </summary>
+            <param name="path">画像へのパス</param>
+            <param name="accuracy">精度</param>
+        </member>
+    </members>
+</doc>
