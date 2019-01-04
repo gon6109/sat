@@ -1,0 +1,3 @@
+[submodule "BaseComponent"]
+	path = BaseComponent
+	url = https://github.com/gon6109/BaseComponent.git
