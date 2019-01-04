@@ -17,14 +17,14 @@ namespace SatPlayer
         public asd.TextObject2D PlayerNames { get; private set; }
         public asd.TextObject2D PlayTime { get; private set; }
 
-        public SaveSatIO SaveSatIO { get; private set; }
+        public SaveDataIO SaveDataIO { get; private set; }
         public string Path { get; private set; }
 
         public SaveDataComponent(string path, float hue = 0f)
         {
             Path = path;
-            SaveSatIO = new SaveSatIO();
-            if (asd.Engine.File.Exists(path)) SaveSatIO = SaveSatIO.LoadSaveData(path);
+            SaveDataIO = new SaveDataIO();
+            if (asd.Engine.File.Exists(path)) SaveDataIO = SaveDataIO.Load<SaveDataIO>(path);
             Texture = TextureManager.LoadTexture("Static/save_data.png");
             Color = new HsvColor(hue, 0.6f, 1).ToRgb();
 
@@ -37,7 +37,7 @@ namespace SatPlayer
 
             MapName = new asd.TextObject2D()
             {
-                Text = SaveSatIO.MapName != null ? SaveSatIO.MapName : "",
+                Text = SaveDataIO.MapName != null ? SaveDataIO.MapName : "",
                 Font = asd.Engine.Graphics.CreateDynamicFont(Base.MainFont, 40, new asd.Color(255, 255, 255), 0, new asd.Color()),
             };
             MapName.Position = new asd.Vector2DF(Texture.Size.X / 4, -Texture.Size.Y / 4) - MapName.Font.CalcTextureSize(MapName.Text, asd.WritingDirection.Horizontal).To2DF() / 2;
@@ -46,7 +46,7 @@ namespace SatPlayer
             {
                 Font = asd.Engine.Graphics.CreateDynamicFont(Base.MainFont, 40, new asd.Color(255, 255, 255), 0, new asd.Color()),
             };
-            foreach (var item in SaveSatIO.PlayingChacacter)
+            foreach (var item in SaveDataIO.PlayingChacacter)
             {
                 PlayerNames.Text += item + " ";
             }
@@ -54,7 +54,7 @@ namespace SatPlayer
 
             PlayTime = new asd.TextObject2D()
             {
-                Text = new TimeSpan(0, 0, SaveSatIO.Time).ToString(),
+                Text = new TimeSpan(0, 0, SaveDataIO.Time).ToString(),
                 Font = asd.Engine.Graphics.CreateDynamicFont(Base.MainFont, 40, new asd.Color(255, 255, 255), 0, new asd.Color()),
             };
             PlayTime.Position = new asd.Vector2DF(Texture.Size.X / 4, Texture.Size.Y / 4) - PlayTime.Font.CalcTextureSize(PlayTime.Text, asd.WritingDirection.Horizontal).To2DF() / 2;

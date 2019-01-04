@@ -91,20 +91,5 @@ namespace SatIO
             public AnimationIO Animation { get; set; }
             public string Name { get; set; }
         }
-
-        public void SavePlayerIO(string path)
-        {
-            using (FileStream playerFile = new FileStream(path, FileMode.Create))
-            {
-                BinaryFormatter serializer = new BinaryFormatter();
-                serializer.Serialize(playerFile, this);
-            }
-        }
-
-        public static PlayerIO GetPlayerIO(string path)
-        {
-            BinaryFormatter serializer = new BinaryFormatter();
-            return (PlayerIO)serializer.Deserialize(IO.GetStream(path));
-        }
     }
 }

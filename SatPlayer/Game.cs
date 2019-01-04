@@ -96,8 +96,8 @@ namespace SatPlayer
             isFin = false;
             var task = SubInit();
 
-            SatIO.BinaryMapIO mapIO = new SatIO.BinaryMapIO();
-            mapIO = SatIO.BinaryMapIO.LoadMap(MapPath);
+            MapIO mapIO = new MapIO();
+            mapIO = BaseIO.Load<MapIO>(MapPath);
             MapName = mapIO.MapName;
 
             ElementCount = mapIO.BackGrounds.Count + mapIO.Doors.Count + mapIO.MapObjects.Count + mapIO.NPCMapObjects.Count + mapIO.MapEvents.Count;
@@ -197,9 +197,9 @@ namespace SatPlayer
             base.OnUnregistered();
         }
 
-        public SaveSatIO ToSaveData()
+        public SaveDataIO ToSaveData()
         {
-            return new SaveSatIO()
+            return new SaveDataIO()
             {
                 EndEvents = EndEvents,
                 MapName = MapName,

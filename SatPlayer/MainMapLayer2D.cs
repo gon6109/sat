@@ -47,7 +47,7 @@ namespace SatPlayer
         public int ElementCount { get; set; }
         public int LoadingElementCount { get; set; }
 
-        public IEnumerator<int> LoadMapData(BlockingCollection<Action> subThreadQueue, BlockingCollection<Action> mainThreadQueue, SatIO.BinaryMapIO mapIO, int initDoorID, int initSavePointID)
+        public IEnumerator<int> LoadMapData(BlockingCollection<Action> subThreadQueue, BlockingCollection<Action> mainThreadQueue, SatIO.MapIO mapIO, int initDoorID, int initSavePointID)
         {
             foreach (var item in mapIO.BackGrounds)
             {

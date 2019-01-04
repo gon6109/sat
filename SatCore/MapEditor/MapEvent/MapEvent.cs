@@ -93,7 +93,7 @@ namespace SatCore.MapEditor.MapEvent
             PlayersListDialog playersListDialog = new PlayersListDialog();
             if (playersListDialog.Show() != PlayersListDialogResult.OK) return;
 
-            var playerData = SatIO.PlayerIO.GetPlayerIO(playersListDialog.FileName);
+            var playerData = SatIO.PlayerIO.Load<SatIO.PlayerIO>(playersListDialog.FileName);
             if (Actors.Any(obj => obj.Name == playerData.Name)) return;
             var actor = new Actor(playersListDialog.FileName, refWorld)
             {
@@ -282,7 +282,7 @@ namespace SatCore.MapEditor.MapEvent
             PlayersListDialog playersListDialog = new PlayersListDialog();
             if (playersListDialog.Show() != PlayersListDialogResult.OK) return;
 
-            var playerData = SatIO.PlayerIO.GetPlayerIO(playersListDialog.FileName);
+            var playerData = SatIO.PlayerIO.Load<SatIO.PlayerIO>(playersListDialog.FileName);
             if (PlayerNames.Any(obj => obj.Name == playerData.Name)) return;
             var playerName = new PlayerName()
             {

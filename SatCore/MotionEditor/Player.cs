@@ -249,7 +249,7 @@ namespace SatCore.MotionEditor
             LightCommboRight = new UndoRedoCollection<Attack>();
             effectPositions = new Dictionary<string, asd.Vector2DF>();
             Effects = new Dictionary<string, SatPlayer.Effect>();
-            LoadPlayerData(SatIO.PlayerIO.GetPlayerIO(playerDataPath));
+            LoadPlayerData(SatIO.BaseIO.Load<SatIO.PlayerIO>(playerDataPath));
             actionCounter = 0;
         }
 

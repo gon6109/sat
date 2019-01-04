@@ -135,7 +135,7 @@ namespace SatCore.MapEditor
         /// マップデータを読み込む
         /// </summary>
         /// <param name="mapData">マップデータ</param>
-        public void LoadMapData(BinaryMapIO mapData)
+        public void LoadMapData(MapIO mapData)
         {
             WorldSize = mapData.Size;
 
@@ -248,7 +248,7 @@ namespace SatCore.MapEditor
         /// マップをセーブする
         /// </summary>
         /// <param name="mapData">保存先</param>
-        public void SaveMapData(BinaryMapIO mapData)
+        public void SaveMapData(MapIO mapData)
         {
             mapData.Size = WorldSize;
 

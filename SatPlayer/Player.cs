@@ -22,7 +22,7 @@ namespace SatPlayer
             set
             {
                 base.Position = value;
-                if (CollisionShape != null)CollisionShape.DrawingArea = new asd.RectF(value - CollisionShape.CenterPosition, CollisionShape.DrawingArea.Size);
+                if (CollisionShape != null) CollisionShape.DrawingArea = new asd.RectF(value - CollisionShape.CenterPosition, CollisionShape.DrawingArea.Size);
             }
         }
 
@@ -328,7 +328,7 @@ namespace SatPlayer
 
         public void LoadPlayerData(string playerDataPath)
         {
-            LoadPlayerData( SatIO.PlayerIO.GetPlayerIO(playerDataPath));
+            LoadPlayerData(SatIO.BaseIO.Load<SatIO.PlayerIO>(playerDataPath));
         }
 
         public void LoadPlayerData(SatIO.PlayerIO playerData)

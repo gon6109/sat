@@ -44,7 +44,7 @@ namespace SatCore
             Dictionary<string, SatIO.PlayerIO> playerDatas = new Dictionary<string, SatIO.PlayerIO>();
             foreach (var item in playerDataPaths)
             {
-                playerDatas.Add(item, SatIO.PlayerIO.GetPlayerIO(item));
+                playerDatas.Add(item, SatIO.BaseIO.Load<SatIO.PlayerIO>(item));
             }
             return playerDatas;
         }

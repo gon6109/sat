@@ -1,81 +1,42 @@
 ﻿using System;
-using System.IO;
-using System.Text;
-using System.Xml.Serialization;
 using System.Collections.Generic;
+using System.Text;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using BaseComponent;
 
 namespace SatIO
 {
-    [XmlRoot("mapData")]
-    public class MapIO
+    [Serializable()]
+    public class MapIO : BaseIO
     {
-        [XmlElement("smallBackGround")]
-        public string SmallBackGroundPath { get; set; }
-        [XmlElement("largeBackGround")]
-        public string LargeBackGroundPath { get; set; }
-        [XmlElement("mainMap")]
-        public string MainMapPath { get; set; }
-        [XmlElement("BGM")]
-        public string BGMPath { get; set; }
-        [XmlElement("objects")]
-        public MapObjects Objects { get; set; }
+        public string MapName;
+        public string BGMPath;
+        public VectorIO Size;
 
-        public string Path { get; set; }
+        public List<CollisionBoxIO> CollisionBoxes;
+        public List<CollisionTriangleIO> CollisionTriangles;
+        public List<DoorIO> Doors;
+        public List<MapObjectIO> MapObjects;
+        public List<NPCMapObjectIO> NPCMapObjects;
+        public List<MapEventIO.MapEventIO> MapEvents;
+        public List<BackGroundIO> BackGrounds;
+        public List<CameraRestrictionIO> CameraRestrictions;
+        public List<SavePointIO> SavePoints;
 
         public MapIO()
         {
-            Objects = new MapObjects();
+            CollisionBoxes = new List<CollisionBoxIO>();
+            CollisionTriangles = new List<CollisionTriangleIO>();
+            Doors = new List<DoorIO>();
+            MapObjects = new List<MapObjectIO>();
+            NPCMapObjects = new List<NPCMapObjectIO>();
+            MapEvents = new List<MapEventIO.MapEventIO>();
+            BackGrounds = new List<BackGroundIO>();
+            CameraRestrictions = new List<CameraRestrictionIO>();
+            SavePoints = new List<SavePointIO>();
+            Size = new VectorIO();
         }
-
-        /// <summary>
-        /// マップを保存
-        /// </summary>
-        /// <param name="path">ファイル</param>
-        public void SaveMap(string path)
-        {
-            using (FileStream mapfile = new FileStream(path, FileMode.Create))
-            {
-                StreamWriter writer = new StreamWriter(mapfile, Encoding.UTF8);
-                XmlSerializer serializer = new XmlSerializer(typeof(MapIO));
-                serializer.Serialize(writer, this);
-                writer.Flush();
-                writer.Close();
-            }
-        }
-
-        /// <summary>
-        /// マップをロードする
-        /// </summary>
-        /// <returns>マップデータ（文字列）</returns>
-        /// <param name="path">ファイル</param>
-        static public MapIO LoadMap(string path)
-        {
-            XmlSerializer serializer = new XmlSerializer(typeof(MapIO));
-            MapIO map = (MapIO)serializer.Deserialize(IO.GetStream(path));
-            map.Path = System.IO.Path.GetDirectoryName(path);
-            return map;
-        }
-    }
-
-    [XmlRoot("objects")]
-    public class MapObjects
-    {
-        [XmlElement("item")]
-        public List<MapItem> MapItems { get; set; }
-
-        public MapObjects()
-        {
-            MapItems = new List<MapItem>();
-        }
-    }
-
-    [XmlRoot("item")]
-    public class MapItem
-    {
-        [XmlElement("type")]
-        public string Type { get; set; }
-        [XmlElement("itemData")]
-        public string ItemData { get; set; }
     }
 }

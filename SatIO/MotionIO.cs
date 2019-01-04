@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace SatIO
 {
     [Serializable()]
-    public class MotionIO
+    public class MotionIO : BaseIO
     {
         public MotionIO()
         {
@@ -85,21 +85,6 @@ namespace SatIO
                 Sheets = 1;
                 Interval = 1;
             }
-        }
-
-        public void SaveMotionIO(string path)
-        {
-            using (FileStream motionFile = new FileStream(path, FileMode.Create))
-            {
-                BinaryFormatter serializer = new BinaryFormatter();
-                serializer.Serialize(motionFile, this);
-            }
-        }
-
-        public static MotionIO GetMotionIO(string path)
-        {
-            BinaryFormatter serializer = new BinaryFormatter();
-            return (MotionIO)serializer.Deserialize(IO.GetStream(path));
         }
     }
 }

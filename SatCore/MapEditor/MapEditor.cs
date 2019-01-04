@@ -148,16 +148,22 @@ namespace SatCore.MapEditor
             OnCopyObjectChanged += (isCanCopy, isCanPaste) => { };
 
             MapObjectTemplates = new ObservableCollection<MapObjectTemplate>();
-            var templates = SatIO.MapObjectTemplateIO.LoadMapObjectTemplate("mot.data");
-            foreach (var item in templates.Templates)
+            try
             {
-                var temp = new MapObjectTemplate()
+                var templates = SatIO.BaseIO.Load<SatIO.MapObjectTemplateIO>("mot.data");
+                foreach (var item in templates.Templates)
                 {
-                    Name = item.Key,
-                    ScriptPath = item.Value.ScriptPath,
-                    MotionPath = item.Value.MotionPath
-                };
-                MapObjectTemplates.Add(temp);
+                    var temp = new MapObjectTemplate()
+                    {
+                        Name = item.Key,
+                        ScriptPath = item.Value.ScriptPath,
+                        MotionPath = item.Value.MotionPath
+                    };
+                    MapObjectTemplates.Add(temp);
+                }
+            }
+            catch
+            {
             }
 
             Viewer = new MapViewer(this);
@@ -220,7 +226,7 @@ namespace SatCore.MapEditor
                 };
                 templateIO.Templates.Add(item.Name, temp);
             }
-            templateIO.SaveMapObjectTemplateIO("mot.data");
+            templateIO.Save("mot.data");
             ErrorIO.SaveError(Path.Split('.')[0] + ".log");
             base.OnDispose();
         }
@@ -228,22 +234,29 @@ namespace SatCore.MapEditor
         public void LoadMapData(string path)
         {
             Path = path;
-            var mapdata = SatIO.BinaryMapIO.LoadMap(path);
-            MapName = mapdata.MapName;
-            if (mapdata.BackGrounds != null)
+            try
             {
-                foreach (var item in mapdata.BackGrounds)
+                var mapdata = SatIO.BaseIO.Load<SatIO.MapIO>(path);
+                MapName = mapdata.MapName;
+                if (mapdata.BackGrounds != null)
                 {
-                    BackGrounds.Add(BackGround.LoadBackGroud(item, Map));
+                    foreach (var item in mapdata.BackGrounds)
+                    {
+                        BackGrounds.Add(BackGround.LoadBackGroud(item, Map));
+                    }
                 }
+                Map.LoadMapData(mapdata);
+                BGMPath = mapdata.BGMPath;
             }
-            Map.LoadMapData(mapdata);
-            BGMPath = mapdata.BGMPath;
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public void SaveMapData(string path)
         {
-            var mapdata = new SatIO.BinaryMapIO()
+            var mapdata = new SatIO.MapIO()
             {
                 BGMPath = BGMPath,
                 Path = Path,
@@ -251,7 +264,7 @@ namespace SatCore.MapEditor
                 MapName = MapName,
             };
             Map.SaveMapData(mapdata);
-            mapdata.SaveMap(path);
+            mapdata.Save(path);
         }
 
         public class MapViewer
@@ -267,7 +280,7 @@ namespace SatCore.MapEditor
                 PlayersListDialog playersListDialog = new PlayersListDialog();
                 if (playersListDialog.Show() != PlayersListDialogResult.OK) return;
 
-                var playerData = SatIO.PlayerIO.GetPlayerIO(playersListDialog.FileName);
+                var playerData = SatIO.PlayerIO.Load<SatIO.PlayerIO>(playersListDialog.FileName);
                 if (PlayerNames.Any(obj => obj.Name == playerData.Name)) return;
                 var playerName = new PlayerName()
                 {

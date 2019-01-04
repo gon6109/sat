@@ -47,7 +47,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BackGroundIO.cs" />
-    <Compile Include="BinaryMapIO.cs" />
+    <Compile Include="BaseIO.cs" />
+    <Compile Include="MapIO.cs" />
     <Compile Include="CameraRestrictionIO.cs" />
     <Compile Include="CollisionBoxIO.cs" />
     <Compile Include="CollisionTriangleIO.cs" />
@@ -57,7 +58,6 @@
     <Compile Include="MapEventIO\MapEventIO.cs" />
     <Compile Include="MapEventIO\MoveComponentIO.cs" />
     <Compile Include="MapEventIO\TalkComponentIO.cs" />
-    <Compile Include="MapIO.cs" />
     <Compile Include="MapObjectIO.cs" />
     <Compile Include="MapObjectTemplateIO.cs" />
     <Compile Include="MotionIO.cs" />

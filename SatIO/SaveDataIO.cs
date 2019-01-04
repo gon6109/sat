@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace SatIO
 {
     [Serializable]
-    public class SaveSatIO
+    public class SaveDataIO : BaseIO
     {
         public string MapPath;
         public string MapName;
@@ -19,7 +19,7 @@ namespace SatIO
         public List<string> PlayingChacacter;
         public int Time;
 
-        public SaveSatIO()
+        public SaveDataIO()
         {
             MapPath = "";
             MapName = "";
@@ -27,31 +27,6 @@ namespace SatIO
             EndEvents = new List<KeyValuePair<string, int>>();
             PlayingChacacter = new List<string>();
             Time = 0;
-        }
-
-        /// <summary>
-        /// セーブデータを保存
-        /// </summary>
-        /// <param name="path">ファイル</param>
-        public void Save(string path)
-        {
-            using (FileStream mapfile = new FileStream(path, FileMode.Create))
-            {
-                BinaryFormatter serializer = new BinaryFormatter();
-                serializer.Serialize(mapfile, this);
-            }
-        }
-
-        /// <summary>
-        /// セーブデータをロードする
-        /// </summary>
-        /// <returns>マップデータ（文字列）</returns>
-        /// <param name="path">ファイル</param>
-        static public SaveSatIO LoadSaveData(string path)
-        {
-            BinaryFormatter serializer = new BinaryFormatter();
-            SaveSatIO saveData = (SaveSatIO)serializer.Deserialize(IO.GetStream(path));
-            return saveData;
         }
     }
 }

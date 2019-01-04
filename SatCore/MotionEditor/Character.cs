@@ -388,7 +388,7 @@ namespace SatCore.MotionEditor
 
         public Character(string characterDataPath, PhysicalWorld world)
         {
-            LoadMotion(SatIO.MotionIO.GetMotionIO(characterDataPath));
+            LoadMotion(SatIO.MotionIO.Load<SatIO.MotionIO>(characterDataPath));
             base.Position = new asd.Vector2DF();
             GroundShape = new asd.RectangleShape();
             CollisionShape = new PhysicalRectangleShape(PhysicalShapeType.Dynamic, world);

@@ -59,13 +59,13 @@ namespace SatCore.MotionEditor
 
         public void SaveMotion(string path)
         {
-            if (Character is Player) ((Player)Character).ToPlayerIO().SavePlayerIO(path);
-            else Character.ToMotionIO().SaveMotionIO(path);
+            if (Character is Player) ((Player)Character).ToPlayerIO().Save(path);
+            else Character.ToMotionIO().Save(path);
         }
 
         public void ImportMotionFile(string path)
         {
-            Character.UpdateMotion(SatIO.MotionIO.GetMotionIO(path));
+            Character.UpdateMotion(SatIO.BaseIO.Load<SatIO.MotionIO>(path));
         }
     }
 }

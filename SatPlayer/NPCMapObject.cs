@@ -80,7 +80,7 @@ namespace SatPlayer
             : base(subThreadQueue, mainThreadQueue, scriptPath, world)
         {
             MoveCommands = new Queue<Dictionary<Inputs, bool>>();
-            LoadMotion(SatIO.MotionIO.GetMotionIO(motionFilePath));
+            LoadMotion(MotionIO.Load<MotionIO>(motionFilePath));
             GroundShape = new asd.RectangleShape();
         }
 

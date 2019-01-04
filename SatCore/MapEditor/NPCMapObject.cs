@@ -73,7 +73,7 @@ namespace SatCore.MapEditor
                 _motionPath = value;
                 try
                 {
-                    LoadMotion(SatIO.MotionIO.GetMotionIO(_motionPath));
+                    LoadMotion(BaseIO.Load<MotionIO>(_motionPath));
                     State = UprightLeftState;
                     CenterPosition = Texture.Size.To2DF() / 2;
                     CollisionShape.DrawingArea = new asd.RectF(Position - CenterPosition, Texture.Size.To2DF());

@@ -66,9 +66,9 @@ namespace SatUI
             EditorPanel.PreviewKeyDown += (object sender, KeyEventArgs e) =>
             {
                 if (e.Key == Key.Up ||
-                e.Key == Key.Down || 
-                e.Key == Key.Left || 
-                e.Key == Key.Right || 
+                e.Key == Key.Down ||
+                e.Key == Key.Left ||
+                e.Key == Key.Right ||
                 e.Key == Key.Enter ||
                 e.Key == Key.Tab) e.Handled = true;
             };
@@ -162,17 +162,25 @@ namespace SatUI
 
         void OpenMapFile(string fileName)
         {
-            var loadFile = new SatCore.MapEditor.MapEditor();
-            loadFile.Map.OnChangeSelectedObject += OnChangeSelectedObject;
-            loadFile.Map.OnCreateDoor = OnCreateDoor;
-            loadFile.Map.OnCreateMapObject = OnCreateMapObject;
-            loadFile.Map.FocusToEditorPanel = () => EditorPanel.Focus();
-            loadFile.Map.RequireOpenFileDialog = OpenCharacterImageFileDialog;
-            loadFile.OnCopyObjectChanged = OnCopyObjectChanged;
-            loadFile.LoadMapData(fileName);
-            asd.Engine.ChangeScene(loadFile);
-            Property mapProperty = new Property("Map", new object[] { loadFile.Map, loadFile });
-            propertyPanel.AddProperty(mapProperty);
+            try
+            {
+                var loadFile = new SatCore.MapEditor.MapEditor();
+                loadFile.Map.OnChangeSelectedObject += OnChangeSelectedObject;
+                loadFile.Map.OnCreateDoor = OnCreateDoor;
+                loadFile.Map.OnCreateMapObject = OnCreateMapObject;
+                loadFile.Map.FocusToEditorPanel = () => EditorPanel.Focus();
+                loadFile.Map.RequireOpenFileDialog = OpenCharacterImageFileDialog;
+                loadFile.OnCopyObjectChanged = OnCopyObjectChanged;
+                loadFile.LoadMapData(fileName);
+                asd.Engine.ChangeScene(loadFile);
+                Property mapProperty = new Property("Map", new object[] { loadFile.Map, loadFile });
+                propertyPanel.AddProperty(mapProperty);
+            }
+            catch (Exception e)
+            {
+                ErrorIO.Scene = asd.Engine.CurrentScene;
+                ErrorIO.AddError(new Exception(fileName + "の読み込みに失敗しました(" + e.GetType().ToString() + ")"));
+            }
         }
 
         void OpenMotionFile(string fileName)
@@ -577,7 +585,7 @@ namespace SatUI
             gridSplitter.IsEnabled = false;
             codeColumn.Width = new GridLength(0);
             propertyPanel.ResetProperty(mode);
-            if (mode == PropertyPanel.ResetMode.General) Memory.Release(() => 
+            if (mode == PropertyPanel.ResetMode.General) Memory.Release(() =>
             {
                 DoEvents();
                 propertyPanel.Focus();
