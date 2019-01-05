@@ -13,6 +13,9 @@ using System.Threading.Tasks;
 
 namespace SatCore.MapEditor
 {
+    /// <summary>
+    /// 背景
+    /// </summary>
     public class BackGround : MultiAnimationObject2D, IListInput, ICopyPasteObject, INotifyPropertyChanged
     {
         static ScriptOptions options = ScriptOptions.Default.WithImports("SatPlayer", "System")

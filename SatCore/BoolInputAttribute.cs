@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace SatCore
 {
+    /// <summary>
+    /// 真偽値入力
+    /// </summary>
     [System.AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
     public class BoolInputAttribute : IOAttribute
     {

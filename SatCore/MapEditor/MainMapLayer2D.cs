@@ -14,6 +14,9 @@ namespace SatCore.MapEditor
 {
     public delegate void EventDelegate();
 
+    /// <summary>
+    /// マップのメインレイヤー
+    /// </summary>
     public class MainMapLayer2D : asd.Layer2D, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -21,37 +24,64 @@ namespace SatCore.MapEditor
         protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
+        /// <summary>
+        /// 選択オブジェクトが変更されたとき
+        /// </summary>
         public EventDelegate OnChangeSelectedObject { get; set; }
+
+        /// <summary>
+        /// ドアが作成されたとき
+        /// </summary>
         public EventDelegate OnCreateDoor { get; set; }
+
+        /// <summary>
+        /// マップオブジェクトが作成されたとき
+        /// </summary>
         public EventDelegate OnCreateMapObject { get; set; }
+
+        /// <summary>
+        /// エディターパネルにフォーカスさせる
+        /// </summary>
         public Action FocusToEditorPanel { get; set; }
         void DefaultFunc() { }
 
+        /// <summary>
+        /// ファイルを開くダイアログをUI側に要求する
+        /// </summary>
         public Func<string> RequireOpenFileDialog { get; set; }
         string DefalutStringFunc() { return ""; }
 
+        /// <summary>
+        /// メインのカメラ
+        /// </summary>
         public asd.CameraObject2D ScrollCamera { get; private set; }
         public float Zoom { get; set; }
 
         [VectorInput("マップサイズ")]
         public asd.Vector2DF WorldSize { get; set; }
 
+        /// <summary>
+        /// 選択されているオブジェクト
+        /// </summary>
         public asd.Object2D SelectedObject { get; private set; }
 
         asd.CircleShape cursorShape;
         asd.Vector2DF preMousePosition;
         object dragObject;
 
-        List<CollisionBox> CollisionBoxes { get => Objects.Where(obj => obj is CollisionBox).Cast<CollisionBox>().ToList(); }
-        List<CollisionTriangle> CollisionTriangles { get => Objects.Where(obj => obj is CollisionTriangle).Cast<CollisionTriangle>().ToList(); }
-        List<Door> Doors { get => Objects.Where(obj => obj is Door).Cast<Door>().ToList(); }
+        List<CollisionBox> CollisionBoxes { get => Objects.OfType<CollisionBox>().ToList(); }
+        List<CollisionTriangle> CollisionTriangles { get => Objects.OfType<CollisionTriangle>().ToList(); }
+        List<Door> Doors { get => Objects.OfType<Door>().ToList(); }
         List<MapObject> MapObjects { get => Objects.Where(obj => obj is MapObject && !(obj is NPCMapObject)).Cast<MapObject>().ToList(); }
-        List<NPCMapObject> NPCMapObjects { get => Objects.Where(obj => obj is NPCMapObject).Cast<NPCMapObject>().ToList(); }
-        List<MapEvent.MapEvent> MapEvents { get => Objects.Where(obj => obj is MapEvent.MapEvent).Cast<MapEvent.MapEvent>().ToList(); }
-        List<CameraRestriction> CameraRestrictions { get => Objects.Where(obj => obj is CameraRestriction).Cast<CameraRestriction>().ToList(); }
-        List<SavePoint> SavePoints { get => Objects.Where(obj => obj is SavePoint).Cast<SavePoint>().ToList(); }
+        List<NPCMapObject> NPCMapObjects { get => Objects.OfType<NPCMapObject>().ToList(); }
+        List<MapEvent.MapEvent> MapEvents { get => Objects.OfType<MapEvent.MapEvent>().ToList(); }
+        List<CameraRestriction> CameraRestrictions { get => Objects.OfType<CameraRestriction>().ToList(); }
+        List<SavePoint> SavePoints { get => Objects.OfType<SavePoint>().ToList(); }
 
         ToolType currentToolType;
+        /// <summary>
+        /// 現在のツールタイプ
+        /// </summary>
         public ToolType CurrentToolType
         {
             get => currentToolType;
@@ -105,7 +135,14 @@ namespace SatCore.MapEditor
             }
         }
 
+        /// <summary>
+        /// 頂点つまみオブジェクトコレクション
+        /// </summary>
         List<asd.GeometryObject2D> dotObjects;
+
+        /// <summary>
+        /// 選択領域オブジェクト
+        /// </summary>
         asd.GeometryObject2D polygonObject;
 
         PhysicalWorld physicalWorld;

@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace SatCore
 {
+    /// <summary>
+    /// プレイアブルキャラ選択ダイアログモデル
+    /// </summary>
     public class PlayersListDialog
     {
         public static Func<PlayersListDialog, PlayersListDialogResult> ShowDialogFunc { get; set; } = DefaultFunc;
@@ -18,6 +21,10 @@ namespace SatCore
             return PlayersListDialogResult.Close;
         }
 
+        /// <summary>
+        /// プレイヤーリストを構築
+        /// </summary>
+        /// <param name="root">ルートディレクトリ</param>
         public static void CheckPlayersList(string root)
         {
             try
@@ -37,16 +44,30 @@ namespace SatCore
             }
         }
 
+        /// <summary>
+        /// プレイヤー情報を得る
+        /// </summary>
+        /// <returns></returns>
         public static Dictionary<string, SatIO.PlayerIO> GetPlayersData()
         {
-            BinaryFormatter serializser = new BinaryFormatter();
-            var playerDataPaths = (List<string>)serializser.Deserialize(IO.GetStream(ListSourceFile));
-            Dictionary<string, SatIO.PlayerIO> playerDatas = new Dictionary<string, SatIO.PlayerIO>();
-            foreach (var item in playerDataPaths)
+            try
             {
-                playerDatas.Add(item, SatIO.BaseIO.Load<SatIO.PlayerIO>(item));
+                using (var stream = IO.GetStream(ListSourceFile))
+                {
+                    BinaryFormatter serializser = new BinaryFormatter();
+                    var playerDataPaths = (List<string>)serializser.Deserialize(stream);
+                    Dictionary<string, SatIO.PlayerIO> playerDatas = new Dictionary<string, SatIO.PlayerIO>();
+                    foreach (var item in playerDataPaths)
+                    {
+                        playerDatas.Add(item, SatIO.BaseIO.Load<SatIO.PlayerIO>(item));
+                    }
+                    return playerDatas;
+                }
             }
-            return playerDatas;
+            catch
+            {
+                throw;
+            }
         }
 
         public static string ListSourceFile { get; set; } = "Player/PlayersList.dat";
@@ -60,17 +81,29 @@ namespace SatCore
             FileName = "";
         }
 
+        /// <summary>
+        ///　ダイアログを表示する
+        /// </summary>
+        /// <returns>終了状態</returns>
         public PlayersListDialogResult Show()
         {
-            var playerDatas = GetPlayersData();
-            PlayerNames = playerDatas.Select(obj => obj.Value.Name).ToList();
+            try
+            {
+                var playerDatas = GetPlayersData();
+                PlayerNames = playerDatas.Select(obj => obj.Value.Name).ToList();
 
-            var result = ShowDialogFunc(this);
-            if (result != PlayersListDialogResult.OK) return result;
+                var result = ShowDialogFunc(this);
+                if (result != PlayersListDialogResult.OK) return result;
 
-            FileName = playerDatas.First(obj => obj.Value.Name == PlayerName).Key;
+                FileName = playerDatas.First(obj => obj.Value.Name == PlayerName).Key;
 
-            return result;
+                return result;
+            }
+            catch (Exception e)
+            {
+                ErrorIO.AddError(e);
+                return PlayersListDialogResult.Cancel;
+            }
         }
     }
 

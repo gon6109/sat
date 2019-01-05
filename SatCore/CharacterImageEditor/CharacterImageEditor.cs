@@ -6,13 +6,22 @@ using System.Threading.Tasks;
 
 namespace SatCore.CharacterImageEditor
 {
+    /// <summary>
+    /// キャラクタグラフィック編集シーン
+    /// </summary>
     public class CharacterImageEditor : UndoRedoScene
     {
         static asd.Vector2DI ImageSize = new asd.Vector2DI(400, 800);
 
-        public CharacterImage Character { get; private set; }
+        /// <summary>
+        /// 編集しているキャラ
+        /// </summary>
+        public EditableCharacterImage Character { get; private set; }
+
         asd.Layer2D MainLayer { get; set; }
+
         asd.CameraObject2D MainCamera { get; set; }
+
         public string Path { get; set; }
 
         public CharacterImageEditor(string path = "")
@@ -20,7 +29,7 @@ namespace SatCore.CharacterImageEditor
             Path = path;
             MainLayer = new asd.Layer2D();
 
-            Character = path == "" ? new CharacterImage() :  new CharacterImage(path);
+            Character = path == "" ? new EditableCharacterImage() :  new EditableCharacterImage(path);
             MainLayer.AddObject(Character);
 
             MainCamera = new asd.CameraObject2D();

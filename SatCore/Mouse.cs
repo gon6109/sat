@@ -6,11 +6,18 @@ using System.Threading.Tasks;
 
 namespace SatCore
 {
+    /// <summary>
+    /// マウス入力モデル
+    /// </summary>
     public static class Mouse
     {
         public static asd.Vector2DF Position { get; set; } = new asd.Vector2DF();
 
         static bool preLeft, currentLeft;
+
+        /// <summary>
+        /// 左ボタンの状態を設定
+        /// </summary>
         public static bool IsLeftButton
         {
             set
@@ -19,6 +26,10 @@ namespace SatCore
                 currentLeft = value;
             }
         }
+
+        /// <summary>
+        /// 左ボタンの状態を取得
+        /// </summary>
         public static asd.ButtonState LeftButton
         {
             get
@@ -32,6 +43,10 @@ namespace SatCore
         }
 
         static bool preRight, currentRight;
+
+        /// <summary>
+        /// 右ボタンの状態を設定
+        /// </summary>
         public static bool IsRightButton
         {
             set
@@ -40,6 +55,10 @@ namespace SatCore
                 currentRight = value;
             }
         }
+
+        /// <summary>
+        /// 右ボタンの状態を取得
+        /// </summary>
         public static asd.ButtonState RightButton
         {
             get
@@ -53,6 +72,10 @@ namespace SatCore
         }
 
         static bool preMiddle, currentMiddle;
+
+        /// <summary>
+        /// 中央ボタンの状態を設定
+        /// </summary>
         public static bool IsMiddleButton
         {
             set
@@ -61,6 +84,10 @@ namespace SatCore
                 currentMiddle = value;
             }
         }
+
+        /// <summary>
+        /// 中央ボタンの状態を取得
+        /// </summary>
         public static asd.ButtonState MiddleButton
         {
             get
@@ -72,6 +99,10 @@ namespace SatCore
                 return asd.ButtonState.Free;
             }
         }
+
+        /// <summary>
+        /// ホイール回転状態を設定・取得
+        /// </summary>
         public static int MouseWheel { get; set; } = 0;
 
     }

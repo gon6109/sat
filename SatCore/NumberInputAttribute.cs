@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace SatCore
 {
+    /// <summary>
+    /// 整数入力
+    /// </summary>
     [System.AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
     public class NumberInputAttribute : IOAttribute
     {

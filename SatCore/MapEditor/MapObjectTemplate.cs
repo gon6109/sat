@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace SatCore.MapEditor
 {
+    /// <summary>
+    /// マップオブジェクトテンプレート
+    /// </summary>
     public class MapObjectTemplate : IListInput
     {
         [TextInput("名前")]

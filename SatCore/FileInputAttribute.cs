@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace SatCore
 {
+    /// <summary>
+    /// ファイル入力
+    /// </summary>
     [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
     public sealed class FileInputAttribute : IOAttribute
     {

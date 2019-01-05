@@ -13,6 +13,9 @@ using Microsoft.CodeAnalysis.Scripting;
 using PhysicAltseed;
 namespace SatCore.MapEditor
 {
+    /// <summary>
+    /// マップオブジェクト
+    /// </summary>
     public class MapObject : MultiAnimationObject2D, INotifyPropertyChanged, IMovable, ICopyPasteObject
     {
         static ScriptOptions options = ScriptOptions.Default.WithImports("SatPlayer", "PhysicAltseed", "System")

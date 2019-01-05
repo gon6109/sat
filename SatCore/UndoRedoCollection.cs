@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace SatCore
 {
+    /// <summary>
+    /// UndoRedo実装コレクション
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class UndoRedoCollection<T> : ObservableCollection<T>
     {
         public UndoRedoCollection()

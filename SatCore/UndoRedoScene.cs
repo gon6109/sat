@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace SatCore
 {
+    /// <summary>
+    /// UndoRedo実装シーン
+    /// </summary>
     public class UndoRedoScene : asd.Scene
     {
         public UndoRedoScene()

@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace SatCore.MapEditor
 {
+    /// <summary>
+    /// カメラ移動制限
+    /// </summary>
     public class CameraRestriction : asd.GeometryObject2D, INotifyPropertyChanged, IMovable, ICopyPasteObject
     {
         public event PropertyChangedEventHandler PropertyChanged;

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace SatCore.MapEditor
 {
+    /// <summary>
+    /// 移動可能オブジェクトインターフェース
+    /// </summary>
     public interface IMovable
     {
         void StartMove();

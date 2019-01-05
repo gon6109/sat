@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace SatCore.MapObjectEditor
 {
+    /// <summary>
+    /// 編集可能マップオブジェクト
+    /// </summary>
     public class EditableMapObject : SatPlayer.MapObject, INotifyPropertyChanged
     {
         static ScriptOptions options = ScriptOptions.Default.WithImports("SatPlayer", "PhysicAltseed", "System", "System.Collections.Generic")

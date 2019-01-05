@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace SatCore.MotionEditor
 {
+    //TODO: 書き換える
+    /// <summary>
+    /// モーション編集シーン
+    /// </summary>
     public class MotionEditor : UndoRedoScene
     {
         public Character Character { get; private set; }

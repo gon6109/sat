@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace SatCore.MapEditor.MapEvent
 {
+    /// <summary>
+    /// キャラクターグラフィック
+    /// </summary>
     public class CharacterImage : asd.TextureObject2D, IListInput
     {
         public string Path { get; set; }

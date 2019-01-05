@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace SatCore.MapEditor.MapEvent
 {
+    /// <summary>
+    /// テキスト表示系
+    /// </summary>
     public class TalkComponent : MapEventComponent
     {
         public new string Name => "Talk : " + TalkElements.Count;

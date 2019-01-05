@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace SatCore
 {
+    /// <summary>
+    /// テキスト入力
+    /// </summary>
     [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
     public class TextInputAttribute : IOAttribute
     {
-        // This is a positional argument
         public TextInputAttribute(string itemName, bool isPropertyChanged = true)
         {
             ItemName = itemName;

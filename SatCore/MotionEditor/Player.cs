@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace SatCore.MotionEditor
 {
+    /// <summary>
+    /// プレイヤーキャラ
+    /// </summary>
     public class Player : Character, SatPlayer.IEffectManeger
     {
         public string WalkLeftEffect => "walk_l";

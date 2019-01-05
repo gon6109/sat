@@ -11,6 +11,9 @@ using BaseComponent;
 
 namespace SatCore.MapEditor
 {
+    /// <summary>
+    /// マップ編集シーン
+    /// </summary>
     public class MapEditor : UndoRedoScene, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -42,6 +45,9 @@ namespace SatCore.MapEditor
 
         bool isSelectedBackGround;
 
+        /// <summary>
+        /// 選択されている背景
+        /// </summary>
         public BackGround SelectedBackGround
         {
             get => _selectedBackGround;
@@ -76,6 +82,9 @@ namespace SatCore.MapEditor
         private BackGround _selectedBackGround;
         private string _mapName;
 
+        /// <summary>
+        /// コピー
+        /// </summary>
         public void Copy()
         {
             UndoRedoManager.Enable = false;
@@ -92,6 +101,9 @@ namespace SatCore.MapEditor
             UndoRedoManager.Enable = true;
         }
 
+        /// <summary>
+        /// ペースト
+        /// </summary>
         public void Paste()
         {
             if (copyObject is BackGround)
@@ -135,6 +147,9 @@ namespace SatCore.MapEditor
             Path = path;
         }
 
+        /// <summary>
+        /// 初期化
+        /// </summary>
         void Init()
         {
             Map = new MainMapLayer2D();
@@ -171,6 +186,11 @@ namespace SatCore.MapEditor
             AddLayer(Map);
         }
 
+        /// <summary>
+        /// 背景更新時
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BackGrounds_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
@@ -267,6 +287,9 @@ namespace SatCore.MapEditor
             mapdata.Save(path);
         }
 
+        /// <summary>
+        /// マップビューアー
+        /// </summary>
         public class MapViewer
         {
             IEnumerator<int> enumerator;

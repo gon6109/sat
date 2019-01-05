@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace SatCore.MapEditor
 {
+    /// <summary>
+    /// コピーペースト可能オブジェクトインターフェース
+    /// </summary>
     public interface ICopyPasteObject
     {
         ICopyPasteObject Copy();

@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace SatCore.MapEditor
 {
+    // TODO: 書き換える
+    /// <summary>
+    /// NPCキャラクター
+    /// </summary>
     public class NPCMapObject : MapObject, ICopyPasteObject
     {
         private string _motionPath;

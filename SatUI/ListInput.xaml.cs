@@ -100,16 +100,6 @@ namespace SatUI
             BindingSource.GetType().GetMethod(AdditionButtonEventMethodName).Invoke(BindingSource, new object[] { });
         }
 
-        private void button2_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void button3_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         /// <summary>
         /// ドラッグデータ形式を表す文字列
         /// <summary>

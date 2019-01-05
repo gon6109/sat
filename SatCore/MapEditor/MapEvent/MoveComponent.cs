@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace SatCore.MapEditor.MapEvent
 {
+    /// <summary>
+    /// キャラ動作系
+    /// </summary>
     public class MoveComponent : MapEventComponent
     {
         public new string Name => "Move :" + Frame;

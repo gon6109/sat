@@ -10,6 +10,9 @@ namespace SatCore
 {
     public delegate void OnUpdate();
 
+    /// <summary>
+    /// UndoRedo管理クラス
+    /// </summary>
     public static class UndoRedoManager
     {
         static Stack<UndoRedoCommand> UndoStack { get; set; }
@@ -22,8 +25,14 @@ namespace SatCore
 
         static bool isAction = false;
 
+        /// <summary>
+        /// UndoRedoを有効にするか
+        /// </summary>
         public static bool Enable { get; set; } = true; 
 
+        /// <summary>
+        /// 戻る
+        /// </summary>
         public static void Undo()
         {
             if (UndoStack.Count == 0) return;
@@ -35,6 +44,9 @@ namespace SatCore
             OnUpdateData();
         }
 
+        /// <summary>
+        /// やり直す
+        /// </summary>
         public static void Redo()
         {
             if (RedoStack.Count == 0) return;
@@ -46,6 +58,12 @@ namespace SatCore
             OnUpdateData();
         }
 
+        /// <summary>
+        /// プロパティ変更
+        /// </summary>
+        /// <param name="source">プロパティを持つインスタンス</param>
+        /// <param name="after">変更後の値</param>
+        /// <param name="path">プロパティ名</param>
         public static void ChangeProperty(object source, object after, [CallerMemberName]string path = null)
         {
             if (!Enable) return;
@@ -60,6 +78,13 @@ namespace SatCore
             OnUpdateData();
         }
 
+        /// <summary>
+        /// プロパティ変更
+        /// </summary>
+        /// <param name="source">プロパティを持つインスタンス</param>
+        /// <param name="after">変更後の値</param>
+        /// <param name="before">変更前の値</param>
+        /// <param name="path">プロパティ名</param>
         public static void ChangeProperty(object source, object after, object before,[CallerMemberName]string path = null)
         {
             if (!Enable) return;
@@ -74,6 +99,14 @@ namespace SatCore
             OnUpdateData();
         }
 
+        /// <summary>
+        /// コレクションの変更
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection">コレクション</param>
+        /// <param name="changeObject">コレクションを持つインスタンス</param>
+        /// <param name="after">加えた場所のindex</param>
+        /// <param name="before">削除した場所のindex</param>
         public static void ChangeCollection<T>(UndoRedoCollection<T> collection, T changeObject, int? after, int? before)
         {
             if (!Enable) return;
@@ -87,6 +120,12 @@ namespace SatCore
             OnUpdateData();
         }
 
+        /// <summary>
+        /// Object2Dコレクションの変更
+        /// </summary>
+        /// <param name="layer">Object2Dをもつレイヤー</param>
+        /// <param name="object2D">Object2D</param>
+        /// <param name="isAdd">加えたか</param>
         public static void ChangeObject2D(asd.Layer2D layer, asd.Object2D object2D, bool isAdd)
         {
             if (!Enable) return;
@@ -100,6 +139,9 @@ namespace SatCore
             OnUpdateData();
         }
 
+        /// <summary>
+        /// リセット
+        /// </summary>
         public static void Reset()
         {
             UndoStack.Clear();

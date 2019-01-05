@@ -9,6 +9,9 @@ using PhysicAltseed;
 
 namespace SatCore.MapEditor
 {
+    /// <summary>
+    /// 障害物(四角形)
+    /// </summary>
     public class CollisionBox : asd.GeometryObject2D, INotifyPropertyChanged, IMovable, ICopyPasteObject
     {
         public event PropertyChangedEventHandler PropertyChanged;

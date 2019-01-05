@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace SatCore.MapEditor
 {
+    /// <summary>
+    /// セーブポイント
+    /// </summary>
     public class SavePoint : asd.TextureObject2D, IMovable, ICopyPasteObject, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;

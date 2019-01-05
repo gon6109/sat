@@ -11,6 +11,9 @@ using PhysicAltseed;
 
 namespace SatCore.MotionEditor
 {
+    /// <summary>
+    /// ノーマルキャラ
+    /// </summary>
     public class Character : MultiAnimationObject2D, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;

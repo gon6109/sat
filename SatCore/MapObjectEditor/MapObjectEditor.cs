@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace SatCore.MapObjectEditor
 {
+    /// <summary>
+    /// マップオブジェクト編集シーン
+    /// </summary>
     public class MapObjectEditor : UndoRedoScene
     {
         public EditableMapObject MapObject { get; private set; }

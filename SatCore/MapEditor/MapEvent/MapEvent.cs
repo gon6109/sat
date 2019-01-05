@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace SatCore.MapEditor.MapEvent
 {
+    /// <summary>
+    /// 強制イベント
+    /// </summary>
     public class MapEvent : asd.GeometryObject2D, INotifyPropertyChanged, IMovable
     {
         public event PropertyChangedEventHandler PropertyChanged;

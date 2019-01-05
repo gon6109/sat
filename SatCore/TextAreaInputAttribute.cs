@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace SatCore
 {
+    /// <summary>
+    /// 複数行テキスト入力
+    /// </summary>
     [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
     public class TextAreaInputAttribute : IOAttribute
     {

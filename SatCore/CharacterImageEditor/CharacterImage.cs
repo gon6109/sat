@@ -12,7 +12,10 @@ using System.Threading.Tasks;
 
 namespace SatCore.CharacterImageEditor
 {
-    public class CharacterImage : SatCore.MapEditor.MapEvent.CharacterImage, INotifyPropertyChanged
+    /// <summary>
+    /// 編集できるキャラクタグラフィック
+    /// </summary>
+    public class EditableCharacterImage : MapEditor.MapEvent.CharacterImage, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -71,7 +74,7 @@ namespace SatCore.CharacterImageEditor
             DiffImages.Add(new DiffImage());
         }
 
-        public CharacterImage()
+        public EditableCharacterImage()
         {
             DiffImages = new UndoRedoCollection<DiffImage>();
             diffObject = new asd.TextureObject2D();
@@ -79,7 +82,7 @@ namespace SatCore.CharacterImageEditor
             AddDrawnChild(diffObject, asd.ChildManagementMode.RegistrationToLayer | asd.ChildManagementMode.Disposal, asd.ChildTransformingMode.All, asd.ChildDrawingMode.Nothing);
         }
 
-        public CharacterImage(string path)
+        public EditableCharacterImage(string path)
         {
             DiffImages = new UndoRedoCollection<DiffImage>();
             diffObject = new asd.TextureObject2D();
@@ -98,7 +101,7 @@ namespace SatCore.CharacterImageEditor
                }));
         }
 
-        public static explicit operator CharacterImageIO(CharacterImage characterImage)
+        public static explicit operator CharacterImageIO(EditableCharacterImage characterImage)
         {
 
             var result = new CharacterImageIO()
@@ -110,6 +113,9 @@ namespace SatCore.CharacterImageEditor
             return result;
         }
 
+        /// <summary>
+        /// 差分画像
+        /// </summary>
         public new class DiffImage : IListInput, INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
