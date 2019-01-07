@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace SatPlayer.MapEvent
 {
+    /// <summary>
+    /// キャラクターグラフィック
+    /// </summary>
     public class CharacterImage : asd.TextureObject2D
     {
 

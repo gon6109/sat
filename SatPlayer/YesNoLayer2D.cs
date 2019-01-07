@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace SatPlayer
 {
+    /// <summary>
+    /// 二択選択レイヤ
+    /// </summary>
     public class YesNoLayer2D : asd.Layer2D
     {
         private bool _isYes;
@@ -18,8 +21,14 @@ namespace SatPlayer
         public asd.TextObject2D No { get; private set; }
         public asd.TextureObject2D Cursor { get; private set; }
 
+        /// <summary>
+        /// 選択されたか
+        /// </summary>
         public bool IsEnd { get; set; }
 
+        /// <summary>
+        /// Yesが選択されているか
+        /// </summary>
         public bool IsYes
         {
             get => _isYes;
@@ -30,6 +39,10 @@ namespace SatPlayer
             }
         }
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="text">表示テキスト</param>
         public YesNoLayer2D(string text)
         {
             _isYes = true;

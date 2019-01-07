@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace SatPlayer
 {
+    /// <summary>
+    /// セーブデータ選択画面
+    /// </summary>
     public class SaveLayer2D : UI.UILayer2D
     {
         public bool IsEnd { get; private set; }

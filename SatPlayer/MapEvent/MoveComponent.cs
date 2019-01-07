@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace SatPlayer.MapEvent
 {
+    /// <summary>
+    /// キャラクターを動かす
+    /// </summary>
     public class MoveComponent : MapEventComponent
     {
 

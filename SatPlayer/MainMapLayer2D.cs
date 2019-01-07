@@ -9,6 +9,9 @@ using System.Collections.Concurrent;
 
 namespace SatPlayer
 {
+    /// <summary>
+    /// メインレイヤー
+    /// </summary>
     public class MainMapLayer2D : asd.Layer2D, IDamageManeger
     {
         public ScrollCamera PlayerCamera { get; private set; }
@@ -47,6 +50,15 @@ namespace SatPlayer
         public int ElementCount { get; set; }
         public int LoadingElementCount { get; set; }
 
+        /// <summary>
+        /// マップのロード
+        /// </summary>
+        /// <param name="subThreadQueue">副スレッドへのタスクキュー</param>
+        /// <param name="mainThreadQueue">メインスレッドへのタスクキュー</param>
+        /// <param name="mapIO">マップデータ</param>
+        /// <param name="initDoorID">初期ドアID</param>
+        /// <param name="initSavePointID">初期セーブポイント</param>
+        /// <returns></returns>
         public IEnumerator<int> LoadMapData(BlockingCollection<Action> subThreadQueue, BlockingCollection<Action> mainThreadQueue, SatIO.MapIO mapIO, int initDoorID, int initSavePointID)
         {
             foreach (var item in mapIO.BackGrounds)

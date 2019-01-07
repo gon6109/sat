@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace SatPlayer
 {
+    /// <summary>
+    /// セーブポイント
+    /// </summary>
     public class SavePoint : MultiAnimationObject2D
     {
         private IEnumerator enumerator;

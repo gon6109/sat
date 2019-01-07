@@ -11,6 +11,10 @@ using PhysicAltseed;
 
 namespace SatPlayer
 {
+    //TODO: 書き直す
+    /// <summary>
+    /// NPCオブジェクト
+    /// </summary>
     public class NPCMapObject : MapObject, IMotion
     {
         private float walkSpeed;

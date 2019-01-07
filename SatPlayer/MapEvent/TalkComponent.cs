@@ -9,16 +9,34 @@ using System.Threading.Tasks;
 
 namespace SatPlayer.MapEvent
 {
+    /// <summary>
+    /// テキスト表示コンポーネント
+    /// </summary>
     public partial class TalkComponent : MapEventComponent
     {
+        /// <summary>
+        /// 全てのオブジェクトが入るレイヤー
+        /// </summary>
         public asd.Layer2D Layer { get; private set; }
 
+        /// <summary>
+        /// テキストボックス
+        /// </summary>
         public MessageBox Text { get; private set; }
 
+        /// <summary>
+        /// テキストの要素
+        /// </summary>
         public List<BaseTalkElement> TalkElements { get; set; }
 
+        /// <summary>
+        /// キャラクターグラフィック
+        /// </summary>
         public List<CharacterImage> CharacterImages { get; set; }
 
+        /// <summary>
+        /// ポジションごとのキャラクターグラフィック
+        /// </summary>
         public Dictionary<int, CharacterImage> Index { get; set; }
 
         public TalkComponent(List<CharacterImage> characterImages)
@@ -141,6 +159,9 @@ namespace SatPlayer.MapEvent
             }
         }
 
+        /// <summary>
+        /// キャラクターを表示させる
+        /// </summary>
         public class ShowCharacterElement : BaseTalkElement
         {
             public int Index { get; set; }
@@ -193,6 +214,9 @@ namespace SatPlayer.MapEvent
             }
         }
 
+        /// <summary>
+        /// テキストを表示させる
+        /// </summary>
         public class TalkElement : BaseTalkElement
         {
             public string Text { get; set; }
@@ -241,6 +265,9 @@ namespace SatPlayer.MapEvent
             }
         }
 
+        /// <summary>
+        /// 差分を変更する
+        /// </summary>
         public class ChangeDiffElement : BaseTalkElement
         {
             public string DiffImage { get; set; }
@@ -256,6 +283,9 @@ namespace SatPlayer.MapEvent
             }
         }
 
+        /// <summary>
+        /// キャラクターを隠す
+        /// </summary>
         public class HideCharacterElement : BaseTalkElement
         {
             public HideCharacterElement()

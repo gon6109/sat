@@ -9,6 +9,10 @@ using BaseComponent;
 
 namespace SatPlayer
 {
+    //TODO: ‘‚«’¼‚·
+    /// <summary>
+    /// ƒvƒŒƒCƒ„[
+    /// </summary>
     public class Player : MultiAnimationObject2D, IEffectManeger, IMotion, IDamageControler
     {
         public static int MaxHP = 100;

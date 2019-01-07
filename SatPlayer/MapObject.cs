@@ -10,6 +10,9 @@ using System.Collections.Concurrent;
 
 namespace SatPlayer
 {
+    /// <summary>
+    /// マップオブジェクト
+    /// </summary>
     public class MapObject : MultiAnimationObject2D, IEffectManeger, ICloneable, IMapObjectData, IDamageControler
     {
         static ScriptOptions options = ScriptOptions.Default.WithImports("SatPlayer", "PhysicAltseed", "System", "System.Collections.Generic")

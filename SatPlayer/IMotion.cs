@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace SatPlayer
 {
+    [Obsolete]
     public interface IMotion
     {
         string State { get; set; }

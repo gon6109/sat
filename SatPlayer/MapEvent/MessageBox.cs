@@ -10,26 +10,47 @@ namespace SatPlayer.MapEvent
 {
     public partial class TalkComponent
     {
+        /// <summary>
+        /// テキストボックス
+        /// </summary>
         public class MessageBox : asd.TextureObject2D
         {
+            /// <summary>
+            /// テキストを表示するスピード
+            /// </summary>
             public int TextSpeed { get; set; }
 
+            /// <summary>
+            /// テキストとボックスの間隔
+            /// </summary>
             public float Margin { get; set; }
 
+            /// <summary>
+            /// フォント
+            /// </summary>
             public asd.Font Font { get; set; }
 
+            /// <summary>
+            /// 話しているキャラクター名
+            /// </summary>
             public string Name
             {
                 get => NameOutput.Name;
                 set => NameOutput.Name = value;
             }
 
+            /// <summary>
+            /// 話しているキャラクターの場所
+            /// </summary>
             public int Index
             {
                 get => NameOutput.Index;
                 set => NameOutput.Index = value;
             }
 
+            /// <summary>
+            /// キャラクター名表示欄
+            /// </summary>
             public NameArea NameOutput { get; private set; }
 
             List<TextLine> texts;

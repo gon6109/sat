@@ -7,10 +7,16 @@ using BaseComponent;
 
 namespace SatPlayer
 {
+    /// <summary>
+    /// メインのカメラ
+    /// </summary>
     public class ScrollCamera : asd.CameraObject2D
     {
         private float _homingParameter;
 
+        /// <summary>
+        /// 追従に関するパラメータ
+        /// </summary>
         public float HomingParameter
         {
             get => _homingParameter;
@@ -20,19 +26,54 @@ namespace SatPlayer
             }
         }
 
+        /// <summary>
+        /// イベント中か
+        /// </summary>
         public bool IsEvent { get; set; }
+
+        /// <summary>
+        /// 追従するオブジェクト
+        /// </summary>
         public asd.Object2D HomingObject { get; set; }
+
+        /// <summary>
+        /// マップのサイズ
+        /// </summary>
         public asd.Vector2DF MapSize { get; set; }
+
+        /// <summary>
+        /// カメラの動作範囲
+        /// </summary>
         public asd.RectF MoveRect
         {
             get => new asd.RectF(Src.Size.To2DF() / 2.0f, MapSize - Src.Size.To2DF());
         }
+
+        /// <summary>
+        /// マニュアルコントロールキュー
+        /// </summary>
         public Queue<Dictionary<Inputs, bool>> MoveCommands { get; private set; }
+
+        /// <summary>
+        /// マニュアルコントロール座標指定キュー
+        /// </summary>
         public Queue<asd.Vector2DF> WaitStatePoints { get; private set; }
+
+        /// <summary>
+        /// マニュアルコントロールターゲット座標
+        /// </summary>
         List<asd.Vector2DF> TargetPoint { get; set; }
+
+        /// <summary>
+        /// カメラが移動制限領域
+        /// </summary>
         List<asd.RectangleShape> Restrictions { get; set; }
+
         asd.Vector2DF targetPosition;
 
+        /// <summary>
+        /// カメラの中心座標
+        /// </summary>
         asd.Vector2DF SrcCenter { get => Src.Position.To2DF() + Src.Size.To2DF() / 2.0f; }
 
         public ScrollCamera(List<SatIO.CameraRestrictionIO> cameraRestrictions)

@@ -22,7 +22,7 @@
                 <ListBox x:Name="listBox" IsSynchronizedWithCurrentItem="True" SelectionChanged="listBox_SelectionChanged" Margin="9,0" Grid.ColumnSpan="3"
                         PreviewMouseLeftButtonDown="listBox_PreviewMouseLeftButtonDown" Drop="listBox_Drop" PreviewDragOver="listBox_PreviewDragOver" 
                         PreviewDragEnter="listBox_PreviewDragEnter" PreviewMouseLeftButtonUp="listBox_PreviewMouseLeftButtonUp" 
-                        PreviewMouseMove="listBox_PreviewMouseMove" ItemsSource="{Binding}" AllowDrop="True" Padding="0,0,0,10">
+                        PreviewMouseMove="listBox_PreviewMouseMove" ItemsSource="{Binding}" AllowDrop="True" Padding="0,0,0,10" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VerticalContentAlignment="Top" ScrollViewer.CanContentScroll="False" MaxHeight="300">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="Template">

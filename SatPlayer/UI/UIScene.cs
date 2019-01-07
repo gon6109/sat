@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace SatPlayer.UI
 {
+    /// <summary>
+    /// UI用シーン
+    /// </summary>
     public class UIScene : asd.Scene
     {
         /// <summary>
@@ -53,6 +56,9 @@ namespace SatPlayer.UI
         }
     }
 
+    /// <summary>
+    /// UI用レイヤー
+    /// </summary>
     public class UILayer2D : asd.Layer2D
     {
         private UIElement _selectedElement;

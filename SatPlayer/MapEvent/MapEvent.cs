@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace SatPlayer.MapEvent
 {
+    /// <summary>
+    /// イベント
+    /// </summary>
     public class MapEvent : asd.GeometryObject2D
     {
         public new asd.RectangleShape Shape

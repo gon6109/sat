@@ -9,9 +9,11 @@ using System.Threading.Tasks;
 
 namespace SatPlayer
 {
+    /// <summary>
+    /// セーブデータ表示コンポーネント
+    /// </summary>
     public class SaveDataComponent : UI.Button
     {
-
         public asd.TextObject2D DataName { get; private set; }
         public asd.TextObject2D MapName { get; private set; }
         public asd.TextObject2D PlayerNames { get; private set; }

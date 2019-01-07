@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace SatPlayer
 {
+    /// <summary>
+    /// エフェクト発生オブジェクトインターフェース
+    /// </summary>
     public interface IEffectManeger
     {
         Dictionary<string, Effect> Effects { get; }

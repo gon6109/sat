@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace SatPlayer
 {
+    /// <summary>
+    /// スクリプト用インターフェース
+    /// </summary>
     public interface IMapObjectData
     {
         asd.Vector2DF Position { get; }
