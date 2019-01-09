@@ -16,10 +16,10 @@ namespace SatIO
         public string Path;
 
         /// <summary>
-        /// 保存
+        /// バイナリで保存
         /// </summary>
         /// <param name="path">ファイル</param>
-        public void Save(string path)
+        public void SaveAsBinary(string path)
         {
             using (FileStream file = new FileStream(path, FileMode.Create))
             {
@@ -29,10 +29,10 @@ namespace SatIO
         }
 
         /// <summary>
-        /// Xmlで保存する
+        /// 保存する
         /// </summary>
         /// <param name="path"></param>
-        public void SaveAsXml(string path)
+        public void Save(string path)
         {
             using (FileStream file = new FileStream(path, FileMode.Create))
             {
@@ -42,12 +42,12 @@ namespace SatIO
         }
 
         /// <summary>
-        /// ロードする
+        /// バイナリファイルからロードする
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="path">パス</param>
         /// <returns></returns>
-        static public T Load<T>(string path) where T : BaseIO
+        static public T LoadFromBinary<T>(string path) where T : BaseIO
         {
             try
             {
@@ -60,28 +60,35 @@ namespace SatIO
                 data.Path = System.IO.Path.GetDirectoryName(path);
                 return data;
             }
-            catch
+            catch (Exception e)
             {
-                return LoadFromXml<T>(path);
+                throw new FileLoadException(path + ":" + e.Message);
             }
         }
 
         /// <summary>
-        /// XMLファイルからロード
+        /// ロード
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="path">パス</param>
         /// <returns></returns>
-        static public T LoadFromXml<T>(string path) where T : BaseIO
+        static public T Load<T>(string path) where T : BaseIO
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(T));
-            T data;
-            using (var stream = IO.GetStream(path))
+            try
             {
-                data = (T)serializer.Deserialize(stream);
+                XmlSerializer serializer = new XmlSerializer(typeof(T));
+                T data;
+                using (var stream = IO.GetStream(path))
+                {
+                    data = (T)serializer.Deserialize(stream);
+                }
+                data.Path = System.IO.Path.GetDirectoryName(path);
+                return data;
             }
-            data.Path = System.IO.Path.GetDirectoryName(path);
-            return data;
+            catch (Exception e)
+            {
+                throw new FileLoadException(path + ":" + e.Message);
+            }
         }
     }
 }
