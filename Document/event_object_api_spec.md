@@ -19,7 +19,7 @@ GlobalTypeで使う。
 | Update | ```Action<IEventObject>{get;set;}``` | OnUpdate時に行われるデリゲート |
 | IsReceiveDamage | ```bool{get;set;}``` | ダメージを受けるか |
 | Camp | ```OwnerType{get;set;}``` | 陣営 |
-| SetChild | ```void(string name, string animationPath, string scriptpath)``` | 子MapObjectを設定する(EventObject不可)|
+| SetChild | ```void(string name, string scriptpath)``` | 子MapObjectを設定する(EventObject不可)|
 | CreateChild | ```void(string name, Vector position)``` | 子オブジェクトを配置 |
 | LoadEffect | ```void(string animatonGroup, string extension, int sheets, string name, int interval)``` | エフェクトをロードする |
 | SetEffect | ```void(string name, Vector position)``` | エフェクトを配置する |
