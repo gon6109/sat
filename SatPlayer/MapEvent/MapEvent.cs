@@ -154,7 +154,7 @@ namespace SatPlayer.MapEvent
                 }
                 foreach (var item in Actors)
                 {
-                    if (item.Motion is NPCMapObject) ((NPCMapObject)item.Motion).Color = new asd.Color(255, 255, 255, 255);
+                    if (item.Motion is EventObject) ((EventObject)item.Motion).Color = new asd.Color(255, 255, 255, 255);
                 }
                 count++;
                 yield return 0;
@@ -168,9 +168,9 @@ namespace SatPlayer.MapEvent
             }
             foreach (var item in Actors)
             {
-                if (item.Motion is NPCMapObject)
+                if (item.Motion is EventObject)
                 {
-                    ((NPCMapObject)item.Motion).CollisionShape.GroupIndex = 0;
+                    ((EventObject)item.Motion).CollisionShape.GroupIndex = 0;
                 }
                 if (item.Motion is Player)
                 {
@@ -194,11 +194,11 @@ namespace SatPlayer.MapEvent
             }
             foreach (var item in Actors)
             {
-                if (item.Motion is NPCMapObject)
+                if (item.Motion is EventObject)
                 {
-                    ((NPCMapObject)item.Motion).IsUpdated = true;
-                    ((NPCMapObject)item.Motion).CollisionShape.IsActive = true;
-                    ((NPCMapObject)item.Motion).CollisionShape.GroupIndex = -1;
+                    ((EventObject)item.Motion).IsUpdated = true;
+                    ((EventObject)item.Motion).CollisionShape.IsActive = true;
+                    ((EventObject)item.Motion).CollisionShape.GroupIndex = -1;
                     item.Motion.Position = item.InitPosition;
                 }
                 item.Motion.IsEvent = true;
@@ -216,7 +216,7 @@ namespace SatPlayer.MapEvent
                 }
                 foreach (var item in Actors)
                 {
-                    if (item.Motion is NPCMapObject) ((NPCMapObject)item.Motion).Color = new asd.Color(255, 255, 255, 255);
+                    if (item.Motion is EventObject) ((EventObject)item.Motion).Color = new asd.Color(255, 255, 255, 255);
                     if (item.Motion is Player)
                     {
                         var command = new Dictionary<Inputs, bool>();

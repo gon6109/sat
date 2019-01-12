@@ -19,7 +19,7 @@ namespace SatIO
         public List<CollisionTriangleIO> CollisionTriangles;
         public List<DoorIO> Doors;
         public List<MapObjectIO> MapObjects;
-        public List<NPCMapObjectIO> NPCMapObjects;
+        public List<EventObjectIO> EventObjects;
         public List<MapEventIO.MapEventIO> MapEvents;
         public List<BackGroundIO> BackGrounds;
         public List<CameraRestrictionIO> CameraRestrictions;
@@ -31,7 +31,7 @@ namespace SatIO
             CollisionTriangles = new List<CollisionTriangleIO>();
             Doors = new List<DoorIO>();
             MapObjects = new List<MapObjectIO>();
-            NPCMapObjects = new List<NPCMapObjectIO>();
+            EventObjects = new List<EventObjectIO>();
             MapEvents = new List<MapEventIO.MapEventIO>();
             BackGrounds = new List<BackGroundIO>();
             CameraRestrictions = new List<CameraRestrictionIO>();

@@ -3,9 +3,9 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace SatCore
 {
@@ -34,7 +34,7 @@ namespace SatCore
                 List<string> playersList = new List<string>(paths.Select(obj => Path.GetRelativePath(obj, root)));
                 using (FileStream listFile = new FileStream(root + "Player/PlayersList.dat", FileMode.Create))
                 {
-                    BinaryFormatter serializer = new BinaryFormatter();
+                    XmlSerializer serializer = new XmlSerializer(typeof(List<string>));
                     serializer.Serialize(listFile, playersList);
                 }
             }
@@ -54,12 +54,19 @@ namespace SatCore
             {
                 using (var stream = IO.GetStream(ListSourceFile))
                 {
-                    BinaryFormatter serializser = new BinaryFormatter();
+                    XmlSerializer serializser = new XmlSerializer(typeof(List<string>));
                     var playerDataPaths = (List<string>)serializser.Deserialize(stream);
                     Dictionary<string, SatIO.PlayerIO> playerDatas = new Dictionary<string, SatIO.PlayerIO>();
                     foreach (var item in playerDataPaths)
                     {
-                        playerDatas.Add(item, SatIO.BaseIO.Load<SatIO.PlayerIO>(item));
+                        try
+                        {
+                            playerDatas.Add(item, SatIO.BaseIO.Load<SatIO.PlayerIO>(item));
+                        }
+                        catch (Exception e)
+                        {
+                            ErrorIO.AddError(e);
+                        }
                     }
                     return playerDatas;
                 }

@@ -10,7 +10,7 @@
 | Collision | ```ICollision{get;}``` | 衝突判定情報 |
 | AddAnimationPart | ```void(string animationGroup, string extension, int sheets, string partName, int interval)``` | アニメーションパートを追加する |
 | IsColligedWithGround | ```bool{get;}``` | 地面と接しているか | 
-| Verocity | ```Vector{get;set;}``` | 速度 | 
+| Velocity | ```Vector{get;set;}``` | 速度 | 
 | SetForce | ```void(Vector direct, Vector position)``` | 指定点に力を加える |
 | Update | ```Action<IPlayer>{get;set;}``` | OnUpdate時に行われるデリゲート |
 | GetInputState | ```int(Inputs inputs)``` | 入力状態を取得（Event対応) |
@@ -28,5 +28,5 @@
 | State | ```string{get;}``` | アニメーション状態 |
 | Collision | ```ICollision{get;}``` | 衝突判定情報 |
 | IsColligedWithGround | ```bool{get;}``` | 地面と接しているか | 
-| Verocity | ```Vector{get;}``` | 速度 | 
+| Velocity | ```Vector{get;}``` | 速度 | 
 | IsEvent | ```bool{get;}``` | イベント時か |

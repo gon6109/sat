@@ -12,7 +12,8 @@ GlobalTypeで使う。
 | AddAnimationPart | ```void(string animationGroup, string extension, int sheets, string partName, int interval)``` | アニメーションパートを追加する |
 | MapObjectType | ```MapObjectType{get;set;}``` | マップオブジェクトのタイプ |
 | Collision | ```ICollision{get;}``` | 衝突判定情報 |
-| Verocity | ```Vector{get;set;}``` | 速度 | 
+| IsColligedWithGround | ```bool{get;}``` | 地面と接しているか |
+| Velocity | ```Vector{get;set;}``` | 速度 | 
 | SetForce | ```void(Vector direct, Vector position)``` | 指定点に力を加える |
 | IsAllowRotation | ```bool{get;set;}``` | 回転を許可する | 
 | Sensors | ```Dictionary<string, ISensor>{get;}``` | センサー情報を設定・取得 |

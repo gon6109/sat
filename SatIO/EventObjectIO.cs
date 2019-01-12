@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SatIO
 {
     [Serializable()]
-    public class NPCMapObjectIO : MapObjectIO
+    public class EventObjectIO : MapObjectIO
     {
         public string MotionPath { get; set; }
         public int ID { get; set; }

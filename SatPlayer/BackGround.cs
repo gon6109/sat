@@ -7,10 +7,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SatScript.BackGround;
 
 namespace SatPlayer
 {
-    public class BackGround : MultiAnimationObject2D
+    /// <summary>
+    /// 背景
+    /// </summary>
+    public class BackGround : MultiAnimationObject2D, IBackGround
     {
         static ScriptOptions options = ScriptOptions.Default.WithImports("SatPlayer", "System", "System.Collections.Generic")
                                                          .WithReferences(System.Reflection.Assembly.GetAssembly(typeof(IEnumerator<>))
@@ -21,13 +25,15 @@ namespace SatPlayer
 
         MainMapLayer2D mainMap;
 
-        public Action<BackGround> Update { get; set; }
-
         public float Zoom { get; set; }
+
+        /// <summary>
+        /// OnUpdade時に呼び出される関数のデリゲート
+        /// </summary>
+        public Action<IBackGround> Update { get; set; } = obj => { };
 
         public BackGround(MainMapLayer2D layer)
         {
-            Update = (back) => { };
             Camera = new asd.CameraObject2D();
             mainMap = layer;
             Zoom = 1;

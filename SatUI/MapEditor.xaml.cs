@@ -243,7 +243,7 @@ namespace SatUI
                     Property mapObjectProperty = new Property("Map Object", ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.SelectedObject);
                     propertyPanel.AddProperty(mapObjectProperty);
                     break;
-                case SatCore.MapEditor.SelectType.NPC:
+                case SatCore.MapEditor.SelectType.EventObject:
                     Property npcMapObjectProperty = new Property("Non-Player Character", ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.SelectedObject);
                     propertyPanel.AddProperty(npcMapObjectProperty);
                     break;
@@ -327,7 +327,7 @@ namespace SatUI
         {
             if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor == null) return;
 
-            ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.NPC;
+            ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.EventObject;
             EditorPanel.Cursor = Cursors.Arrow;
             Reset(PropertyPanel.ResetMode.Map);
         }

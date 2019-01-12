@@ -24,7 +24,7 @@ namespace SatPlayer
         public int Damage { get; private set; }
         public int KnockBack { get; private set; }
 
-        public DamageRect(OwnerType owner, asd.RectF rect, int damage ,int frame, bool sastainable,int knockBack)
+        public DamageRect(OwnerType owner, asd.RectF rect, int damage, int frame, bool sastainable, int knockBack)
         {
             Damage = damage;
             Owner = owner;
@@ -47,7 +47,7 @@ namespace SatPlayer
         public int Damage { get; private set; }
         public int KnockBack { get; private set; }
 
-        public DirectDamage(IDamageControler recieveTo, int damage,int knockBack)
+        public DirectDamage(IDamageControler recieveTo, int damage, int knockBack)
         {
             RecieveTo = recieveTo;
             Damage = damage;

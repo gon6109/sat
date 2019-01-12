@@ -100,7 +100,7 @@ namespace SatPlayer
             mapIO = BaseIO.Load<MapIO>(MapPath);
             MapName = mapIO.MapName;
 
-            ElementCount = mapIO.BackGrounds.Count + mapIO.Doors.Count + mapIO.MapObjects.Count + mapIO.NPCMapObjects.Count + mapIO.MapEvents.Count;
+            ElementCount = mapIO.BackGrounds.Count + mapIO.Doors.Count + mapIO.MapObjects.Count + mapIO.EventObjects.Count + mapIO.MapEvents.Count;
 
             var enumerator = mainLayer.LoadMapData(subThreadTasks, mainThreadTasks, mapIO, initDoorID, initSavePointID);
             while (enumerator.MoveNext()) yield return 0;

@@ -61,7 +61,7 @@
     <Compile Include="MapObjectIO.cs" />
     <Compile Include="MapObjectTemplateIO.cs" />
     <Compile Include="MotionIO.cs" />
-    <Compile Include="NPCMapObjectIO.cs" />
+    <Compile Include="EventObjectIO.cs" />
     <Compile Include="PlayerIO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SaveDataIO.cs" />

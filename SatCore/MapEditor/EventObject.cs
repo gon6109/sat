@@ -10,9 +10,9 @@ namespace SatCore.MapEditor
 {
     // TODO: 書き換える
     /// <summary>
-    /// NPCキャラクター
+    /// Event対応キャラクター
     /// </summary>
-    public class NPCMapObject : MapObject, ICopyPasteObject
+    public class EventObject : MapObject, ICopyPasteObject
     {
         private string _motionPath;
 
@@ -90,12 +90,12 @@ namespace SatCore.MapEditor
             }
         }
 
-        public NPCMapObject()
+        public EventObject()
         {
 
         }
 
-        public NPCMapObject(NPCMapObjectIO mapObject)
+        public EventObject(EventObjectIO mapObject)
         {
             ScriptPath = mapObject.ScriptPath;
             Position = mapObject.Position;
@@ -141,16 +141,16 @@ namespace SatCore.MapEditor
         public new ICopyPasteObject Copy()
         {
             UndoRedoManager.Enable = false;
-            NPCMapObject copy = new NPCMapObject();
+            EventObject copy = new EventObject();
             copy.ScriptPath = ScriptPath;
             copy.Position = Position + new asd.Vector2DF(50, 50);
             copy.MotionPath = MotionPath;
             return copy;
         }
 
-        public static explicit operator NPCMapObjectIO(NPCMapObject mapObject)
+        public static explicit operator EventObjectIO(EventObject mapObject)
         {
-            var result = new NPCMapObjectIO()
+            var result = new EventObjectIO()
             {
                 ScriptPath = mapObject.ScriptPath,
                 MotionPath = mapObject.MotionPath,

@@ -22,9 +22,9 @@ namespace SatPlayer
 
         public List<PhysicalShape> CollisionShapes { get; private set; }
 
-        public List<NPCMapObject> NpcMapObjects => Objects.Where(obj => obj is NPCMapObject).Cast<NPCMapObject>().ToList();
+        public List<EventObject> EventObjects => Objects.Where(obj => obj is EventObject).Cast<EventObject>().ToList();
 
-        public List<MapObject> MapObjects => Objects.Where(obj => obj is MapObject && !(obj is NPCMapObject)).Cast<MapObject>().ToList();
+        public List<MapObject> MapObjects => Objects.Where(obj => obj is MapObject && !(obj is EventObject)).Cast<MapObject>().ToList();
 
         public List<Door> Doors => Objects.Where(obj => obj is Door).Cast<Door>().ToList();
 
@@ -152,11 +152,11 @@ namespace SatPlayer
             }
 
             List<IMotion> actors = new List<IMotion>(Game.Players);
-            foreach (var item in mapIO.NPCMapObjects)
+            foreach (var item in mapIO.EventObjects)
             {
                 try
                 {
-                    NPCMapObject temp = new NPCMapObject(subThreadQueue, mainThreadQueue, item.ScriptPath, PhysicalWorld, item.MotionPath);
+                    EventObject temp = new EventObject(subThreadQueue, mainThreadQueue, item.ScriptPath, PhysicalWorld, item.MotionPath);
                     temp.Position = item.Position;
                     AddObject(temp);
                     actors.Add(temp);

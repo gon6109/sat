@@ -116,7 +116,7 @@ namespace SatCore.MapEditor
             else if (copyObject is asd.Object2D)
             {
                 if (copyObject is Door) ((Door)copyObject).ID = Map.GetCanUseDoorID();
-                if (copyObject is NPCMapObject) ((NPCMapObject)copyObject).ID = Map.GetCanUseNPCID();
+                if (copyObject is EventObject) ((EventObject)copyObject).ID = Map.GetCanUseEventObjectID();
                 if (copyObject is SavePoint) ((SavePoint)copyObject).ID = Map.GetCanUseSavePointID();
                 Map.AddObject((asd.Object2D)copyObject);
                 UndoRedoManager.ChangeObject2D(Map, (asd.Object2D)copyObject, true);
@@ -239,7 +239,7 @@ namespace SatCore.MapEditor
             SatIO.MapObjectTemplateIO templateIO = new SatIO.MapObjectTemplateIO();
             foreach (var item in MapObjectTemplates)
             {
-                var temp = new SatIO.NPCMapObjectIO()
+                var temp = new SatIO.EventObjectIO()
                 {
                     ScriptPath = item.ScriptPath,
                     MotionPath = item.MotionPath,

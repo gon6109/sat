@@ -72,8 +72,8 @@ namespace SatCore.MapEditor
         List<CollisionBox> CollisionBoxes { get => Objects.OfType<CollisionBox>().ToList(); }
         List<CollisionTriangle> CollisionTriangles { get => Objects.OfType<CollisionTriangle>().ToList(); }
         List<Door> Doors { get => Objects.OfType<Door>().ToList(); }
-        List<MapObject> MapObjects { get => Objects.Where(obj => obj is MapObject && !(obj is NPCMapObject)).Cast<MapObject>().ToList(); }
-        List<NPCMapObject> NPCMapObjects { get => Objects.OfType<NPCMapObject>().ToList(); }
+        List<MapObject> MapObjects { get => Objects.Where(obj => obj is MapObject && !(obj is EventObject)).Cast<MapObject>().ToList(); }
+        List<EventObject> EventObjects { get => Objects.OfType<EventObject>().ToList(); }
         List<MapEvent.MapEvent> MapEvents { get => Objects.OfType<MapEvent.MapEvent>().ToList(); }
         List<CameraRestriction> CameraRestrictions { get => Objects.OfType<CameraRestriction>().ToList(); }
         List<SavePoint> SavePoints { get => Objects.OfType<SavePoint>().ToList(); }
@@ -89,16 +89,16 @@ namespace SatCore.MapEditor
             {
                 if (currentToolType == value) return;
 
-                if (value == ToolType.SelectNPC)
+                if (value == ToolType.SelectEventObject)
                 {
                     currentToolType = value;
-                    OnChangeSelectNPC(false);
+                    OnChangeSelectEventObject(false);
                     return;
                 }
-                if (currentToolType == ToolType.SelectNPC)
+                if (currentToolType == ToolType.SelectEventObject)
                 {
                     currentToolType = value;
-                    OnChangeSelectNPC(true);
+                    OnChangeSelectEventObject(true);
                     return;
                 }
 
@@ -115,7 +115,7 @@ namespace SatCore.MapEditor
             }
         }
 
-        void OnChangeSelectNPC(bool isDrawn)
+        void OnChangeSelectEventObject(bool isDrawn)
         {
             foreach (var item in CollisionBoxes)
             {
@@ -147,7 +147,7 @@ namespace SatCore.MapEditor
 
         PhysicalWorld physicalWorld;
 
-        List<NPCMapObject> npcMapObjects;
+        List<EventObject> eventObjects;
 
         public MainMapLayer2D()
         {
@@ -185,16 +185,16 @@ namespace SatCore.MapEditor
                 }
             }
 
-            npcMapObjects = new List<NPCMapObject>();
-            if (mapData.NPCMapObjects != null)
+            eventObjects = new List<EventObject>();
+            if (mapData.EventObjects != null)
             {
-                foreach (var item in mapData.NPCMapObjects)
+                foreach (var item in mapData.EventObjects)
                 {
-                    var temp = new NPCMapObject(item);
-                    if (!npcMapObjects.Any(obj => obj.ID == temp.ID))
+                    var temp = new EventObject(item);
+                    if (!eventObjects.Any(obj => obj.ID == temp.ID))
                     {
                         AddObject(temp);
-                        npcMapObjects.Add(temp);
+                        eventObjects.Add(temp);
                     }
                 }
             }
@@ -271,8 +271,8 @@ namespace SatCore.MapEditor
             {
                 try
                 {
-                    if (NPCMapObjects.Count != 0 || npcMapObjects.Count == 0) return NPCMapObjects.First(obj => obj.ID == actorIO.ID).MotionPath;
-                    else return npcMapObjects.First(obj => obj.ID == actorIO.ID).MotionPath;
+                    if (EventObjects.Count != 0 || eventObjects.Count == 0) return EventObjects.First(obj => obj.ID == actorIO.ID).MotionPath;
+                    else return eventObjects.First(obj => obj.ID == actorIO.ID).MotionPath;
                 }
                 catch (Exception e)
                 {
@@ -311,9 +311,9 @@ namespace SatCore.MapEditor
                 mapData.MapObjects.Add((MapObjectIO)item);
             }
 
-            foreach (var item in NPCMapObjects)
+            foreach (var item in EventObjects)
             {
-                mapData.NPCMapObjects.Add((NPCMapObjectIO)item);
+                mapData.EventObjects.Add((EventObjectIO)item);
             }
 
             foreach (var item in MapEvents)
@@ -355,8 +355,8 @@ namespace SatCore.MapEditor
                     return SelectType.Box;
                 case CollisionTriangle triangle:
                     return SelectType.Triangle;
-                case NPCMapObject npcMapObject:
-                    return SelectType.NPC;
+                case EventObject eventObject:
+                    return SelectType.EventObject;
                 case MapObject mapObject:
                     return SelectType.Object;
                 case Door door:
@@ -421,14 +421,14 @@ namespace SatCore.MapEditor
                 case ToolType.Object:
                     SetMapObject();
                     break;
-                case ToolType.NPC:
-                    SetNPCMapObject();
+                case ToolType.EventObject:
+                    SetEventObject();
                     break;
                 case ToolType.Event:
                     SetMapEvent();
                     break;
-                case ToolType.SelectNPC:
-                    SelectNPC();
+                case ToolType.SelectEventObject:
+                    SelectEventObject();
                     break;
                 case ToolType.CameraRestriction:
                     SetCameraRestriction();
@@ -563,13 +563,13 @@ namespace SatCore.MapEditor
             }
         }
 
-        void SetNPCMapObject()
+        void SetEventObject()
         {
             if (Mouse.LeftButton == asd.ButtonState.Push)
             {
                 UndoRedoManager.Enable = false;
-                NPCMapObject mapObject;
-                mapObject = new NPCMapObject();
+                EventObject mapObject;
+                mapObject = new EventObject();
                 mapObject.Position = GetMouseRelativePosition();
                 if (Scene is MapEditor && ((MapEditor)Scene).SelectedTemplate as MapObjectTemplate != null)
                 {
@@ -577,7 +577,7 @@ namespace SatCore.MapEditor
                     mapObject.ScriptPath = template.ScriptPath;
                     mapObject.MotionPath = template.MotionPath;
                 }
-                mapObject.ID = GetCanUseNPCID();
+                mapObject.ID = GetCanUseEventObjectID();
                 AddObject(mapObject);
                 UndoRedoManager.Enable = true;
                 UndoRedoManager.ChangeObject2D(this, mapObject, true);
@@ -586,10 +586,10 @@ namespace SatCore.MapEditor
             }
         }
 
-        public int GetCanUseNPCID()
+        public int GetCanUseEventObjectID()
         {
             SortedList<int, bool> IsUseIDs = new SortedList<int, bool>();
-            foreach (var item in NPCMapObjects)
+            foreach (var item in EventObjects)
             {
                 IsUseIDs.Add(item.ID, false);
             }
@@ -652,7 +652,7 @@ namespace SatCore.MapEditor
             return result;
         }
 
-        void SelectNPC()
+        void SelectEventObject()
         {
             foreach (var item in CollisionBoxes)
             {
@@ -675,12 +675,12 @@ namespace SatCore.MapEditor
                 item.IsDrawn = false;
             }
 
-            foreach (var npc in NPCMapObjects)
+            foreach (var eventObject in EventObjects)
             {
-                if (npc.CollisionShape.GetIsCollidedWith(cursorShape) && Mouse.LeftButton == asd.ButtonState.Push)
+                if (eventObject.CollisionShape.GetIsCollidedWith(cursorShape) && Mouse.LeftButton == asd.ButtonState.Push)
                 {
-                    if (((MapEvent.MapEvent)SelectedObject).Actors.Any(obj => !obj.IsUseName && obj.ID == npc.ID)) return;
-                    ((MapEvent.MapEvent)SelectedObject).AddNPCActor(npc.MotionPath, npc.ID, npc.Position);
+                    if (((MapEvent.MapEvent)SelectedObject).Actors.Any(obj => !obj.IsUseName && obj.ID == eventObject.ID)) return;
+                    ((MapEvent.MapEvent)SelectedObject).AddEventObjectActor(eventObject.MotionPath, eventObject.ID, eventObject.Position);
 
                     CurrentToolType = ToolType.Select;
                 }
@@ -774,8 +774,8 @@ namespace SatCore.MapEditor
                     case SelectType.Object:
                         if (((MapObject)SelectedObject).CollisionShape.GetIsCollidedWith(cursorShape)) return;
                         break;
-                    case SelectType.NPC:
-                        if (((NPCMapObject)SelectedObject).CollisionShape.GetIsCollidedWith(cursorShape)) return;
+                    case SelectType.EventObject:
+                        if (((EventObject)SelectedObject).CollisionShape.GetIsCollidedWith(cursorShape)) return;
                         break;
                     case SelectType.Event:
                         if (((MapEvent.MapEvent)SelectedObject).Shape.GetIsCollidedWith(cursorShape)) return;
@@ -794,7 +794,7 @@ namespace SatCore.MapEditor
             }
             else return;
 
-            foreach (var item in NPCMapObjects)
+            foreach (var item in EventObjects)
             {
                 if (item.CollisionShape.GetIsCollidedWith(cursorShape)) SelectedObject = item;
             }
@@ -896,7 +896,7 @@ namespace SatCore.MapEditor
                     polygonObject.Color = new asd.Color(255, 0, 0, 50);
                     AddObject(polygonObject);
                     break;
-                case SelectType.NPC:
+                case SelectType.EventObject:
                     polygonObject = new asd.GeometryObject2D();
                     polygonObject.Shape = ((MapObject)SelectedObject).CollisionShape;
                     polygonObject.CameraGroup = 1;
@@ -970,7 +970,7 @@ namespace SatCore.MapEditor
                     return OperationSelectedDoor();
                 case SelectType.Object:
                     return OperationSelectedMapObject();
-                case SelectType.NPC:
+                case SelectType.EventObject:
                     return OperationSelectedMapObject();
                 case SelectType.Event:
                     if (!((MapEvent.MapEvent)SelectedObject).GetIsActive()) return OperationSelectedMapEvent();
@@ -1286,9 +1286,9 @@ namespace SatCore.MapEditor
         Triangle,
         Door,
         Object,
-        NPC,
+        EventObject,
         Event,
-        SelectNPC,
+        SelectEventObject,
         CameraRestriction,
         SavePoint,
     }
@@ -1300,7 +1300,7 @@ namespace SatCore.MapEditor
         Triangle,
         Door,
         Object,
-        NPC,
+        EventObject,
         Event,
         CameraRestriction,
         SavePoint,

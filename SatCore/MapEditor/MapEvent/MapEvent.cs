@@ -69,12 +69,12 @@ namespace SatCore.MapEditor.MapEvent
         public void AddActor()
         {
             if (((MainMapLayer2D)Layer).CurrentToolType != ToolType.Select ||
-                ((MainMapLayer2D)Layer).Objects.Count(obj => obj is NPCMapObject) <= Actors.Count(obj => !obj.IsUseName))
+                ((MainMapLayer2D)Layer).Objects.Count(obj => obj is EventObject) <= Actors.Count(obj => !obj.IsUseName))
                 return;
-            ((MainMapLayer2D)Layer).CurrentToolType = ToolType.SelectNPC;
+            ((MainMapLayer2D)Layer).CurrentToolType = ToolType.SelectEventObject;
         }
 
-        public void AddNPCActor(string characterDataPath, int id, asd.Vector2DF initPosition)
+        public void AddEventObjectActor(string characterDataPath, int id, asd.Vector2DF initPosition)
         {
             var actor = new Actor(characterDataPath, refWorld)
             {
