@@ -15,7 +15,6 @@ namespace SatPlayer
     {
         static ScriptOptions options = ScriptOptions.Default.WithImports("SatPlayer", "PhysicAltseed", "System")
                                                          .WithReferences(System.Reflection.Assembly.GetAssembly(typeof(MapObject))
-                                                                         , System.Reflection.Assembly.GetAssembly(typeof(MapObjectType))
                                                                          , System.Reflection.Assembly.GetAssembly(typeof(asd.Vector2DF)));
         /// <summary>
         /// IDを設定・取得

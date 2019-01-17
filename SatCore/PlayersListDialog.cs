@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using System.Text.RegularExpressions;
 
 namespace SatCore
 {
@@ -47,29 +48,30 @@ namespace SatCore
         /// <summary>
         /// プレイヤー情報を得る
         /// </summary>
-        /// <returns></returns>
-        public static Dictionary<string, SatIO.PlayerIO> GetPlayersData()
+        /// <returns>キーがプレイヤー名、バリューがパスの辞書</returns>
+        public static Dictionary<string, string> GetPlayersScriptPath()
         {
             try
             {
+                Dictionary<string, string> result = new Dictionary<string, string>();
+
                 using (var stream = IO.GetStream(ListSourceFile))
                 {
                     XmlSerializer serializser = new XmlSerializer(typeof(List<string>));
-                    var playerDataPaths = (List<string>)serializser.Deserialize(stream);
-                    Dictionary<string, SatIO.PlayerIO> playerDatas = new Dictionary<string, SatIO.PlayerIO>();
-                    foreach (var item in playerDataPaths)
+                    var paths = ((List<string>)serializser.Deserialize(stream));
+
+                    Regex regex = new Regex(@";[\s|\n]*Name[\s|\n]*=""(.*)"";");
+                    foreach (var item in paths)
                     {
-                        try
+                        using (var scriptStream = IO.GetStream(item))
                         {
-                            playerDatas.Add(item, SatIO.BaseIO.Load<SatIO.PlayerIO>(item));
-                        }
-                        catch (Exception e)
-                        {
-                            ErrorIO.AddError(e);
+                            var matches = regex.Matches(scriptStream.ToString());
+                            var name = matches.OfType<Match>().LastOrDefault()?.Groups[1].Value;
+                            result.Add(name ?? "", item);
                         }
                     }
-                    return playerDatas;
                 }
+                return result;
             }
             catch
             {
@@ -81,7 +83,7 @@ namespace SatCore
         public string FileName { get; set; }
 
         public List<string> PlayerNames { get; private set; }
-        public string PlayerName { private get; set; }
+        public string PlayerName { get; set; }
 
         public PlayersListDialog()
         {
@@ -96,13 +98,13 @@ namespace SatCore
         {
             try
             {
-                var playerDatas = GetPlayersData();
-                PlayerNames = playerDatas.Select(obj => obj.Value.Name).ToList();
+                var playerDatas = GetPlayersScriptPath();
+                PlayerNames = playerDatas.Select(obj => obj.Key).ToList();
 
                 var result = ShowDialogFunc(this);
                 if (result != PlayersListDialogResult.OK) return result;
 
-                FileName = playerDatas.First(obj => obj.Value.Name == PlayerName).Key;
+                FileName = playerDatas.First(obj => obj.Key == PlayerName).Value;
 
                 return result;
             }

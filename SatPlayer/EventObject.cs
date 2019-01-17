@@ -10,13 +10,14 @@ using SatPlayer.MapEvent;
 using PhysicAltseed;
 using SatScript.MapObject;
 using AlteseedScript.Common;
+using Microsoft.CodeAnalysis.Scripting;
 
 namespace SatPlayer
 {
     /// <summary>
     /// NPCオブジェクト
     /// </summary>
-    public class EventObject : MapObject, IEventObject
+    public class EventObject : MapObject, IEventObject, IActor
     {
         ///<summary>
         /// 座標
@@ -45,7 +46,7 @@ namespace SatPlayer
         /// <summary>
         /// ID
         /// </summary>
-        public int ID { get; private set; }
+        public int ID { get; protected set; }
 
         public string Name => "";
 
@@ -53,9 +54,60 @@ namespace SatPlayer
 
         Action<IEventObject> IEventObject.Update { get; set; } = obj => { };
 
-        public EventObject(BlockingCollection<Action> subThreadQueue, BlockingCollection<Action> mainThreadQueue, string scriptPath, PhysicalWorld world, string eventObjectPath)
-            : base(subThreadQueue, mainThreadQueue, scriptPath, world)
+        PhysicalShape IActor.CollisionShape => CollisionShape;
+
+        protected EventObject()
         {
+            MoveCommands = new Queue<Dictionary<BaseComponent.Inputs, bool>>();
+            inputState = new Dictionary<BaseComponent.Inputs, int>();
+            foreach (BaseComponent.Inputs item in Enum.GetValues(typeof(BaseComponent.Inputs)))
+            {
+                inputState[item] = 0;
+            }
+            GroundShape = new asd.RectangleShape();
+        }
+
+        public EventObject(BlockingCollection<Action> subThreadQueue, BlockingCollection<Action> mainThreadQueue, string scriptPath, PhysicalWorld world, string eventObjectPath)
+            : base()
+        {
+            refWorld = world;
+            subQueue = subThreadQueue;
+            mainQueue = mainThreadQueue;
+            Script<object> script;
+            subThreadQueue.TryAdd(() =>
+            {
+                if (scriptPath != "")
+                {
+                    try
+                    {
+                        using (var stream = IO.GetStream(scriptPath))
+                            script = ScriptOption.ScriptOptions["EventObject"]?.CreateScript<object>(stream.ToString());
+                        script.Compile();
+                    }
+                    catch (Exception e)
+                    {
+                        throw e;
+                    }
+                    mainThreadQueue.Add(() =>
+                    {
+                        var thread = script.RunAsync(this);
+                        thread.Wait();
+                    });
+                }
+                mainThreadQueue.TryAdd(() =>
+                {
+                    try
+                    {
+                        collisionShape.DrawingArea = new asd.RectF(new asd.Vector2DF(), AnimationPart.First().Value.Textures.First().Size.To2DF());
+                    }
+                    catch (Exception e)
+                    {
+                        ErrorIO.AddError(e);
+                    }
+                    CenterPosition = collisionShape.DrawingArea.Size / 2;
+                    Position = Position;
+                });
+            });
             MoveCommands = new Queue<Dictionary<BaseComponent.Inputs, bool>>();
             inputState = new Dictionary<BaseComponent.Inputs, int>();
             foreach (BaseComponent.Inputs item in Enum.GetValues(typeof(BaseComponent.Inputs)))
@@ -74,9 +126,9 @@ namespace SatPlayer
                 IsColligedWithGround = ((MainMapLayer2D)Layer).CollisionShapes.Any(obj => obj.GetIsCollidedWith(GroundShape));
             }
 
-            var currentCommand = MoveCommands.Dequeue();
             if (IsEvent)
             {
+                var currentCommand = MoveCommands.Dequeue();
                 foreach (BaseComponent.Inputs item in Enum.GetValues(typeof(BaseComponent.Inputs)))
                 {
                     if (currentCommand[item] && inputState[item] > -1) inputState[item]++;
@@ -91,5 +143,10 @@ namespace SatPlayer
 
         public int GetInputState(AlteseedScript.Common.Inputs inputs)
             => inputState[(BaseComponent.Inputs)inputs];
+
+        void IActor.OnUpdate()
+        {
+            OnUpdate();
+        }
     }
 }

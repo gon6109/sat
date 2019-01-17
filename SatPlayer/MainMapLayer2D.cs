@@ -151,7 +151,7 @@ namespace SatPlayer
                 LoadingElementCount++;
             }
 
-            List<IMotion> actors = new List<IMotion>(Game.Players);
+            List<IActor> actors = new List<IActor>(Game.Players);
             foreach (var item in mapIO.EventObjects)
             {
                 try

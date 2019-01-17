@@ -47,7 +47,7 @@ namespace SatPlayer.MapEvent
 
         IEnumerator enumerator;
 
-        public MapEvent(MapEventIO mapEventIO, List<IMotion> allActors, ScrollCamera camera)
+        public MapEvent(MapEventIO mapEventIO, List<IActor> allActors, ScrollCamera camera)
         {
             Shape = new asd.RectangleShape();
 
@@ -63,7 +63,7 @@ namespace SatPlayer.MapEvent
             LoadMapEventIO(mapEventIO, allActors);
         }
 
-        void LoadMapEventIO(MapEventIO mapEventIO, List<IMotion> allActors)
+        void LoadMapEventIO(MapEventIO mapEventIO, List<IActor> allActors)
         {
             ID = mapEventIO.ID;
             Shape.DrawingArea = new asd.RectF(mapEventIO.Position, mapEventIO.Size);
@@ -84,7 +84,7 @@ namespace SatPlayer.MapEvent
                 try
                 {
                     var actor = new Actor();
-                    actor.Motion = allActors.First(obj => obj.IsUseName ? obj.Name == item.Name : obj.ID == item.ID);
+                    actor.ActorObject = allActors.First(obj => obj.IsUseName ? obj.Name == item.Name : obj.ID == item.ID);
                     actor.InitPosition = item.InitPosition;
                     Actors.Add(actor);
                 }
@@ -154,7 +154,7 @@ namespace SatPlayer.MapEvent
                 }
                 foreach (var item in Actors)
                 {
-                    if (item.Motion is EventObject) ((EventObject)item.Motion).Color = new asd.Color(255, 255, 255, 255);
+                    if (item.ActorObject is EventObject) ((EventObject)item.ActorObject).Color = new asd.Color(255, 255, 255, 255);
                 }
                 count++;
                 yield return 0;
@@ -168,16 +168,16 @@ namespace SatPlayer.MapEvent
             }
             foreach (var item in Actors)
             {
-                if (item.Motion is EventObject)
+                if (item.ActorObject is EventObject)
                 {
-                    ((EventObject)item.Motion).CollisionShape.GroupIndex = 0;
+                    ((EventObject)item.ActorObject).CollisionShape.GroupIndex = 0;
                 }
-                if (item.Motion is Player)
+                if (item.ActorObject is Player)
                 {
-                    List<IMotion> actors = new List<IMotion>();
-                    ((Player)item.Motion).CollisionShape.GroupIndex = -1;
+                    List<IActor> actors = new List<IActor>();
+                    ((Player)item.ActorObject).CollisionShape.GroupIndex = -1;
                 }
-                item.Motion.IsEvent = false;
+                item.ActorObject.IsEvent = false;
             }
             var path = (Layer.Scene as Game)?.MapPath;
             Game.EndEvents.Add(new KeyValuePair<string, int>(path, ID));
@@ -194,20 +194,20 @@ namespace SatPlayer.MapEvent
             }
             foreach (var item in Actors)
             {
-                if (item.Motion is EventObject)
+                if (item.ActorObject is EventObject eventObject)
                 {
-                    ((EventObject)item.Motion).IsUpdated = true;
-                    ((EventObject)item.Motion).CollisionShape.IsActive = true;
-                    ((EventObject)item.Motion).CollisionShape.GroupIndex = -1;
-                    item.Motion.Position = item.InitPosition;
+                    eventObject.IsUpdated = true;
+                    eventObject.CollisionShape.IsActive = true;
+                    eventObject.CollisionShape.GroupIndex = -1;
+                    eventObject.Position = item.InitPosition;
                 }
-                item.Motion.IsEvent = true;
+                item.ActorObject.IsEvent = true;
             }
             MainCamera.IsEvent = true;
             MainCamera.WaitStatePoints.Enqueue(InitCameraPosition);
 
             int count = 0;
-            while (Actors.Any(obj => (obj.InitPosition - obj.Motion.Position).Length > 5) || count < 256)
+            while (Actors.Any(obj => (obj.InitPosition - obj.ActorObject.Position).Length > 5) || count < 256)
             {
                 foreach (MapObject item in Layer.Objects.Where(obj => obj is MapObject))
                 {
@@ -216,14 +216,14 @@ namespace SatPlayer.MapEvent
                 }
                 foreach (var item in Actors)
                 {
-                    if (item.Motion is EventObject) ((EventObject)item.Motion).Color = new asd.Color(255, 255, 255, 255);
-                    if (item.Motion is Player)
+                    if (item.ActorObject is EventObject) ((EventObject)item.ActorObject).Color = new asd.Color(255, 255, 255, 255);
+                    if (item.ActorObject is Player)
                     {
                         var command = new Dictionary<Inputs, bool>();
-                        if ((item.Motion.Position - item.InitPosition).Length < 5) continue;
-                        else if (item.Motion.Position.X > item.InitPosition.X) command.Add(Inputs.Left, true);
-                        else if (item.Motion.Position.X < item.InitPosition.X) command.Add(Inputs.Right, true);
-                        item.Motion.MoveCommands.Enqueue(command);
+                        if ((item.ActorObject.Position - item.InitPosition).Length < 5) continue;
+                        else if (item.ActorObject.Position.X > item.InitPosition.X) command.Add(Inputs.Left, true);
+                        else if (item.ActorObject.Position.X < item.InitPosition.X) command.Add(Inputs.Right, true);
+                        item.ActorObject.MoveCommands.Enqueue(command);
                     }
                 }
                 count++;
@@ -234,7 +234,7 @@ namespace SatPlayer.MapEvent
 
         public class Actor
         {
-            public IMotion Motion { get; set; }
+            public IActor ActorObject { get; set; }
 
             public asd.Vector2DF InitPosition { get; set; }
         }

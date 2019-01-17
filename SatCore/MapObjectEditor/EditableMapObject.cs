@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using PhysicAltseed;
+using SatPlayer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,11 +18,6 @@ namespace SatCore.MapObjectEditor
     /// </summary>
     public class EditableMapObject : SatPlayer.MapObject, INotifyPropertyChanged
     {
-        static ScriptOptions options = ScriptOptions.Default.WithImports("SatPlayer", "PhysicAltseed", "System", "System.Collections.Generic")
-                                                         .WithReferences(System.Reflection.Assembly.GetAssembly(typeof(IEnumerator<>))
-                                                                         , System.Reflection.Assembly.GetAssembly(typeof(SatPlayer.MapObject))
-                                                                         , System.Reflection.Assembly.GetAssembly(typeof(asd.Vector2DF))
-                                                                         , System.Reflection.Assembly.GetAssembly(typeof(PhysicalRectangleShape)));
         private string _code;
         private bool isEdited;
 
@@ -37,6 +33,7 @@ namespace SatCore.MapObjectEditor
             refWorld = world;
         }
 
+        [Script("スクリプト", "MapObject")]
         public string Code
         {
             get => _code;
@@ -57,7 +54,7 @@ namespace SatCore.MapObjectEditor
                 try
                 {
                     Reset();
-                    Script<object> script = CSharpScript.Create(Code, options: options, globalsType: typeof(SatPlayer.MapObject));
+                    Script<object> script = ScriptOption.ScriptOptions["MapObject"]?.CreateScript<object>(Code);
                     var thread = script.RunAsync(this);
                     thread.Wait();
                 }
@@ -77,7 +74,6 @@ namespace SatCore.MapObjectEditor
             sensors = new Dictionary<string, Sensor>();
             Effects = new Dictionary<string, SatPlayer.Effect>();
             childMapObjectData = new Dictionary<string, SatPlayer.MapObject>();
-            sounds = new Dictionary<string, BaseComponent.Sound>();
             Update = (obj) => { };
         }
     }

@@ -49,7 +49,7 @@ namespace SatCore.MapEditor
         /// <summary>
         /// スクリプトへのパス
         /// </summary>
-        [FileInput("スクリプト", "Script File|*.csx|All File|*.*")]
+        [FileInput("スクリプト", "MapObject File|*.obj|All File|*.*")]
         public string ScriptPath
         {
             get => _scriptPath;

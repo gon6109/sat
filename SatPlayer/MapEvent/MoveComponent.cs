@@ -38,7 +38,7 @@ namespace SatPlayer.MapEvent
             component.Frame = moveComponentIO.Frame;
             foreach (var item in moveComponentIO.Commands)
             {
-                component.Commands[actors.Where(obj => obj.Motion.IsUseName ? obj.Motion.Name == item.Key.Name : obj.Motion.ID == item.Key.ID).First()]
+                component.Commands[actors.Where(obj => obj.ActorObject.IsUseName ? obj.ActorObject.Name == item.Key.Name : obj.ActorObject.ID == item.Key.ID).First()]
                     = new CharacterMoveCommand() { MoveCommandElements = item.Value.MoveCommandElements };
             }
             if (moveComponentIO.CameraCommand != null)
@@ -55,7 +55,7 @@ namespace SatPlayer.MapEvent
                 {
                     if (!Commands.ContainsKey(item) ||
                                 Commands[item].MoveCommandElements.Count <= i) continue;
-                    item.Motion.MoveCommands.Enqueue(Commands[item].MoveCommandElements[i]);
+                    item.ActorObject.MoveCommands.Enqueue(Commands[item].MoveCommandElements[i]);
                 }
                 if (CameraCommand.MoveCommandElements.Count > i)
                     MainCamera.MoveCommands.Enqueue(CameraCommand.MoveCommandElements[i]);
@@ -65,7 +65,7 @@ namespace SatPlayer.MapEvent
             {
                 foreach (var item in Actors)
                 {
-                    item.Motion.MoveCommands.Enqueue(new Dictionary<Inputs, bool>());
+                    item.ActorObject.MoveCommands.Enqueue(new Dictionary<Inputs, bool>());
                 }
 
                 yield return 0;

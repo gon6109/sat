@@ -9,6 +9,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using SatPlayer;
+using asd;
 
 namespace SatCore.MapEditor.MapEvent
 {
@@ -74,51 +76,43 @@ namespace SatCore.MapEditor.MapEvent
             ((MainMapLayer2D)Layer).CurrentToolType = ToolType.SelectEventObject;
         }
 
-        public void AddEventObjectActor(string characterDataPath, int id, asd.Vector2DF initPosition)
+        public void AddEventObjectActor(IActor actorObject, int id, asd.Vector2DF initPosition)
         {
-            var actor = new Actor(characterDataPath, refWorld)
-            {
-                ID = id,
-                InitPosition = initPosition,
-                Position = initPosition,
-                IsUseName = false,
-            };
+            var actor = new Actor(actorObject, refWorld);
             Actors.Add(actor);
-            Layer.AddObject(actor);
             actor.SetTexture(Layer, actor.InitPosition, new asd.Color(255, 255, 255));
         }
 
         [Button("プレイヤーを登録")]
         public void AddPlayerActor()
         {
-            if (PlayersListDialog.GetPlayersData().Count <= Actors.Count(obj => obj.IsUseName)) return;
+            if (PlayersListDialog.GetPlayersScriptPath().Count <= Actors.Count(obj => obj.IsUseName)) return;
 
             PlayersListDialog playersListDialog = new PlayersListDialog();
             if (playersListDialog.Show() != PlayersListDialogResult.OK) return;
 
-            var playerData = SatIO.PlayerIO.Load<SatIO.PlayerIO>(playersListDialog.FileName);
-            if (Actors.Any(obj => obj.Name == playerData.Name)) return;
-            var actor = new Actor(playersListDialog.FileName, refWorld)
+            try
             {
-                Name = playerData.Name,
-                IsUseName = true,
-            };
-            actor.InitPosition = Position + new asd.Vector2DF(Size.X, 0) - actor.Texture.Size.To2DF();
-            actor.Position = actor.InitPosition;
-            for (int i = 0; i < 60; i++)
-            {
-                refWorld.Update();
+                var actor = new Actor(new Player(playersListDialog.FileName), refWorld);
+                actor.InitPosition = Position + new asd.Vector2DF(Size.X, 0) - actor.Texture.Size.To2DF();
+                actor.Position = actor.InitPosition;
+                for (int i = 0; i < 60; i++)
+                {
+                    refWorld.Update();
+                }
+                actor.InitPosition = actor.Position;
+                Actors.Add(actor);
+                actor.SetTexture(Layer, actor.InitPosition, new asd.Color(255, 255, 255));
+                var playerName = new PlayerName()
+                {
+                    Name = playersListDialog.PlayerName,
+                };
+                PlayerNames.Add(playerName);
             }
-            actor.InitPosition = actor.CollisionShape.DrawingArea.Position + actor.CollisionShape.CenterPosition;
-            Actors.Add(actor);
-            Layer.AddObject(actor);
-            actor.SetTexture(Layer, actor.InitPosition, new asd.Color(255, 255, 255));
-
-            var playerName = new PlayerName()
+            catch (Exception e)
             {
-                Name = playerData.Name,
-            };
-            PlayerNames.Add(playerName);
+                ErrorIO.AddError(e);
+            }
         }
 
         [ListInput("キャラグラフィックデータ", additionButtonEventMethodName: "AddCharacterImage")]
@@ -133,7 +127,7 @@ namespace SatCore.MapEditor.MapEvent
 
         public Func<string> RequireOpenFileDialog { get; set; }
 
-        public Func<MapEventIO.ActorIO, string> SearchCharacterDataPath { get; set; }
+        public Func<MapEventIO.ActorIO, IActor> SearchActor { get; set; }
 
         [ListInput("シナリオ", "SelectedComponent")]
         public UndoRedoCollection<MapEventComponent> EventComponents { get; set; }
@@ -284,12 +278,10 @@ namespace SatCore.MapEditor.MapEvent
         {
             PlayersListDialog playersListDialog = new PlayersListDialog();
             if (playersListDialog.Show() != PlayersListDialogResult.OK) return;
-
-            var playerData = SatIO.PlayerIO.Load<SatIO.PlayerIO>(playersListDialog.FileName);
-            if (PlayerNames.Any(obj => obj.Name == playerData.Name)) return;
+            
             var playerName = new PlayerName()
             {
-                Name = playerData.Name,
+                Name = playersListDialog.PlayerName,
             };
             PlayerNames.Add(playerName);
         }
@@ -321,7 +313,7 @@ namespace SatCore.MapEditor.MapEvent
         }
 
         public MapEvent(Func<string> requireOpenFileDialogFunc,
-            Func<MapEventIO.ActorIO, string> searchCharacterDataPathFunc, PhysicalWorld world)
+            Func<MapEventIO.ActorIO, IActor> searchActor, PhysicalWorld world)
         {
             CameraGroup = 1;
             Shape = new asd.RectangleShape();
@@ -330,7 +322,7 @@ namespace SatCore.MapEditor.MapEvent
 
             EventComponents = new UndoRedoCollection<MapEventComponent>();
             RequireOpenFileDialog = requireOpenFileDialogFunc;
-            SearchCharacterDataPath = searchCharacterDataPathFunc;
+            SearchActor = searchActor;
             Actors = new UndoRedoCollection<Actor>();
             Actors.CollectionChanged += Actors_CollectionChanged;
             CharacterImages = new UndoRedoCollection<CharacterImage>();
@@ -349,11 +341,11 @@ namespace SatCore.MapEditor.MapEvent
             if (e.Action != System.Collections.Specialized.NotifyCollectionChangedAction.Remove || e.OldItems[0] as Actor == null) return;
             var actor = e.OldItems[0] as Actor;
             actor.ClearTexture();
-            actor.Dispose();
+            if (actor.ToObject2D() is Player player) player.Dispose();
         }
 
         public MapEvent(MapEventIO mapEventIO, Func<string> requireOpenFileDialogFunc,
-            Func<MapEventIO.ActorIO, string> searchCharacterDataPathFunc, PhysicalWorld world)
+            Func<MapEventIO.ActorIO, IActor> searchActor, PhysicalWorld world)
         {
             Shape = new asd.RectangleShape();
             Color = new asd.Color(0, 255, 0, 100);
@@ -362,7 +354,7 @@ namespace SatCore.MapEditor.MapEvent
 
             EventComponents = new UndoRedoCollection<MapEventComponent>();
             RequireOpenFileDialog = requireOpenFileDialogFunc;
-            SearchCharacterDataPath = searchCharacterDataPathFunc;
+            SearchActor = searchActor;
             Actors = new UndoRedoCollection<Actor>();
             Actors.CollectionChanged += Actors_CollectionChanged;
             CharacterImages = new UndoRedoCollection<CharacterImage>();
@@ -396,10 +388,7 @@ namespace SatCore.MapEditor.MapEvent
             {
                 try
                 {
-                    var actor = new Actor(SearchCharacterDataPath(item), world);
-                    actor.Name = item.Name;
-                    actor.ID = item.ID;
-                    actor.IsUseName = item.IsUseName;
+                    var actor = new Actor(SearchActor(item), world);
                     actor.InitPosition = item.InitPosition;
                     Actors.Add(actor);
                 }
@@ -437,7 +426,7 @@ namespace SatCore.MapEditor.MapEvent
         {
             foreach (var item in Actors)
             {
-                Layer.AddObject(item);
+                Layer.AddObject(item.ToObject2D());
                 item.CollisionShape.IsActive = true;
                 item.SetTexture(Layer, item.InitPosition, new asd.Color(255, 255, 255));
             }
@@ -451,7 +440,7 @@ namespace SatCore.MapEditor.MapEvent
             {
                 item.ClearTexture();
                 item.CollisionShape.IsActive = false;
-                item.Layer.RemoveObject(item);
+                item.Layer.RemoveObject(item.ToObject2D());
             }
             MainCamera.ClearGeometry();
             MainCamera.Layer.RemoveObject(MainCamera);
@@ -498,23 +487,30 @@ namespace SatCore.MapEditor.MapEvent
             return mapEventIO;
         }
 
-        public class Actor : MotionEditor.Character, IListInput
+        public class Actor : IListInput
         {
-            private string _name;
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
             private bool _active;
             private asd.Vector2DF _initPosition;
+            private IActor _actorImp;
 
-            public int ID { get; set; }
+            public Object2D ToObject2D()
+                => _actorImp as Object2D;
+
+            public int ID => _actorImp.ID;
             public string Name
             {
                 get
                 {
-                    if (IsUseName) return _name;
+                    if (IsUseName) return _actorImp.Name;
                     else return ID.ToString();
                 }
-                set => _name = value;
             }
-            public bool IsUseName { get; set; }
+            public bool IsUseName => _actorImp.IsUseName;
 
             [VectorInput("初期座標")]
             public asd.Vector2DF InitPosition
@@ -528,17 +524,16 @@ namespace SatCore.MapEditor.MapEvent
                 }
             }
 
+            public PhysicalShape CollisionShape => _actorImp.CollisionShape;
+
             List<asd.TextureObject2D> TextureObjects { get; set; }
 
-            public Actor(string characterDataPath, PhysicalWorld world) : base(characterDataPath, world)
+            public Actor(IActor originActor, PhysicalWorld world)
             {
-                CameraGroup = 1;
+                _actorImp = originActor;
                 TextureObjects = new List<asd.TextureObject2D>();
-                State = UprightLeftState;
-                CollisionShape.DrawingArea = new asd.RectF(new asd.Vector2DF(), Texture.Size.To2DF());
                 CollisionShape.GroupIndex = -1;
-                IsDrawn = false;
-                IsUpdated = false;
+                GroundShape = new asd.RectangleShape();
             }
 
             public void SetTexture(asd.Layer2D layer, asd.Vector2DF position, asd.Color color)
@@ -575,8 +570,6 @@ namespace SatCore.MapEditor.MapEvent
                         {
                             item.IsDrawn = false;
                         }
-                        IsDrawn = true;
-                        IsUpdated = true;
                     }
                     else
                     {
@@ -584,21 +577,20 @@ namespace SatCore.MapEditor.MapEvent
                         {
                             item.IsDrawn = true;
                         }
-                        IsDrawn = false;
-                        IsUpdated = false;
+                        Position = InitPosition;
                     }
                 }
             }
 
-            public override bool IsColligedWithGround
+            public bool IsColligedWithGround
             {
                 get
                 {
                     if (Layer == null) return false;
                     return Layer.Objects.Any(obj =>
                     {
-                        if (obj is CollisionBox) return ((CollisionBox)obj).Shape.GetIsCollidedWith(GroundShape);
-                        else if (obj is CollisionTriangle) return ((CollisionTriangle)obj).Shape.GetIsCollidedWith(GroundShape);
+                        if (obj is CollisionBox collisionBox) return collisionBox.Shape.GetIsCollidedWith(GroundShape);
+                        else if (obj is CollisionTriangle collisionTriangle) return collisionTriangle.Shape.GetIsCollidedWith(GroundShape);
                         return false;
                     });
                 }
@@ -609,59 +601,20 @@ namespace SatCore.MapEditor.MapEvent
                 OnUpdate();
             }
 
-            protected override void InputPlayer()
+            public void OnUpdate()
             {
-                if (InputRequest == null)
-                {
-                    base.InputPlayer();
-                    return;
-                }
-
-                if (!State.Contains("jump") && IsColligedWithGround)
-                {
-                    if (GetInputRequestState(Inputs.Up))
-                    {
-                        State = State.Contains("_l") ? JumpLeftState : JumpRightState;
-                        InputRequest.Clear();
-                        return;
-                    }
-                    if (GetInputRequestState(Inputs.Left) && !GetInputRequestState(Inputs.B)) State = WalkLeftState;
-                    if (GetInputRequestState(Inputs.Right) && !GetInputRequestState(Inputs.B)) State = WalkRightState;
-                    if (GetInputRequestState(Inputs.Left) && GetInputRequestState(Inputs.B)) State = DashLeftState;
-                    if (GetInputRequestState(Inputs.Right) && GetInputRequestState(Inputs.B)) State = DashRightState;
-                    if ((GetInputRequestState(Inputs.Right) && GetInputRequestState(Inputs.Left))
-                        || (!GetInputRequestState(Inputs.Right) && !GetInputRequestState(Inputs.Left)))
-                    {
-                        State = State.Contains("_l") ? UprightLeftState : UprightRightState;
-                    }
-                }
-                else
-                {
-                    if (GetInputRequestState(Inputs.Left) && !GetInputRequestState(Inputs.B)) State = CollisionShape.Velocity.Y < 0 ? UpperLeftState : LowerLeftState;
-                    if (GetInputRequestState(Inputs.Right) && !GetInputRequestState(Inputs.B)) State = CollisionShape.Velocity.Y < 0 ? UpperRightState : LowerRightState;
-                    if (GetInputRequestState(Inputs.Left) && GetInputRequestState(Inputs.B)) State = CollisionShape.Velocity.Y < 0 ? DashUpperLeftState : DashLowerLeftState;
-                    if (GetInputRequestState(Inputs.Right) && GetInputRequestState(Inputs.B)) State = CollisionShape.Velocity.Y < 0 ? DashUpperRightState : DashLowerRightState;
-                    if ((GetInputRequestState(Inputs.Right) && GetInputRequestState(Inputs.Left))
-                        || (!GetInputRequestState(Inputs.Right) && !GetInputRequestState(Inputs.Left)))
-                    {
-                        if (CollisionShape.Velocity.Y < 0) State = State.Contains("_l") ? UpLeftState : UpRightState;
-                        else State = State.Contains("_l") ? DownLeftState : DownRightState;
-                    }
-                }
-                InputRequest = null;
+                _actorImp.OnUpdate();
             }
 
-            public Dictionary<Inputs, bool> InputRequest { get; private set; }
+            public RectangleShape GroundShape { get; private set; }
+            public Texture2D Texture => _actorImp.Texture;
+
+            public Vector2DF Position { get => _actorImp.Position; set => _actorImp.Position = value; }
+            public Layer2D Layer => _actorImp.Layer;
 
             public void AddRequest(Dictionary<Inputs, bool> input)
             {
-                InputRequest = new Dictionary<Inputs, bool>(input);
-            }
-
-            public bool GetInputRequestState(Inputs inputs)
-            {
-                if (InputRequest == null || !InputRequest.ContainsKey(inputs)) return false;
-                return InputRequest[inputs];
+                _actorImp.MoveCommands.Enqueue(input);
             }
 
             public static explicit operator MapEventIO.ActorIO(Actor actor)

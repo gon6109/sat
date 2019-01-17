@@ -96,26 +96,6 @@ namespace SatUI
             propertyPanel.AddProperty(mapProperty);
         }
 
-        private void motion_Click(object sender, RoutedEventArgs e)
-        {
-            Reset(PropertyPanel.ResetMode.General);
-
-            var loadFile = new SatCore.MotionEditor.MotionEditor();
-            asd.Engine.ChangeScene(loadFile);
-            Property mapProperty = new Property("Motion", loadFile.Character);
-            propertyPanel.AddProperty(mapProperty);
-        }
-
-        private void character_Click(object sender, RoutedEventArgs e)
-        {
-            Reset(PropertyPanel.ResetMode.General);
-
-            var loadFile = new SatCore.MotionEditor.MotionEditor(isEditPlayer: true);
-            asd.Engine.ChangeScene(loadFile);
-            Property mapProperty = new Property("Character", loadFile.Character);
-            propertyPanel.AddProperty(mapProperty);
-        }
-
         private void characterImage_Click(object sender, RoutedEventArgs e)
         {
             Reset(PropertyPanel.ResetMode.General);
@@ -154,8 +134,8 @@ namespace SatUI
             Reset(PropertyPanel.ResetMode.General);
 
             if (openFileDialog.FileName.Contains(".bmap")) OpenMapFile(openFileDialog.FileName);
-            else if (openFileDialog.FileName.Contains(".mo")) OpenMotionFile(openFileDialog.FileName);
-            else if (openFileDialog.FileName.Contains(".pd")) OpenPlayerFile(openFileDialog.FileName);
+            //else if (openFileDialog.FileName.Contains(".mo")) OpenMotionFile(openFileDialog.FileName);
+            //else if (openFileDialog.FileName.Contains(".pd")) OpenPlayerFile(openFileDialog.FileName);
             else if (openFileDialog.FileName.Contains(".ci")) OpenCharacterImageFile(openFileDialog.FileName);
             else if (openFileDialog.FileName.Contains(".csx")) OpenMapObjectFile(openFileDialog.FileName);
         }
@@ -181,22 +161,6 @@ namespace SatUI
                 ErrorIO.Scene = asd.Engine.CurrentScene;
                 ErrorIO.AddError(new Exception(fileName + "の読み込みに失敗しました(" + e.GetType().ToString() + ")"));
             }
-        }
-
-        void OpenMotionFile(string fileName)
-        {
-            var loadFile = new SatCore.MotionEditor.MotionEditor(fileName);
-            asd.Engine.ChangeScene(loadFile);
-            Property mapProperty = new Property("Motion", loadFile.Character);
-            propertyPanel.AddProperty(mapProperty);
-        }
-
-        void OpenPlayerFile(string fileName)
-        {
-            var loadFile = new SatCore.MotionEditor.MotionEditor(fileName, true);
-            asd.Engine.ChangeScene(loadFile);
-            Property mapProperty = new Property("Character", loadFile.Character);
-            propertyPanel.AddProperty(mapProperty);
         }
 
         void OpenCharacterImageFile(string fileName)
@@ -362,7 +326,6 @@ namespace SatUI
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor != null) SaveMap();
-            if (asd.Engine.CurrentScene as SatCore.MotionEditor.MotionEditor != null) SaveMotion();
             if (asd.Engine.CurrentScene as SatCore.CharacterImageEditor.CharacterImageEditor != null) SaveCharacterImage();
             if (asd.Engine.CurrentScene as SatCore.MapObjectEditor.MapObjectEditor != null) SaveMapObject();
         }
@@ -381,33 +344,6 @@ namespace SatUI
                 ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Path = saveFileDialog.FileName;
             }
             ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).SaveMapData(((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Path);
-        }
-
-        void SaveMotion()
-        {
-            if (((SatCore.MotionEditor.MotionEditor)asd.Engine.CurrentScene).Path == "")
-            {
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                if (((SatCore.MotionEditor.MotionEditor)asd.Engine.CurrentScene).Character is SatCore.MotionEditor.Player)
-                {
-                    saveFileDialog.FileName = "new.pd";
-                    saveFileDialog.InitialDirectory = "";
-                    saveFileDialog.Filter = "Player Data File|*.pd";
-                    saveFileDialog.Title = "別名で保存";
-                    saveFileDialog.RestoreDirectory = true;
-                }
-                else
-                {
-                    saveFileDialog.FileName = "new.mo";
-                    saveFileDialog.InitialDirectory = "";
-                    saveFileDialog.Filter = "Motion File|*.mo";
-                    saveFileDialog.Title = "別名で保存";
-                    saveFileDialog.RestoreDirectory = true;
-                }
-                if (saveFileDialog.ShowDialog() != true) return;
-                ((SatCore.MotionEditor.MotionEditor)asd.Engine.CurrentScene).Path = saveFileDialog.FileName;
-            }
-            ((SatCore.MotionEditor.MotionEditor)asd.Engine.CurrentScene).SaveMotion(((SatCore.MotionEditor.MotionEditor)asd.Engine.CurrentScene).Path);
         }
 
         void SaveCharacterImage()
@@ -445,7 +381,6 @@ namespace SatUI
         private void SaveAs_Click(object sender, RoutedEventArgs e)
         {
             if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor != null) SaveAsMap();
-            if (asd.Engine.CurrentScene as SatCore.MotionEditor.MotionEditor != null) SaveAsMotion();
             if (asd.Engine.CurrentScene as SatCore.CharacterImageEditor.CharacterImageEditor != null) SaveAsCharacterImage();
             if (asd.Engine.CurrentScene as SatCore.MapObjectEditor.MapObjectEditor != null) SaveAsMapObject();
         }
@@ -462,31 +397,6 @@ namespace SatUI
             ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Path = saveFileDialog.FileName;
 
             ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).SaveMapData(((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Path);
-        }
-
-        void SaveAsMotion()
-        {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            if (((SatCore.MotionEditor.MotionEditor)asd.Engine.CurrentScene).Character is SatCore.MotionEditor.Player)
-            {
-                saveFileDialog.FileName = "new.pd";
-                saveFileDialog.InitialDirectory = "";
-                saveFileDialog.Filter = "Player Data File|*.pd";
-                saveFileDialog.Title = "別名で保存";
-                saveFileDialog.RestoreDirectory = true;
-            }
-            else
-            {
-                saveFileDialog.FileName = "new.mo";
-                saveFileDialog.InitialDirectory = "";
-                saveFileDialog.Filter = "Motion File|*.mo";
-                saveFileDialog.Title = "別名で保存";
-                saveFileDialog.RestoreDirectory = true;
-            }
-            if (saveFileDialog.ShowDialog() != true) return;
-            ((SatCore.MotionEditor.MotionEditor)asd.Engine.CurrentScene).Path = saveFileDialog.FileName;
-
-            ((SatCore.MotionEditor.MotionEditor)asd.Engine.CurrentScene).SaveMotion(((SatCore.MotionEditor.MotionEditor)asd.Engine.CurrentScene).Path);
         }
 
         void SaveAsCharacterImage()
@@ -519,28 +429,6 @@ namespace SatUI
         private void EditorPanel_Click(object sender, EventArgs e)
         {
             EditorPanel.Focus();
-        }
-
-        private void importToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (asd.Engine.CurrentScene as SatCore.MotionEditor.MotionEditor == null) return;
-
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.FileName = "";
-            openFileDialog.InitialDirectory = "";
-            openFileDialog.Filter = "Motion File|*.mo|All File|*.*";
-            openFileDialog.FilterIndex = 1;
-            openFileDialog.RestoreDirectory = true;
-
-            if (openFileDialog.ShowDialog() != true) return;
-
-            ((SatCore.MotionEditor.MotionEditor)asd.Engine.CurrentScene).ImportMotionFile(openFileDialog.FileName);
-        }
-
-        private void FileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (asd.Engine.CurrentScene as SatCore.MotionEditor.MotionEditor == null) importToolStripMenuItem.IsEnabled = false;
-            else importToolStripMenuItem.IsEnabled = true;
         }
 
         private void EditorPanel_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -620,7 +508,6 @@ namespace SatUI
         private void Save(object sender, ExecutedRoutedEventArgs e)
         {
             if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor != null) SaveMap();
-            if (asd.Engine.CurrentScene as SatCore.MotionEditor.MotionEditor != null) SaveMotion();
             if (asd.Engine.CurrentScene as SatCore.CharacterImageEditor.CharacterImageEditor != null) SaveCharacterImage();
             if (asd.Engine.CurrentScene as SatCore.MapObjectEditor.MapObjectEditor != null) SaveMapObject();
         }

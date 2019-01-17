@@ -15,7 +15,7 @@ namespace SatPlayer
     /// <summary>
     /// ÉvÉåÉCÉÑÅ[
     /// </summary>
-    public class Player : MultiAnimationObject2D, IEffectManeger, IPlayer, IDamageControler
+    public class Player : MultiAnimationObject2D, IEffectManeger, IPlayer, IDamageControler, IActor
     {
         public static int MaxHP = 100;
 
@@ -130,7 +130,10 @@ namespace SatPlayer
 
         public Action<IPlayer> Update { get; set; } = obj => { };
 
-        asd.RectangleShape groundShape;
+        PhysicalShape IActor.CollisionShape => CollisionShape;
+
+        public asd.RectangleShape GroundShape { get; }
+
         private int hP;
 
         public Player(string playerDataPath, int playerGroup = 0)
@@ -138,7 +141,7 @@ namespace SatPlayer
             CameraGroup = 1;
             base.Position = new asd.Vector2DF();
             Effects = new Dictionary<string, Effect>();
-            groundShape = new asd.RectangleShape();
+            GroundShape = new asd.RectangleShape();
             IsColligedWithGround = false;
             DamageRequests = new Queue<DamageRect>();
             DirectDamageRequests = new Queue<DirectDamage>();
@@ -149,6 +152,19 @@ namespace SatPlayer
                 inputState[item] = 0;
             }
             PlayerGroup = playerGroup;
+            try
+            {
+                using (var stream = IO.GetStream(playerDataPath))
+                {
+                    var script = SatPlayer.ScriptOption.ScriptOptions["Player"].CreateScript<object>(stream.ToString());
+                    var task = script.RunAsync(playerDataPath);
+                    task.Wait();
+                }
+            }
+            catch 
+            {
+                throw;
+            }
         }
 
         protected override void OnAdded()
@@ -162,7 +178,7 @@ namespace SatPlayer
             CollisionShape.GroupIndex = -1;
             DrawingPriority = 2;
 
-            groundShape.DrawingArea = new asd.RectF(CollisionShape.DrawingArea.X + 3, CollisionShape.DrawingArea.Vertexes[2].Y, CollisionShape.DrawingArea.Width - 3, 5);
+            GroundShape.DrawingArea = new asd.RectF(CollisionShape.DrawingArea.X + 3, CollisionShape.DrawingArea.Vertexes[2].Y, CollisionShape.DrawingArea.Width - 3, 5);
             base.OnAdded();
         }
 
@@ -170,16 +186,16 @@ namespace SatPlayer
         {
             base.Position = CollisionShape.CenterPosition + CollisionShape.DrawingArea.Position;
             if (Math.Abs(CollisionShape.Angle) > 1.0f) CollisionShape.AngularVelocity = -CollisionShape.Angle * 30.0f;
-            groundShape.DrawingArea = new asd.RectF(CollisionShape.DrawingArea.X + 3, CollisionShape.DrawingArea.Vertexes[2].Y, CollisionShape.DrawingArea.Width - 3, 5);
+            GroundShape.DrawingArea = new asd.RectF(CollisionShape.DrawingArea.X + 3, CollisionShape.DrawingArea.Vertexes[2].Y, CollisionShape.DrawingArea.Width - 3, 5);
 
             if (Layer is MainMapLayer2D)
             {
-                IsColligedWithGround = ((MainMapLayer2D)Layer).CollisionShapes.Any(obj => obj.GetIsCollidedWith(groundShape));
+                IsColligedWithGround = ((MainMapLayer2D)Layer).CollisionShapes.Any(obj => obj.GetIsCollidedWith(GroundShape));
             }
 
-            var currentCommand = MoveCommands.Dequeue();
             if (IsEvent)
             {
+                var currentCommand = MoveCommands.Dequeue();
                 foreach (BaseComponent.Inputs item in Enum.GetValues(typeof(BaseComponent.Inputs)))
                 {
                     if (currentCommand[item] && inputState[item] > -1) inputState[item]++;
@@ -238,6 +254,11 @@ namespace SatPlayer
         {
             if (IsEvent) return inputState[(BaseComponent.Inputs)inputs];
             else return AlteseedScript.Common.Input.GetInputState(inputs);
+        }
+
+        void IActor.OnUpdate()
+        {
+            OnUpdate();
         }
     }
 }

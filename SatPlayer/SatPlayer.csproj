@@ -139,10 +139,10 @@
     <Compile Include="Door.cs" />
     <Compile Include="Effect.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="IActor.cs" />
     <Compile Include="IDamageControler.cs" />
     <Compile Include="IDamageManeger.cs" />
     <Compile Include="IEffectManeger.cs" />
-    <Compile Include="IMotion.cs" />
     <Compile Include="MainMapLayer2D.cs" />
     <Compile Include="MapEvent\CharacterImage.cs" />
     <Compile Include="MapEvent\MapEvent.cs" />
@@ -159,6 +159,7 @@
     <Compile Include="SaveLayer2D.cs" />
     <Compile Include="SavePoint.cs" />
     <Compile Include="ScriptExtension.cs" />
+    <Compile Include="ScriptOption.cs" />
     <Compile Include="ScrollCamera.cs" />
     <Compile Include="UI\Button.cs" />
     <Compile Include="UI\Gauge.cs" />

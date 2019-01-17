@@ -18,13 +18,6 @@ namespace SatPlayer
     /// </summary>
     public class MapObject : MultiAnimationObject2D, IEffectManeger, ICloneable, IMapObject, IDamageControler
     {
-        static ScriptOptions options = ScriptOptions.Default.WithImports("SatPlayer", "PhysicAltseed", "System", "System.Collections.Generic")
-                                         .WithReferences(System.Reflection.Assembly.GetAssembly(typeof(IEnumerator<>))
-                                                         , System.Reflection.Assembly.GetAssembly(typeof(MapObject))
-                                                         , System.Reflection.Assembly.GetAssembly(typeof(MapObjectType))
-                                                         , System.Reflection.Assembly.GetAssembly(typeof(asd.Vector2DF))
-                                                         , System.Reflection.Assembly.GetAssembly(typeof(PhysicalRectangleShape)));
-
         /// <summary>
         /// オブジェクト認識用タグ
         /// </summary>
@@ -95,7 +88,7 @@ namespace SatPlayer
             }
         }
 
-        asd.RectangleShape collisionShape;
+        protected asd.RectangleShape collisionShape;
         public PhysicalRectangleShape CollisionShape { get => collisionShape as PhysicalRectangleShape; }
 
         /// <summary>
@@ -179,23 +172,14 @@ namespace SatPlayer
         protected PhysicalWorld refWorld;
         private int hP;
 
-        BlockingCollection<Action> subQueue;
-        BlockingCollection<Action> mainQueue;
+        protected BlockingCollection<Action> subQueue;
+        protected BlockingCollection<Action> mainQueue;
         private MapObjectType _mapObjectType;
 
         public MapObject(BlockingCollection<Action> subThreadQueue, BlockingCollection<Action> mainThreadQueue, string scriptPath, PhysicalWorld world)
         {
-            CameraGroup = 1;
-            HP = 100;
-            sensors = new Dictionary<string, Sensor>();
-            childMapObjectData = new Dictionary<string, MapObject>();
-            Effects = new Dictionary<string, Effect>();
-            Update = (obj) => { };
+            Init();
             refWorld = world;
-            DamageRequests = new Queue<DamageRect>();
-            DirectDamageRequests = new Queue<DirectDamage>();
-            collisionShape = new asd.RectangleShape();
-            MapObjectType = MapObjectType.Passive;
             subQueue = subThreadQueue;
             mainQueue = mainThreadQueue;
             Script<object> script;
@@ -205,7 +189,8 @@ namespace SatPlayer
                 {
                     try
                     {
-                        script = CSharpScript.Create(IO.GetStream(scriptPath), options: options, globalsType: this.GetType());
+                        using (var stream = IO.GetStream(scriptPath))
+                            script = ScriptOption.ScriptOptions["MapObject"]?.CreateScript<object>(stream.ToString());
                         script.Compile();
                     }
                     catch (Exception e)
@@ -236,6 +221,11 @@ namespace SatPlayer
 
         protected MapObject()
         {
+            Init();
+        }
+
+        void Init()
+        {
             CameraGroup = 1;
             HP = 100;
             DamageRequests = new Queue<DamageRect>();
@@ -244,6 +234,7 @@ namespace SatPlayer
             childMapObjectData = new Dictionary<string, MapObject>();
             Update = (obj) => { };
             collisionShape = new asd.RectangleShape();
+            DirectDamageRequests = new Queue<DirectDamage>();
             MapObjectType = MapObjectType.Passive;
         }
 

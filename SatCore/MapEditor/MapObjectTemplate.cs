@@ -14,17 +14,13 @@ namespace SatCore.MapEditor
         [TextInput("名前")]
         public string Name { get; set; }
 
-        [FileInput("スクリプト", "Script File|*.csx|All File|*.*")]
+        [FileInput("スクリプト", "Object File|*.obj;*.eobj|All File|*.*")]
         public string ScriptPath { get; set; }
-        
-        [FileInput("モーション", "Motion File|*.mo|All File|*.*")]
-        public string MotionPath { get; set; }
 
         public MapObjectTemplate()
         {
             Name = "";
             ScriptPath = "";
-            MotionPath = "";
         }
     }
 }

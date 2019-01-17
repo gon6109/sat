@@ -171,8 +171,7 @@ namespace SatCore.MapEditor
                     var temp = new MapObjectTemplate()
                     {
                         Name = item.Key,
-                        ScriptPath = item.Value.ScriptPath,
-                        MotionPath = item.Value.MotionPath
+                        ScriptPath = item.Value.ScriptPath
                     };
                     MapObjectTemplates.Add(temp);
                 }
@@ -241,13 +240,12 @@ namespace SatCore.MapEditor
             {
                 var temp = new SatIO.EventObjectIO()
                 {
-                    ScriptPath = item.ScriptPath,
-                    MotionPath = item.MotionPath,
+                    ScriptPath = item.ScriptPath
                 };
                 templateIO.Templates.Add(item.Name, temp);
             }
             templateIO.Save("mot.data");
-            ErrorIO.SaveError(Path.Split('.')[0] + ".log");
+            if (Path != null) ErrorIO.SaveError(Path.Split('.')[0] + ".log");
             base.OnDispose();
         }
 
@@ -302,12 +300,10 @@ namespace SatCore.MapEditor
             {
                 PlayersListDialog playersListDialog = new PlayersListDialog();
                 if (playersListDialog.Show() != PlayersListDialogResult.OK) return;
-
-                var playerData = SatIO.PlayerIO.Load<SatIO.PlayerIO>(playersListDialog.FileName);
-                if (PlayerNames.Any(obj => obj.Name == playerData.Name)) return;
+                
                 var playerName = new PlayerName()
                 {
-                    Name = playerData.Name,
+                    Name = playersListDialog.PlayerName,
                 };
                 PlayerNames.Add(playerName);
             }

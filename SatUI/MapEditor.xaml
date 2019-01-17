@@ -38,13 +38,10 @@
             <MenuItem Header="ファイル" >
                 <MenuItem Header="新規作成">
                     <MenuItem Header="Map" Click="map_Click" />
-                    <MenuItem Header="Motion" Click="motion_Click" />
-                    <MenuItem Header="Character" Click="character_Click"/>
                     <MenuItem Header="Character Image" Click="characterImage_Click"/>
                     <MenuItem Header="Map Object" Click="CreateMapObject_Click"/>
                 </MenuItem>
                 <MenuItem Header="開く" Click="OpenFile_Click" />
-                <MenuItem x:Name="importToolStripMenuItem" Header="インポート"/>
                 <Separator/>
                 <MenuItem x:Name="save" Header="保存" Click="Save_Click" InputGestureText="Ctrl+S" Command="Save"/>
                 <MenuItem Header="別名で保存" Click="SaveAs_Click"/>

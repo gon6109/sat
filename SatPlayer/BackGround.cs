@@ -16,11 +16,6 @@ namespace SatPlayer
     /// </summary>
     public class BackGround : MultiAnimationObject2D, IBackGround
     {
-        static ScriptOptions options = ScriptOptions.Default.WithImports("SatPlayer", "System", "System.Collections.Generic")
-                                                         .WithReferences(System.Reflection.Assembly.GetAssembly(typeof(IEnumerator<>))
-                                                                         , System.Reflection.Assembly.GetAssembly(typeof(asd.Vector2DF))
-                                                                         , System.Reflection.Assembly.GetAssembly(typeof(BackGround)));
-        
         public asd.CameraObject2D Camera { get; private set; }
 
         MainMapLayer2D mainMap;
@@ -67,11 +62,14 @@ namespace SatPlayer
             {
                 try
                 {
-                    var script = CSharpScript.Create(IO.GetStream(backGroundIO.TexturePath), options: options, globalsType: typeof(BackGround));
-                    var task = script.RunAsync(backGround);
-                    task.Wait();
-                    GC.Collect();
-                    GC.WaitForPendingFinalizers();
+                    using (var stream = IO.GetStream(backGroundIO.TexturePath))
+                    {
+                        var script = SatPlayer.ScriptOption.ScriptOptions["BackGround"].CreateScript<object>(stream.ToString());
+                        var task = script.RunAsync(backGround);
+                        task.Wait();
+                        GC.Collect();
+                        GC.WaitForPendingFinalizers();
+                    }
                 }
                 catch (Exception e)
                 {

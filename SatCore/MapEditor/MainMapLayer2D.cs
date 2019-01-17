@@ -9,6 +9,7 @@ using SatIO.MapEventIO;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using BaseComponent;
+using SatPlayer;
 
 namespace SatCore.MapEditor
 {
@@ -203,7 +204,7 @@ namespace SatCore.MapEditor
             {
                 foreach (var item in mapData.MapEvents)
                 {
-                    var temp = new MapEvent.MapEvent(item, RequireOpenFileDialog, SearchCharacterDataPath, physicalWorld);
+                    var temp = new MapEvent.MapEvent(item, RequireOpenFileDialog, SearchActor, physicalWorld);
                     AddObject(temp);
                 }
             }
@@ -261,18 +262,18 @@ namespace SatCore.MapEditor
             }
         }
 
-        string SearchCharacterDataPath(SatIO.MapEventIO.MapEventIO.ActorIO actorIO)
+        IActor SearchActor(SatIO.MapEventIO.MapEventIO.ActorIO actorIO)
         {
             if (actorIO.IsUseName)
             {
-                return PlayersListDialog.GetPlayersData().First(obj => obj.Value.Name == actorIO.Name).Key;
+                return new Player(PlayersListDialog.GetPlayersScriptPath().First(obj => obj.Key == actorIO.Name).Value);
             }
             else
             {
                 try
                 {
-                    if (EventObjects.Count != 0 || eventObjects.Count == 0) return EventObjects.First(obj => obj.ID == actorIO.ID).MotionPath;
-                    else return eventObjects.First(obj => obj.ID == actorIO.ID).MotionPath;
+                    if (EventObjects.Count != 0 || eventObjects.Count == 0) return EventObjects.First(obj => obj.ID == actorIO.ID);
+                    else return eventObjects.First(obj => obj.ID == actorIO.ID);
                 }
                 catch (Exception e)
                 {
@@ -575,7 +576,6 @@ namespace SatCore.MapEditor
                 {
                     var template = ((MapEditor)Scene).SelectedTemplate as MapObjectTemplate;
                     mapObject.ScriptPath = template.ScriptPath;
-                    mapObject.MotionPath = template.MotionPath;
                 }
                 mapObject.ID = GetCanUseEventObjectID();
                 AddObject(mapObject);
@@ -622,7 +622,7 @@ namespace SatCore.MapEditor
             else if (polygonObject.IsAlive && Mouse.LeftButton == asd.ButtonState.Release)
             {
                 UndoRedoManager.Enable = false;
-                MapEvent.MapEvent mapEvent = new MapEvent.MapEvent(RequireOpenFileDialog, SearchCharacterDataPath, physicalWorld);
+                MapEvent.MapEvent mapEvent = new MapEvent.MapEvent(RequireOpenFileDialog, SearchActor, physicalWorld);
                 mapEvent.ID = GetCanUseEventID();
                 mapEvent.Position = ((asd.RectangleShape)polygonObject.Shape).DrawingArea.Size.X > 0
                     ? ((asd.RectangleShape)polygonObject.Shape).DrawingArea.Position : ((asd.RectangleShape)polygonObject.Shape).DrawingArea.Vertexes[2];
@@ -680,7 +680,7 @@ namespace SatCore.MapEditor
                 if (eventObject.CollisionShape.GetIsCollidedWith(cursorShape) && Mouse.LeftButton == asd.ButtonState.Push)
                 {
                     if (((MapEvent.MapEvent)SelectedObject).Actors.Any(obj => !obj.IsUseName && obj.ID == eventObject.ID)) return;
-                    ((MapEvent.MapEvent)SelectedObject).AddEventObjectActor(eventObject.MotionPath, eventObject.ID, eventObject.Position);
+                    ((MapEvent.MapEvent)SelectedObject).AddEventObjectActor(eventObject, eventObject.ID, eventObject.Position);
 
                     CurrentToolType = ToolType.Select;
                 }
