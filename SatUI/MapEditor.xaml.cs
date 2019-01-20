@@ -110,11 +110,50 @@ namespace SatUI
         {
             Reset(PropertyPanel.ResetMode.General);
 
-            var loadFile = new SatCore.MapObjectEditor.MapObjectEditor();
+            var loadFile = new SatCore.ScriptEditor.ScriptEditor(SatCore.ScriptEditor.ScriptEditor.ScriptType.MapObject);
             asd.Engine.ChangeScene(loadFile);
-            Property mapProperty = new Property("Map Object", new object[] { loadFile, loadFile.MapObject });
+            Property mapProperty = new Property("Map Object", new object[] { loadFile, loadFile.ScriptObject });
             propertyPanel.AddProperty(mapProperty);
-            code.Children.Add(new CodeEditor(loadFile.MapObject, "Code"));
+            code.Children.Add(new CodeEditor(loadFile.ScriptObject, "Code"));
+            gridSplitter.IsEnabled = true;
+            codeColumn.Width = new GridLength(100);
+        }
+
+        private void CreateEventObject_Click(object sender, RoutedEventArgs e)
+        {
+            Reset(PropertyPanel.ResetMode.General);
+
+            var loadFile = new SatCore.ScriptEditor.ScriptEditor(SatCore.ScriptEditor.ScriptEditor.ScriptType.EventObject);
+            asd.Engine.ChangeScene(loadFile);
+            Property mapProperty = new Property("Map Object", new object[] { loadFile, loadFile.ScriptObject });
+            propertyPanel.AddProperty(mapProperty);
+            code.Children.Add(new CodeEditor(loadFile.ScriptObject, "Code"));
+            gridSplitter.IsEnabled = true;
+            codeColumn.Width = new GridLength(100);
+        }
+
+        private void CreatePlayer_Click(object sender, RoutedEventArgs e)
+        {
+            Reset(PropertyPanel.ResetMode.General);
+
+            var loadFile = new SatCore.ScriptEditor.ScriptEditor(SatCore.ScriptEditor.ScriptEditor.ScriptType.Player);
+            asd.Engine.ChangeScene(loadFile);
+            Property mapProperty = new Property("Map Object", new object[] { loadFile, loadFile.ScriptObject });
+            propertyPanel.AddProperty(mapProperty);
+            code.Children.Add(new CodeEditor(loadFile.ScriptObject, "Code"));
+            gridSplitter.IsEnabled = true;
+            codeColumn.Width = new GridLength(100);
+        }
+
+        private void CreateBackGround_Click(object sender, RoutedEventArgs e)
+        {
+            Reset(PropertyPanel.ResetMode.General);
+
+            var loadFile = new SatCore.ScriptEditor.ScriptEditor(SatCore.ScriptEditor.ScriptEditor.ScriptType.BackGround);
+            asd.Engine.ChangeScene(loadFile);
+            Property mapProperty = new Property("Map Object", new object[] { loadFile, loadFile.ScriptObject });
+            propertyPanel.AddProperty(mapProperty);
+            code.Children.Add(new CodeEditor(loadFile.ScriptObject, "Code"));
             gridSplitter.IsEnabled = true;
             codeColumn.Width = new GridLength(100);
         }
@@ -173,11 +212,11 @@ namespace SatUI
 
         void OpenMapObjectFile(string fileName)
         {
-            var loadFile = new SatCore.MapObjectEditor.MapObjectEditor(fileName);
+            var loadFile = new SatCore.ScriptEditor.ScriptEditor(SatCore.ScriptEditor.ScriptEditor.ScriptType.MapObject ,fileName);
             asd.Engine.ChangeScene(loadFile);
-            Property mapProperty = new Property("Map Object", new object[] { loadFile, loadFile.MapObject });
+            Property mapProperty = new Property("Map Object", new object[] { loadFile, loadFile.ScriptObject });
             propertyPanel.AddProperty(mapProperty);
-            code.Children.Add(new CodeEditor(loadFile.MapObject, "Code"));
+            code.Children.Add(new CodeEditor(loadFile.ScriptObject, "Code"));
             gridSplitter.IsEnabled = true;
             codeColumn.Width = new GridLength(300);
         }
@@ -327,7 +366,7 @@ namespace SatUI
         {
             if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor != null) SaveMap();
             if (asd.Engine.CurrentScene as SatCore.CharacterImageEditor.CharacterImageEditor != null) SaveCharacterImage();
-            if (asd.Engine.CurrentScene as SatCore.MapObjectEditor.MapObjectEditor != null) SaveMapObject();
+            if (asd.Engine.CurrentScene as SatCore.ScriptEditor.ScriptEditor != null) SaveMapObject();
         }
 
         void SaveMap()
@@ -364,7 +403,7 @@ namespace SatUI
 
         void SaveMapObject()
         {
-            if (((SatCore.MapObjectEditor.MapObjectEditor)asd.Engine.CurrentScene).Path == "" || ((SatCore.MapObjectEditor.MapObjectEditor)asd.Engine.CurrentScene).Path == null)
+            if (((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Path == "" || ((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Path == null)
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
                 saveFileDialog.FileName = "new.csx";
@@ -373,16 +412,16 @@ namespace SatUI
                 saveFileDialog.Title = "保存";
                 saveFileDialog.RestoreDirectory = true;
                 if (saveFileDialog.ShowDialog() != true) return;
-                ((SatCore.MapObjectEditor.MapObjectEditor)asd.Engine.CurrentScene).Path = saveFileDialog.FileName;
+                ((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Path = saveFileDialog.FileName;
             }
-            ((SatCore.MapObjectEditor.MapObjectEditor)asd.Engine.CurrentScene).SaveMapObject(((SatCore.MapObjectEditor.MapObjectEditor)asd.Engine.CurrentScene).Path);
+            ((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).SaveScript(((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Path);
         }
 
         private void SaveAs_Click(object sender, RoutedEventArgs e)
         {
             if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor != null) SaveAsMap();
             if (asd.Engine.CurrentScene as SatCore.CharacterImageEditor.CharacterImageEditor != null) SaveAsCharacterImage();
-            if (asd.Engine.CurrentScene as SatCore.MapObjectEditor.MapObjectEditor != null) SaveAsMapObject();
+            if (asd.Engine.CurrentScene as SatCore.ScriptEditor.ScriptEditor != null) SaveAsMapObject();
         }
 
         void SaveAsMap()
@@ -422,8 +461,8 @@ namespace SatUI
             saveFileDialog.Title = "保存";
             saveFileDialog.RestoreDirectory = true;
             if (saveFileDialog.ShowDialog() != true) return;
-            ((SatCore.MapObjectEditor.MapObjectEditor)asd.Engine.CurrentScene).Path = saveFileDialog.FileName;
-            ((SatCore.MapObjectEditor.MapObjectEditor)asd.Engine.CurrentScene).SaveMapObject(((SatCore.MapObjectEditor.MapObjectEditor)asd.Engine.CurrentScene).Path);
+            ((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Path = saveFileDialog.FileName;
+            ((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).SaveScript(((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Path);
         }
 
         private void EditorPanel_Click(object sender, EventArgs e)
@@ -509,7 +548,7 @@ namespace SatUI
         {
             if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor != null) SaveMap();
             if (asd.Engine.CurrentScene as SatCore.CharacterImageEditor.CharacterImageEditor != null) SaveCharacterImage();
-            if (asd.Engine.CurrentScene as SatCore.MapObjectEditor.MapObjectEditor != null) SaveMapObject();
+            if (asd.Engine.CurrentScene as SatCore.ScriptEditor.ScriptEditor != null) SaveMapObject();
         }
 
         private void Undo_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -561,5 +600,6 @@ namespace SatUI
             copy.IsEnabled = isCanCopy;
             paste.IsEnabled = isCanPaste;
         }
+
     }
 }

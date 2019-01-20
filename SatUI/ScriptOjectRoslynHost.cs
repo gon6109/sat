@@ -11,13 +11,16 @@ using System.Threading.Tasks;
 
 namespace SatUI
 {
-    class MapObjectRoslynHost : RoslynHost
+    class ScriptOjectRoslynHost : RoslynHost
     {
+        public Type GlobalType { get; }
 
-        public MapObjectRoslynHost(NuGetConfiguration nuGetConfiguration = null,
+        public ScriptOjectRoslynHost(Type globalType,
+           NuGetConfiguration nuGetConfiguration = null,
            IEnumerable<Assembly> additionalAssemblies = null,
            RoslynHostReferences references = null) : base(nuGetConfiguration, additionalAssemblies, references)
         {
+            GlobalType = globalType;
         }
 
         protected override Project CreateProject(Solution solution, DocumentCreationArgs args, CompilationOptions compilationOptions, Project previousProject = null)
@@ -37,7 +40,7 @@ namespace SatUI
                 LanguageNames.CSharp,
                 isSubmission: true,
                 parseOptions: parseOptions,
-                hostObjectType: typeof(SatPlayer.MapObject),
+                hostObjectType: GlobalType,
                 compilationOptions: compilationOptions,
                 metadataReferences: previousProject != null ? ImmutableArray<MetadataReference>.Empty : DefaultReferences,
                 projectReferences: previousProject != null ? new[] { new ProjectReference(previousProject.Id) } : null));

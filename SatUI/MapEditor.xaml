@@ -40,6 +40,9 @@
                     <MenuItem Header="Map" Click="map_Click" />
                     <MenuItem Header="Character Image" Click="characterImage_Click"/>
                     <MenuItem Header="Map Object" Click="CreateMapObject_Click"/>
+                    <MenuItem Header="Event Object" Click="CreateEventObject_Click"/>
+                    <MenuItem Header="Player" Click="CreatePlayer_Click"/>
+                    <MenuItem Header="Back Ground" Click="CreateBackGround_Click"/>
                 </MenuItem>
                 <MenuItem Header="開く" Click="OpenFile_Click" />
                 <Separator/>

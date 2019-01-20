@@ -4,6 +4,8 @@ using Microsoft.CodeAnalysis.Scripting;
 using PhysicAltseed;
 using RoslynPad.Editor;
 using RoslynPad.Roslyn;
+using SatCore.ScriptEditor;
+using SatPlayer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,20 +31,13 @@ namespace SatUI
     /// </summary>
     public partial class CodeEditor : UserControl, IDisposable
     {
-        MapObjectRoslynHost host = new MapObjectRoslynHost(
-               additionalAssemblies: new[]
-               {
-                    Assembly.Load("RoslynPad.Roslyn.Windows"),
-                    Assembly.Load("RoslynPad.Editor.Windows"),
-               },
-               references: RoslynHostReferences.Default.With(typeNamespaceImports: new[] { typeof(SatPlayer.MapObject), typeof(asd.Vector2DF), typeof(PhysicalWorld) })
-            );
+        ScriptOjectRoslynHost host;
 
-        INotifyPropertyChanged BindingSource;
+        IScriptObject BindingSource;
 
         string Path;
 
-        public CodeEditor(INotifyPropertyChanged bindingSource, string path)
+        public CodeEditor(IScriptObject bindingSource, string path)
         {
             InitializeComponent();
             roslynCodeEditor.TextChanged += RoslynCodeEditor_TextChanged;
@@ -59,6 +54,19 @@ namespace SatUI
         DocumentId document;
         private void roslynCodeEditor_Loaded(object sender, RoutedEventArgs e)
         {
+            var additionalAssemblies = new List<Assembly>
+            {
+                Assembly.Load("RoslynPad.Roslyn.Windows"),
+                Assembly.Load("RoslynPad.Editor.Windows"),
+            };
+            additionalAssemblies.AddRange(ScriptOption.ScriptOptions[BindingSource.ScriptOptionName].Assemblies);
+            host = new ScriptOjectRoslynHost(
+                ScriptOption.ScriptOptions[BindingSource.ScriptOptionName].GlobalType,
+                additionalAssemblies: additionalAssemblies,
+                references: RoslynHostReferences.Default.With(
+                    imports: ScriptOption.ScriptOptions[BindingSource.ScriptOptionName].UseNameSpaces,
+                    assemblyReferences: ScriptOption.ScriptOptions[BindingSource.ScriptOptionName].Assemblies)
+            );
             document = roslynCodeEditor.Initialize(host, new ClassificationHighlightColors(), Directory.GetCurrentDirectory(), BindingSource.GetType().GetProperty(Path).GetValue(BindingSource) as string ?? string.Empty);
         }
 

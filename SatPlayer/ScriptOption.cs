@@ -15,37 +15,42 @@ namespace SatPlayer
     /// </summary>
     public class ScriptOption
     {
-        public static Dictionary<string, ScriptOption> ScriptOptions { get; } = new Dictionary<string, ScriptOption>()
+        public static Dictionary<string, ScriptOption> ScriptOptions { get; private set; }
+
+        static ScriptOption()
         {
-            {"MapObject", new ScriptOption()
+            ScriptOptions = new Dictionary<string, ScriptOption>()
             {
-                UseNameSpaces = { "SatScript.Common", "SatScript.Player", "SatScript.Collision", "SatScript.MapObject", "AlteseedScript.Common"},
-                Assemblies = {Assembly.GetAssembly(typeof(SatScript.MapObject.MapObject)), Assembly.GetAssembly(typeof(Vector))},
-                GlobalType = typeof(SatScript.MapObject.IMapObject)
-            }
-            },
-            {"EventObject", new ScriptOption()
-            {
-                UseNameSpaces = { "SatScript.Common", "SatScript.Player", "SatScript.Collision", "SatScript.MapObject", "AlteseedScript.Common" },
-                Assemblies = {Assembly.GetAssembly(typeof(SatScript.MapObject.MapObject)), Assembly.GetAssembly(typeof(Vector))},
-                GlobalType = typeof(SatScript.MapObject.IEventObject)
-            }
-            },
-            {"BackGround", new ScriptOption()
-            {
-                UseNameSpaces = { "SatScript.Common", "SatScript.Player", "SatScript.MapObject", "AlteseedScript.Common" },
-                Assemblies = {Assembly.GetAssembly(typeof(SatScript.MapObject.MapObject)), Assembly.GetAssembly(typeof(Vector))},
-                GlobalType = typeof(SatScript.BackGround.IBackGround)
-            }
-            },
-            {"Player", new ScriptOption()
-            {
-                UseNameSpaces = { "SatScript.Common", "SatScript.Player", "SatScript.Collision", "SatScript.MapObject", "AlteseedScript.Common" },
-                Assemblies = {Assembly.GetAssembly(typeof(SatScript.MapObject.MapObject)), Assembly.GetAssembly(typeof(Vector))},
-                GlobalType = typeof(SatScript.Player.IPlayer)
-            }
-            },
-        };
+                {"MapObject", new ScriptOption()
+                {
+                    UseNameSpaces = new List<string>{ "SatScript.Common", "SatScript.Player", "SatScript.Collision", "SatScript.MapObject", "AlteseedScript.Common"},
+                    Assemblies = new List<Assembly>{Assembly.GetAssembly(typeof(SatScript.MapObject.MapObject)), Assembly.GetAssembly(typeof(Vector))},
+                    GlobalType = typeof(SatScript.MapObject.IMapObject)
+                }
+                },
+                {"EventObject", new ScriptOption()
+                {
+                    UseNameSpaces = new List<string>{ "SatScript.Common", "SatScript.Player", "SatScript.Collision", "SatScript.MapObject", "AlteseedScript.Common" },
+                    Assemblies = new List<Assembly>{Assembly.GetAssembly(typeof(SatScript.MapObject.MapObject)), Assembly.GetAssembly(typeof(Vector))},
+                    GlobalType = typeof(SatScript.MapObject.IEventObject)
+                }
+                },
+                {"BackGround", new ScriptOption()
+                {
+                    UseNameSpaces = new List<string>{ "SatScript.Common", "SatScript.Player", "SatScript.MapObject", "AlteseedScript.Common" },
+                    Assemblies = new List<Assembly>{Assembly.GetAssembly(typeof(SatScript.MapObject.MapObject)), Assembly.GetAssembly(typeof(Vector))},
+                    GlobalType = typeof(SatScript.BackGround.IBackGround)
+                }
+                },
+                {"Player", new ScriptOption()
+                {
+                    UseNameSpaces = new List<string>{ "SatScript.Common", "SatScript.Player", "SatScript.Collision", "SatScript.MapObject", "AlteseedScript.Common" },
+                    Assemblies = new List<Assembly>{Assembly.GetAssembly(typeof(SatScript.MapObject.MapObject)), Assembly.GetAssembly(typeof(Vector))},
+                    GlobalType = typeof(SatScript.Player.IPlayer)
+                }
+                },
+            };
+        }
 
         /// <summary>
         /// 使用する名前空間

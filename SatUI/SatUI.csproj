@@ -256,7 +256,7 @@
     <Compile Include="MapEditor.xaml.cs">
       <DependentUpon>MapEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MapObjectRoslynHost.cs" />
+    <Compile Include="ScriptOjectRoslynHost.cs" />
     <Compile Include="NumberInput.xaml.cs">
       <DependentUpon>NumberInput.xaml</DependentUpon>
     </Compile>

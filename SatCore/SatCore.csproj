@@ -167,9 +167,13 @@
     <Compile Include="MapEditor\MapObjectTemplate.cs" />
     <Compile Include="MapEditor\EventObject.cs" />
     <Compile Include="MapEditor\SavePoint.cs" />
-    <Compile Include="MapObjectEditor\EditableMapObject.cs" />
-    <Compile Include="MapObjectEditor\MainMapLayer2D.cs" />
-    <Compile Include="MapObjectEditor\MapObjectEditor.cs" />
+    <Compile Include="ScriptEditor\EditableBackGround.cs" />
+    <Compile Include="ScriptEditor\EditableEventObject.cs" />
+    <Compile Include="ScriptEditor\EditableMapObject.cs" />
+    <Compile Include="ScriptEditor\EditablePlayer.cs" />
+    <Compile Include="ScriptEditor\IScriptObject.cs" />
+    <Compile Include="ScriptEditor\MainMapLayer2D.cs" />
+    <Compile Include="ScriptEditor\ScriptEditor.cs" />
     <Compile Include="Mouse.cs" />
     <Compile Include="NumberInputAttribute.cs" />
     <Compile Include="Path.cs" />

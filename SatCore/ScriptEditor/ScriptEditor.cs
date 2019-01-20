@@ -6,18 +6,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SatCore.MapObjectEditor
+namespace SatCore.ScriptEditor
 {
     /// <summary>
-    /// マップオブジェクト編集シーン
+    /// スクリプト編集シーン
     /// </summary>
-    public class MapObjectEditor : UndoRedoScene
+    public class ScriptEditor : UndoRedoScene
     {
-        public EditableMapObject MapObject { get; private set; }
+        public IScriptObject ScriptObject { get; private set; }
 
         PhysicAltseed.PhysicalWorld PhysicalWorld { get; set; }
         MainMapLayer2D MainLayer { get; set; }
         asd.CameraObject2D MainCamera { get; set; }
+
+        public ScriptType Script { get; }
 
         public string Path { get; set; }
 
@@ -30,11 +32,26 @@ namespace SatCore.MapObjectEditor
             }
         }
 
-        public MapObjectEditor(string path = "")
+        public ScriptEditor(ScriptType scriptType ,string path = "")
         {
             Path = path;
+            Script = scriptType;
+
             MainLayer = new MainMapLayer2D();
             PhysicalWorld = MainLayer.PhysicalWorld;
+
+            CreateObject();
+            try
+            {
+                ScriptObject.Code = Encoding.UTF8.GetString(IO.GetStream(path).ToArray());
+            }
+            catch
+            {
+                ScriptObject.Code = "";
+            }
+            ScriptObject.Run();
+
+            MainLayer.IsPreparePlayer = ScriptObject.IsPreparePlayer;
 
             asd.RectF[] rects = { new asd.RectF(0, 30, 30, 1080), new asd.RectF(30, 1050, 1890, 30), new asd.RectF(1890, 0, 30, 1050), new asd.RectF(0, 0, 1890, 30) };
             foreach (var item in rects)
@@ -45,16 +62,7 @@ namespace SatCore.MapObjectEditor
                 MainLayer.CollisionShapes.Add(groundShape);
             }
 
-            MapObject = new EditableMapObject(PhysicalWorld);
-            try
-            {
-                MapObject.Code = Encoding.UTF8.GetString(IO.GetStream(path).ToArray());
-            }
-            catch
-            {
-                MapObject.Code = "";
-            }
-            MapObject.Run();
+            if (ScriptObject.IsSingle && ScriptObject is asd.Object2D obj) MainLayer.AddObject(obj);
 
             MainCamera = new asd.CameraObject2D();
             MainCamera.Src = new asd.RectI(new asd.Vector2DI(), Base.ScreenSize);
@@ -65,6 +73,27 @@ namespace SatCore.MapObjectEditor
             AddLayer(MainLayer);
         }
 
+        void CreateObject()
+        {
+            switch (Script)
+            {
+                case ScriptType.MapObject:
+                    ScriptObject = new EditableMapObject(PhysicalWorld);
+                    break;
+                case ScriptType.EventObject:
+                    ScriptObject = new EditableEventObject(PhysicalWorld);
+                    break;
+                case ScriptType.Player:
+                    ScriptObject = new EditablePlayer(PhysicalWorld);
+                    break;
+                case ScriptType.BackGround:
+                    ScriptObject = new EditableBackGround(MainLayer);
+                    break;
+                default:
+                    throw new NotImplementedException(Script.ToString());
+            }
+        }
+
         protected override void OnUpdating()
         {
             PhysicalWorld.Update();
@@ -73,16 +102,18 @@ namespace SatCore.MapObjectEditor
 
         protected override void OnUpdated()
         {
-            if (Mouse.LeftButton == asd.ButtonState.Push && MapObject.IsSuccessBuild)
+            if (Mouse.LeftButton == asd.ButtonState.Push && ScriptObject.IsSuccessBuild)
             {
-                SatPlayer.MapObject obj = (SatPlayer.MapObject)MapObject.Clone();
-                obj.Position = Mouse.Position;
-                MainLayer.AddObject(obj);
+                if (ScriptObject.Clone() is asd.Object2D obj)
+                {
+                    obj.Position = Mouse.Position;
+                    MainLayer.AddObject(obj);
+                }
             }
 
             foreach (asd.GeometryObject2D item in MainLayer.Objects.Where(obj => obj is asd.GeometryObject2D))
             {
-                item.Color = MapObject.IsSuccessBuild ? new asd.Color(0, 255, 0) : new asd.Color(255, 0, 0);
+                item.Color = ScriptObject.IsSuccessBuild ? new asd.Color(0, 255, 0) : new asd.Color(255, 0, 0);
             }
 
             if ((float)asd.Engine.WindowSize.X / asd.Engine.WindowSize.Y >= (float)Base.ScreenSize.X / Base.ScreenSize.Y)
@@ -91,11 +122,19 @@ namespace SatCore.MapObjectEditor
             base.OnUpdated();
         }
 
-        public void SaveMapObject(string path)
+        public void SaveScript(string path)
         {
             StreamWriter writer = new StreamWriter(path, false);
-            writer.Write(MapObject.Code);
+            writer.Write(ScriptObject.Code);
             writer.Close();
+        }
+
+        public enum ScriptType
+        {
+            MapObject,
+            EventObject,
+            Player,
+            BackGround,
         }
     }
 }

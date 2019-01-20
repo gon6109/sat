@@ -138,20 +138,9 @@ namespace SatPlayer
 
         public Player(string playerDataPath, int playerGroup = 0)
         {
-            CameraGroup = 1;
-            base.Position = new asd.Vector2DF();
-            Effects = new Dictionary<string, Effect>();
             GroundShape = new asd.RectangleShape();
-            IsColligedWithGround = false;
-            DamageRequests = new Queue<DamageRect>();
-            DirectDamageRequests = new Queue<DirectDamage>();
-            MoveCommands = new Queue<Dictionary<BaseComponent.Inputs, bool>>();
-            inputState = new Dictionary<BaseComponent.Inputs, int>();
-            foreach (BaseComponent.Inputs item in Enum.GetValues(typeof(BaseComponent.Inputs)))
-            {
-                inputState[item] = 0;
-            }
             PlayerGroup = playerGroup;
+            Init();
             try
             {
                 using (var stream = IO.GetStream(playerDataPath))
@@ -164,6 +153,28 @@ namespace SatPlayer
             catch 
             {
                 throw;
+            }
+        }
+
+        protected Player(int playerGroup = 0)
+        {
+            GroundShape = new asd.RectangleShape();
+            Init();
+        }
+
+        protected void Init()
+        {
+            CameraGroup = 1;
+            base.Position = new asd.Vector2DF();
+            Effects = new Dictionary<string, Effect>();
+            IsColligedWithGround = false;
+            DamageRequests = new Queue<DamageRect>();
+            DirectDamageRequests = new Queue<DirectDamage>();
+            MoveCommands = new Queue<Dictionary<BaseComponent.Inputs, bool>>();
+            inputState = new Dictionary<BaseComponent.Inputs, int>();
+            foreach (BaseComponent.Inputs item in Enum.GetValues(typeof(BaseComponent.Inputs)))
+            {
+                inputState[item] = 0;
             }
         }
 

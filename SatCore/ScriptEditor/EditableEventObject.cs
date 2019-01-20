@@ -1,5 +1,4 @@
 ﻿using BaseComponent;
-using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using PhysicAltseed;
 using SatPlayer;
@@ -11,29 +10,19 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SatCore.MapObjectEditor
+namespace SatCore.ScriptEditor
 {
-    /// <summary>
-    /// 編集可能マップオブジェクト
-    /// </summary>
-    public class EditableMapObject : SatPlayer.MapObject, INotifyPropertyChanged
+    public class EditableEventObject : SatPlayer.EventObject, IScriptObject
     {
-        private string _code;
         private bool isEdited;
+        private string _code;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        public bool IsSuccessBuild { get; set; }
-
-        public EditableMapObject(PhysicalWorld world)
-        {
-            refWorld = world;
-        }
-
-        [Script("スクリプト", "MapObject")]
+        [Script("スクリプト", "EventObject")]
         public string Code
         {
             get => _code;
@@ -45,16 +34,18 @@ namespace SatCore.MapObjectEditor
             }
         }
 
-        [Button("Run")]
+        public bool IsSuccessBuild { get; private set; }
+
+        [Button("ビルド")]
         public void Run()
         {
-            if (isEdited) 
+            if (isEdited)
             {
                 IsSuccessBuild = true;
                 try
                 {
                     Reset();
-                    Script<object> script = ScriptOption.ScriptOptions["MapObject"]?.CreateScript<object>(Code);
+                    Script<object> script = ScriptOption.ScriptOptions[ScriptOptionName]?.CreateScript<object>(Code);
                     var thread = script.RunAsync(this);
                     thread.Wait();
                 }
@@ -67,6 +58,34 @@ namespace SatCore.MapObjectEditor
             GC.Collect();
             GC.WaitForPendingFinalizers();
             isEdited = false;
+        }
+
+        [BoolInput("イベント状態")]
+        public new bool IsEvent { get => base.IsEvent; set => base.IsEvent = value; }
+
+        public bool IsSingle => false;
+
+        public bool IsPreparePlayer => true;
+
+        public string ScriptOptionName => "EventObject";
+
+        public EditableEventObject(PhysicalWorld world)
+        {
+            refWorld = world;
+        }
+
+        protected override void OnUpdate()
+        {
+            if (IsEvent)
+            {
+                var moveCommand = new Dictionary<Inputs, bool>();
+                foreach (Inputs item in Enum.GetValues(typeof(Inputs)))
+                {
+                    moveCommand[item] = Input.GetInputState(item) > 0;
+                }
+                MoveCommands.Enqueue(moveCommand);
+            }
+            base.OnUpdate();
         }
 
         void Reset()
