@@ -252,10 +252,10 @@ namespace SatPlayer
 
         protected override void OnUpdate()
         {
-            if (MapObjectType == MapObjectType.Active && !IsAllowRotation)
+            if (MapObjectType == MapObjectType.Active)
             {
                 base.Position = CollisionShape.CenterPosition + CollisionShape.DrawingArea.Position;
-                if (Math.Abs(CollisionShape.Angle) > 1.0f) CollisionShape.AngularVelocity = -CollisionShape.Angle * 30.0f;
+                if (Math.Abs(CollisionShape.Angle) > 1.0f && !IsAllowRotation) CollisionShape.AngularVelocity = -CollisionShape.Angle * 30.0f;
             }
 
             foreach (var item in sensors) item.Value.Update(this);

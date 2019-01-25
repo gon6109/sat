@@ -82,7 +82,7 @@ namespace SatCore.MapEditor
         /// <summary>
         /// 遷移先のマップ名
         /// </summary>
-        [FileInput("遷移先のマップ名", "Binary Map File|*.bmap|All File|*.*")]
+        [FileInput("遷移先のマップ名", "Binary Map File|*.map|All File|*.*")]
         public string MoveToMap
         {
             get => _moveToMap;

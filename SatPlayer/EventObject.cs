@@ -52,7 +52,7 @@ namespace SatPlayer
 
         public bool IsUseName => false;
 
-        Action<IEventObject> IEventObject.Update { get; set; } = obj => { };
+        public new Action<IEventObject> Update { get; set; } = obj => { };
 
         PhysicalShape IActor.CollisionShape => CollisionShape;
 
@@ -147,6 +147,36 @@ namespace SatPlayer
         void IActor.OnUpdate()
         {
             OnUpdate();
+        }
+
+        public new object Clone()
+        {
+            EventObject clone = new EventObject();
+            clone.sensors = new Dictionary<string, Sensor>(sensors);
+            clone.childMapObjectData = new Dictionary<string, MapObject>(childMapObjectData);
+            clone.Effects = new Dictionary<string, Effect>(Effects);
+            clone.refWorld = refWorld;
+            clone.Update = Update;
+            clone.State = State;
+            clone.Clone(this);
+            clone.MapObjectType = MapObjectType;
+            try
+            {
+                clone.collisionShape.DrawingArea = new asd.RectF(new asd.Vector2DF(), clone.AnimationPart.First().Value.Textures.First().Size.To2DF());
+            }
+            catch (Exception e)
+            {
+                ErrorIO.AddError(e);
+            }
+            clone.CenterPosition = clone.collisionShape.DrawingArea.Size / 2;
+            if (MapObjectType == SatScript.MapObject.MapObjectType.Active)
+            {
+                clone.CollisionShape.GroupIndex = CollisionShape.GroupIndex;
+                clone.CollisionShape.MaskBits = CollisionShape.MaskBits;
+                clone.CollisionShape.CategoryBits = CollisionShape.CategoryBits;
+            }
+            clone.IsEvent = IsEvent;
+            return clone;
         }
     }
 }

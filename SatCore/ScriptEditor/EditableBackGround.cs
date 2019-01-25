@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SatCore.ScriptEditor
 {
-    public class EditableBackGround : SatPlayer.BackGround, IScriptObject
+    public class EditableBackGround : SatPlayer.BackGround, IScriptObject, ICloneable
     {
         private bool isEdited;
         private string _code;
@@ -72,7 +72,34 @@ namespace SatCore.ScriptEditor
 
         void Reset()
         {
+            AnimationPart.Clear();
             Update = (obj) => { };
+        }
+
+        public new  object Clone()
+        {
+            EditableBackGround clone = new EditableBackGround(Layer as MainMapLayer2D);
+            clone.Clone(this);
+            clone.State = State;
+            clone.Zoom = Zoom;
+            clone.Update = Update;
+            clone.UpdatePriority = UpdatePriority;
+            return clone;
+        }
+
+        protected override void OnAdded()
+        {
+        }
+
+        protected override void OnUpdate()
+        {
+            base.OnUpdate();
+        }
+
+        protected override void OnDispose()
+        {
+            Camera.Dispose();
+            base.OnDispose();
         }
     }
 }

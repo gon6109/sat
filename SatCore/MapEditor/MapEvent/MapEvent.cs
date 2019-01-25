@@ -223,7 +223,7 @@ namespace SatCore.MapEditor.MapEvent
             EventComponents.Add(new TalkComponent(CharacterImages));
         }
 
-        [FileInput("終了時遷移先マップ", "Binary Map File|*.bmap|All File|*.*")]
+        [FileInput("終了時遷移先マップ", "Binary Map File|*.map|All File|*.*")]
         public string ToMapPath
         {
             get => _toMapPath;

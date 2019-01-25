@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SatScript.BackGround;
+using AlteseedScript.Common;
 
 namespace SatPlayer
 {
@@ -18,7 +19,7 @@ namespace SatPlayer
     {
         public asd.CameraObject2D Camera { get; private set; }
 
-        MainMapLayer2D mainMap;
+        protected MainMapLayer2D mainMap;
 
         public float Zoom { get; set; }
 
@@ -26,6 +27,12 @@ namespace SatPlayer
         /// OnUpdade時に呼び出される関数のデリゲート
         /// </summary>
         public Action<IBackGround> Update { get; set; } = obj => { };
+
+        Vector IBackGround.Position
+        {
+            get => Position.ToScriptVector();
+            set => Position = value.ToAsdVector();
+        }
 
         public BackGround(MainMapLayer2D layer)
         {
@@ -46,9 +53,11 @@ namespace SatPlayer
 
         protected override void OnUpdate()
         {
-            Camera.Dst = mainMap.PlayerCamera.Dst;
-            Camera.Src = new asd.RectI((mainMap.PlayerCamera.Src.Position.To2DF() * Zoom).To2DI(), mainMap.PlayerCamera.Src.Size);
-
+            if (mainMap != null)
+            {
+                Camera.Dst = mainMap.PlayerCamera.Dst;
+                Camera.Src = new asd.RectI((mainMap.PlayerCamera.Src.Position.To2DF() * Zoom).To2DI(), mainMap.PlayerCamera.Src.Size);
+            }
             Update(this);
             base.OnUpdate();
         }
@@ -58,7 +67,7 @@ namespace SatPlayer
             BackGround backGround = new BackGround(layer);
             backGround.Position = backGroundIO.Position;
             backGround.Zoom = backGroundIO.Zoom;
-            if (backGroundIO.TexturePath.IndexOf(".csx") > -1)
+            if (backGroundIO.TexturePath.IndexOf(".bg") > -1)
             {
                 try
                 {

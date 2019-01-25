@@ -325,9 +325,9 @@ namespace SatCore.MapEditor
                 if (enumerator != null || PlayerNames.Count == 0 || asd.Engine.CurrentScene != RefMapEditor) return;
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
-                RefMapEditor.SaveMapData("temp.bmap");
+                RefMapEditor.SaveMapData("temp.map");
                 SatPlayer.Game.LoadPlayersData();
-                newScene = new SatPlayer.Game("temp.bmap", SatPlayer.Game.Players.Where(obj => PlayerNames.Any(obj2 => obj.Name == obj2.Name)).ToList(), PlayerPosition, isPreviewMode: true);
+                newScene = new SatPlayer.Game("temp.map", SatPlayer.Game.Players.Where(obj => PlayerNames.Any(obj2 => obj.Name == obj2.Name)).ToList(), PlayerPosition, isPreviewMode: true);
                 newScene.OnGameOver = (() =>
                 {
                     asd.Engine.ChangeScene(RefMapEditor);

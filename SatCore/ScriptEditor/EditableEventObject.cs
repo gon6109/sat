@@ -60,8 +60,27 @@ namespace SatCore.ScriptEditor
             isEdited = false;
         }
 
+        bool isChanging;
         [BoolInput("イベント状態")]
-        public new bool IsEvent { get => base.IsEvent; set => base.IsEvent = value; }
+        public new bool IsEvent
+        {
+            get => base.IsEvent;
+            set
+            {
+                base.IsEvent = value;
+                if (!isChanging)
+                {
+                    isChanging = true;
+                    var eventObjects = asd.Engine.CurrentScene.Layers.OfType<MainMapLayer2D>()?
+                        .FirstOrDefault()?.Objects.OfType<EditableEventObject>();
+                    foreach (var item in eventObjects)
+                    {
+                        item.IsEvent = value;
+                    }
+                }
+                isChanging = false;
+            }
+        }
 
         public bool IsSingle => false;
 
@@ -86,6 +105,36 @@ namespace SatCore.ScriptEditor
                 MoveCommands.Enqueue(moveCommand);
             }
             base.OnUpdate();
+        }
+
+        public new object Clone()
+        {
+            EditableEventObject clone = new EditableEventObject(refWorld);
+            clone.sensors = new Dictionary<string, Sensor>(sensors);
+            clone.childMapObjectData = new Dictionary<string, MapObject>(childMapObjectData);
+            clone.Effects = new Dictionary<string, Effect>(Effects);
+            clone.refWorld = refWorld;
+            clone.Update = Update;
+            clone.State = State;
+            clone.Clone(this);
+            clone.MapObjectType = MapObjectType;
+            try
+            {
+                clone.collisionShape.DrawingArea = new asd.RectF(new asd.Vector2DF(), clone.AnimationPart.First().Value.Textures.First().Size.To2DF());
+            }
+            catch (Exception e)
+            {
+                ErrorIO.AddError(e);
+            }
+            clone.CenterPosition = clone.collisionShape.DrawingArea.Size / 2;
+            if (MapObjectType == SatScript.MapObject.MapObjectType.Active)
+            {
+                clone.CollisionShape.GroupIndex = CollisionShape.GroupIndex;
+                clone.CollisionShape.MaskBits = CollisionShape.MaskBits;
+                clone.CollisionShape.CategoryBits = CollisionShape.CategoryBits;
+            }
+            clone.IsEvent = IsEvent;
+            return clone;
         }
 
         void Reset()

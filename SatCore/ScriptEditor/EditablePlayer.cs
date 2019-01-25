@@ -61,6 +61,7 @@ namespace SatCore.ScriptEditor
                     thread.Wait();
                     CollisionShape.DrawingArea = new asd.RectF(Position - CenterPosition + new asd.Vector2DF(5, 0), Texture.Size.To2DF() - new asd.Vector2DF(10, 0));
                     GroundShape.DrawingArea = new asd.RectF(CollisionShape.DrawingArea.X + 3, CollisionShape.DrawingArea.Vertexes[2].Y, CollisionShape.DrawingArea.Width - 3, 5);
+                    Position = Base.ScreenSize.To2DF() / 2; 
                 }
                 catch (Exception e)
                 {

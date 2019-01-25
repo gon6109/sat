@@ -116,7 +116,7 @@ namespace SatUI
             propertyPanel.AddProperty(mapProperty);
             code.Children.Add(new CodeEditor(loadFile.ScriptObject, "Code"));
             gridSplitter.IsEnabled = true;
-            codeColumn.Width = new GridLength(100);
+            codeColumn.Width = new GridLength(EditorPanel.ActualWidth / 2);
         }
 
         private void CreateEventObject_Click(object sender, RoutedEventArgs e)
@@ -129,7 +129,7 @@ namespace SatUI
             propertyPanel.AddProperty(mapProperty);
             code.Children.Add(new CodeEditor(loadFile.ScriptObject, "Code"));
             gridSplitter.IsEnabled = true;
-            codeColumn.Width = new GridLength(100);
+            codeColumn.Width = new GridLength(EditorPanel.ActualWidth / 2);
         }
 
         private void CreatePlayer_Click(object sender, RoutedEventArgs e)
@@ -142,7 +142,7 @@ namespace SatUI
             propertyPanel.AddProperty(mapProperty);
             code.Children.Add(new CodeEditor(loadFile.ScriptObject, "Code"));
             gridSplitter.IsEnabled = true;
-            codeColumn.Width = new GridLength(100);
+            codeColumn.Width = new GridLength(EditorPanel.ActualWidth / 2);
         }
 
         private void CreateBackGround_Click(object sender, RoutedEventArgs e)
@@ -155,7 +155,7 @@ namespace SatUI
             propertyPanel.AddProperty(mapProperty);
             code.Children.Add(new CodeEditor(loadFile.ScriptObject, "Code"));
             gridSplitter.IsEnabled = true;
-            codeColumn.Width = new GridLength(100);
+            codeColumn.Width = new GridLength(EditorPanel.ActualWidth / 2);
         }
 
         private void OpenFile_Click(object sender, RoutedEventArgs e)
@@ -163,8 +163,8 @@ namespace SatUI
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.FileName = "";
             openFileDialog.InitialDirectory = "";
-            openFileDialog.Filter = "All Readable File|*.bmap;*.mo;*.pd;*.ci;*.csx" +
-                "|Map File|*.bmap|Motion File|*.mo|Player Data File|*.pd|Character Image File|*.ci|MapObject Script|*.csx|All File|*.*";
+            openFileDialog.Filter = "All Readable File|*.map;*.pc;*.ci;*.bg;*.obj;*.eobj" +
+                "|Map File|*.map|Player Script|*.pc|Character Image File|*.ci|Map Object Script|*.obj|Event Object Script|*.eobj|Back Ground Script|*.bg|All File|*.*";
             openFileDialog.FilterIndex = 1;
             openFileDialog.RestoreDirectory = true;
 
@@ -172,11 +172,9 @@ namespace SatUI
 
             Reset(PropertyPanel.ResetMode.General);
 
-            if (openFileDialog.FileName.Contains(".bmap")) OpenMapFile(openFileDialog.FileName);
-            //else if (openFileDialog.FileName.Contains(".mo")) OpenMotionFile(openFileDialog.FileName);
-            //else if (openFileDialog.FileName.Contains(".pd")) OpenPlayerFile(openFileDialog.FileName);
+            if (openFileDialog.FileName.Contains(".map")) OpenMapFile(openFileDialog.FileName);
             else if (openFileDialog.FileName.Contains(".ci")) OpenCharacterImageFile(openFileDialog.FileName);
-            else if (openFileDialog.FileName.Contains(".csx")) OpenMapObjectFile(openFileDialog.FileName);
+            else OpenScriptFile(openFileDialog.FileName);
         }
 
         void OpenMapFile(string fileName)
@@ -210,15 +208,27 @@ namespace SatUI
             propertyPanel.AddProperty(mapProperty);
         }
 
-        void OpenMapObjectFile(string fileName)
+        void OpenScriptFile(string fileName)
         {
-            var loadFile = new SatCore.ScriptEditor.ScriptEditor(SatCore.ScriptEditor.ScriptEditor.ScriptType.MapObject ,fileName);
+            SatCore.ScriptEditor.ScriptEditor.ScriptType scriptType = new SatCore.ScriptEditor.ScriptEditor.ScriptType();
+
+            if (fileName.Contains(".obj")) scriptType = SatCore.ScriptEditor.ScriptEditor.ScriptType.MapObject;
+            else if (fileName.Contains(".eobj")) scriptType = SatCore.ScriptEditor.ScriptEditor.ScriptType.EventObject;
+            else if (fileName.Contains(".pc")) scriptType = SatCore.ScriptEditor.ScriptEditor.ScriptType.Player;
+            else if (fileName.Contains(".bg")) scriptType = SatCore.ScriptEditor.ScriptEditor.ScriptType.BackGround;
+            else
+            {
+                ErrorIO.AddError(new NotImplementedException("対応していない拡張子です。"));
+                return;
+            }
+
+            var loadFile = new SatCore.ScriptEditor.ScriptEditor(scriptType, fileName);
             asd.Engine.ChangeScene(loadFile);
-            Property mapProperty = new Property("Map Object", new object[] { loadFile, loadFile.ScriptObject });
+            Property mapProperty = new Property("Script", new object[] { loadFile, loadFile.ScriptObject });
             propertyPanel.AddProperty(mapProperty);
             code.Children.Add(new CodeEditor(loadFile.ScriptObject, "Code"));
             gridSplitter.IsEnabled = true;
-            codeColumn.Width = new GridLength(300);
+            codeColumn.Width = new GridLength(EditorPanel.ActualWidth / 2);
         }
 
         void OnChangeSelectedObject()
@@ -366,7 +376,7 @@ namespace SatUI
         {
             if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor != null) SaveMap();
             if (asd.Engine.CurrentScene as SatCore.CharacterImageEditor.CharacterImageEditor != null) SaveCharacterImage();
-            if (asd.Engine.CurrentScene as SatCore.ScriptEditor.ScriptEditor != null) SaveMapObject();
+            if (asd.Engine.CurrentScene as SatCore.ScriptEditor.ScriptEditor != null) SaveScript();
         }
 
         void SaveMap()
@@ -374,9 +384,9 @@ namespace SatUI
             if (((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Path == "" || ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Path == null)
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.FileName = "new.bmap";
+                saveFileDialog.FileName = "new.map";
                 saveFileDialog.InitialDirectory = "";
-                saveFileDialog.Filter = "Map File|*.bmap";
+                saveFileDialog.Filter = "Map File|*.map";
                 saveFileDialog.Title = "保存";
                 saveFileDialog.RestoreDirectory = true;
                 if (saveFileDialog.ShowDialog() != true) return;
@@ -401,15 +411,11 @@ namespace SatUI
             ((SatCore.CharacterImageEditor.CharacterImageEditor)asd.Engine.CurrentScene).SaveCharacterImage(((SatCore.CharacterImageEditor.CharacterImageEditor)asd.Engine.CurrentScene).Path);
         }
 
-        void SaveMapObject()
+        void SaveScript()
         {
             if (((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Path == "" || ((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Path == null)
             {
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.FileName = "new.csx";
-                saveFileDialog.InitialDirectory = "";
-                saveFileDialog.Filter = "Map Object Script|*.csx";
-                saveFileDialog.Title = "保存";
+                SaveFileDialog saveFileDialog = GetSaveFileDialog(((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Script);
                 saveFileDialog.RestoreDirectory = true;
                 if (saveFileDialog.ShowDialog() != true) return;
                 ((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Path = saveFileDialog.FileName;
@@ -417,19 +423,50 @@ namespace SatUI
             ((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).SaveScript(((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Path);
         }
 
+        SaveFileDialog GetSaveFileDialog(SatCore.ScriptEditor.ScriptEditor.ScriptType scriptType)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.InitialDirectory = "";
+            dialog.Title = "保存";
+            dialog.RestoreDirectory = true;
+            switch (scriptType)
+            {
+                case SatCore.ScriptEditor.ScriptEditor.ScriptType.MapObject:
+                    dialog.FileName = "new.obj";
+                    dialog.Filter = "Map Object Script|*.obj";
+                    break;
+                case SatCore.ScriptEditor.ScriptEditor.ScriptType.EventObject:
+                    dialog.FileName = "new.eobj";
+                    dialog.Filter = "Event Object Script|*.eobj";
+                    break;
+                case SatCore.ScriptEditor.ScriptEditor.ScriptType.Player:
+                    dialog.FileName = "new.pc";
+                    dialog.Filter = "Player Script|*.pc";
+                    break;
+                case SatCore.ScriptEditor.ScriptEditor.ScriptType.BackGround:
+                    dialog.FileName = "new.bg";
+                    dialog.Filter = "Back Ground Script|*.bg";
+                    break;
+                default:
+                    ErrorIO.AddError(new NotImplementedException("実装されていません:" + scriptType.ToString()));
+                    break;
+            }
+            return dialog;
+        }
+
         private void SaveAs_Click(object sender, RoutedEventArgs e)
         {
             if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor != null) SaveAsMap();
             if (asd.Engine.CurrentScene as SatCore.CharacterImageEditor.CharacterImageEditor != null) SaveAsCharacterImage();
-            if (asd.Engine.CurrentScene as SatCore.ScriptEditor.ScriptEditor != null) SaveAsMapObject();
+            if (asd.Engine.CurrentScene as SatCore.ScriptEditor.ScriptEditor != null) SaveAsScript();
         }
 
         void SaveAsMap()
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.FileName = "new.bmap";
+            saveFileDialog.FileName = "new.map";
             saveFileDialog.InitialDirectory = "";
-            saveFileDialog.Filter = "Map File|*.bmap";
+            saveFileDialog.Filter = "Map File|*.map";
             saveFileDialog.Title = "別名で保存";
             saveFileDialog.RestoreDirectory = true;
             if (saveFileDialog.ShowDialog() != true) return;
@@ -452,14 +489,9 @@ namespace SatUI
             ((SatCore.CharacterImageEditor.CharacterImageEditor)asd.Engine.CurrentScene).SaveCharacterImage(((SatCore.CharacterImageEditor.CharacterImageEditor)asd.Engine.CurrentScene).Path);
         }
 
-        void SaveAsMapObject()
+        void SaveAsScript()
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.FileName = "new.csx";
-            saveFileDialog.InitialDirectory = "";
-            saveFileDialog.Filter = "Map Object Script|*.csx";
-            saveFileDialog.Title = "保存";
-            saveFileDialog.RestoreDirectory = true;
+            SaveFileDialog saveFileDialog = GetSaveFileDialog(((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Script);
             if (saveFileDialog.ShowDialog() != true) return;
             ((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Path = saveFileDialog.FileName;
             ((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).SaveScript(((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Path);
@@ -548,7 +580,7 @@ namespace SatUI
         {
             if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor != null) SaveMap();
             if (asd.Engine.CurrentScene as SatCore.CharacterImageEditor.CharacterImageEditor != null) SaveCharacterImage();
-            if (asd.Engine.CurrentScene as SatCore.ScriptEditor.ScriptEditor != null) SaveMapObject();
+            if (asd.Engine.CurrentScene as SatCore.ScriptEditor.ScriptEditor != null) SaveScript();
         }
 
         private void Undo_CanExecute(object sender, CanExecuteRoutedEventArgs e)

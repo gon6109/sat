@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AlteseedScript.Common;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,6 +10,11 @@ namespace SatScript.BackGround
     /// </summary>
     public interface IBackGround
     {
+        /// <summary>
+        /// 座標
+        /// </summary>
+        Vector Position { get; set; }
+
         /// <summary>
         /// アニメーション状態
         /// </summary>

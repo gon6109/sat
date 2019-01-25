@@ -50,7 +50,7 @@ namespace SatCore.MapEditor
             }
         }
 
-        [FileInput("背景画像/Animation", "Readable File|*.png;*.csx|PNG File|*.png|Script File|*.csx")]
+        [FileInput("背景画像/Animation", "Readable File|*.png;*.bg|PNG File|*.png|Back Ground Script|*.bg")]
         public string TexturePath
         {
             get => _texturePath;
@@ -64,7 +64,7 @@ namespace SatCore.MapEditor
                     Texture = TextureManager.LoadTexture(value);
                     OnPropertyChanged();
                 }
-                else if (value.IndexOf(".csx") > -1)
+                else if (value.IndexOf(".bg") > -1)
                 {
                     try
                     {

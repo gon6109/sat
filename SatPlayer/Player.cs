@@ -180,9 +180,9 @@ namespace SatPlayer
 
         protected override void OnAdded()
         {
-            CenterPosition = Texture.Size.To2DF() / 2.0f;
+            CenterPosition = Texture?.Size.To2DF() / 2.0f ?? new asd.Vector2DF();
 
-            CollisionShape.DrawingArea = new asd.RectF(Position - CenterPosition + new asd.Vector2DF(5, 0), Texture.Size.To2DF() - new asd.Vector2DF(10, 0));
+            CollisionShape.DrawingArea = new asd.RectF(Position - CenterPosition + new asd.Vector2DF(5, 0), Texture?.Size.To2DF() ?? new asd.Vector2DF() - new asd.Vector2DF(10, 0));
             CollisionShape.Density = 2.5f;
             CollisionShape.Restitution = 0.0f;
             CollisionShape.Friction = 0.0f;
@@ -199,9 +199,9 @@ namespace SatPlayer
             if (Math.Abs(CollisionShape.Angle) > 1.0f) CollisionShape.AngularVelocity = -CollisionShape.Angle * 30.0f;
             GroundShape.DrawingArea = new asd.RectF(CollisionShape.DrawingArea.X + 3, CollisionShape.DrawingArea.Vertexes[2].Y, CollisionShape.DrawingArea.Width - 3, 5);
 
-            if (Layer is MainMapLayer2D)
+            if (Layer is MainMapLayer2D layer)
             {
-                IsColligedWithGround = ((MainMapLayer2D)Layer).CollisionShapes.Any(obj => obj.GetIsCollidedWith(GroundShape));
+                IsColligedWithGround = layer.CollisionShapes.Any(obj => obj.GetIsCollidedWith(GroundShape));
             }
 
             if (IsEvent)

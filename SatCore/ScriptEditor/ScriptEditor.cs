@@ -24,15 +24,17 @@ namespace SatCore.ScriptEditor
         public string Path { get; set; }
 
         [Button("オブジェクトをクリア")]
-        public void ClearMapObject()
+        public void ClearScriptObject()
         {
-            foreach (var item in MainLayer.Objects.Where(obj => obj is SatPlayer.MapObject))
+            if (ScriptObject.IsSingle) return;
+
+            foreach (var item in MainLayer.Objects.Where(obj => obj is IScriptObject || obj is MultiAnimationObject2D))
             {
                 item.Dispose();
             }
         }
 
-        public ScriptEditor(ScriptType scriptType ,string path = "")
+        public ScriptEditor(ScriptType scriptType, string path = "")
         {
             Path = path;
             Script = scriptType;
@@ -102,13 +104,9 @@ namespace SatCore.ScriptEditor
 
         protected override void OnUpdated()
         {
-            if (Mouse.LeftButton == asd.ButtonState.Push && ScriptObject.IsSuccessBuild)
+            if (Mouse.LeftButton == asd.ButtonState.Push && ScriptObject.IsSuccessBuild && !ScriptObject.IsSingle)
             {
-                if (ScriptObject.Clone() is asd.Object2D obj)
-                {
-                    obj.Position = Mouse.Position;
-                    MainLayer.AddObject(obj);
-                }
+                if (ScriptObject.Clone() is asd.Object2D obj) SetObject(obj);
             }
 
             foreach (asd.GeometryObject2D item in MainLayer.Objects.Where(obj => obj is asd.GeometryObject2D))
@@ -117,9 +115,32 @@ namespace SatCore.ScriptEditor
             }
 
             if ((float)asd.Engine.WindowSize.X / asd.Engine.WindowSize.Y >= (float)Base.ScreenSize.X / Base.ScreenSize.Y)
-                MainCamera.Dst = new asd.RectI((asd.Engine.WindowSize.X - Base.ScreenSize.X * asd.Engine.WindowSize.Y / Base.ScreenSize.Y) / 2, 0, Base.ScreenSize.X * asd.Engine.WindowSize.Y / Base.ScreenSize.Y, asd.Engine.WindowSize.Y);
-            else MainCamera.Dst = new asd.RectI(0, (asd.Engine.WindowSize.Y - Base.ScreenSize.Y * asd.Engine.WindowSize.X / Base.ScreenSize.X) / 2, asd.Engine.WindowSize.X, Base.ScreenSize.Y * asd.Engine.WindowSize.X / Base.ScreenSize.X);
+                MainCamera.Dst = new asd.RectI((asd.Engine.WindowSize.X - Base.ScreenSize.X * asd.Engine.WindowSize.Y / Base.ScreenSize.Y) / 2, 0,
+                    Base.ScreenSize.X * asd.Engine.WindowSize.Y / Base.ScreenSize.Y, asd.Engine.WindowSize.Y);
+            else MainCamera.Dst = new asd.RectI(0, (asd.Engine.WindowSize.Y - Base.ScreenSize.Y * asd.Engine.WindowSize.X / Base.ScreenSize.X) / 2,
+                asd.Engine.WindowSize.X, Base.ScreenSize.Y * asd.Engine.WindowSize.X / Base.ScreenSize.X);
             base.OnUpdated();
+        }
+
+        void SetObject(asd.Object2D obj)
+        {
+            if (obj is SatPlayer.MapObject mapObject)
+            {
+                if ((float)asd.Engine.WindowSize.X / asd.Engine.WindowSize.Y >= (float)Base.ScreenSize.X / Base.ScreenSize.Y)
+                    mapObject.Position = ((Mouse.Position - new asd.Vector2DF((asd.Engine.WindowSize.X - Base.ScreenSize.X * asd.Engine.WindowSize.Y / Base.ScreenSize.Y) / 2, 0)))
+                        * Base.ScreenSize.Y / asd.Engine.WindowSize.Y;
+                else mapObject.Position = (Mouse.Position - new asd.Vector2DF(0, (asd.Engine.WindowSize.Y - Base.ScreenSize.Y * asd.Engine.WindowSize.X / Base.ScreenSize.X) / 2))
+                        * Base.ScreenSize.X / asd.Engine.WindowSize.X;
+            }
+            else
+            {
+                if ((float)asd.Engine.WindowSize.X / asd.Engine.WindowSize.Y >= (float)Base.ScreenSize.X / Base.ScreenSize.Y)
+                    obj.Position = ((Mouse.Position - new asd.Vector2DF((asd.Engine.WindowSize.X - Base.ScreenSize.X * asd.Engine.WindowSize.Y / Base.ScreenSize.Y) / 2, 0)))
+                        * Base.ScreenSize.Y / asd.Engine.WindowSize.Y;
+                else obj.Position = (Mouse.Position - new asd.Vector2DF(0, (asd.Engine.WindowSize.Y - Base.ScreenSize.Y * asd.Engine.WindowSize.X / Base.ScreenSize.X) / 2))
+                        * Base.ScreenSize.X / asd.Engine.WindowSize.X;
+            }
+            MainLayer.AddObject(obj);
         }
 
         public void SaveScript(string path)

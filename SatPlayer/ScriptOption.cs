@@ -37,7 +37,7 @@ namespace SatPlayer
                 },
                 {"BackGround", new ScriptOption()
                 {
-                    UseNameSpaces = new List<string>{ "SatScript.Common", "SatScript.Player", "SatScript.MapObject", "AlteseedScript.Common" },
+                    UseNameSpaces = new List<string>{ "SatScript.Common", "SatScript.Player", "SatScript.MapObject", "SatScript.BackGround", "AlteseedScript.Common" },
                     Assemblies = new List<Assembly>{Assembly.GetAssembly(typeof(SatScript.MapObject.MapObject)), Assembly.GetAssembly(typeof(Vector))},
                     GlobalType = typeof(SatScript.BackGround.IBackGround)
                 }
