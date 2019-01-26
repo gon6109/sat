@@ -10,6 +10,7 @@ GlobalTypeで使う。
 | Position | ```Vector{get;set;}``` | 現在座標 | 
 | HP | ```int{get;set;}``` | HP初期値(100) |
 | State | ```string{get;set;}``` | アニメーション状態 |
+| Color | ```Color{get;set;}``` | 色 |
 | AddAnimationPart | ```void(string animationGroup, string extension, int sheets, string partName, int interval)``` | アニメーションパートを追加する |
 | MapObjectType | ```MapObjectType{get;set;}``` | マップオブジェクトのタイプ |
 | Collision | ```ICollision{get;}``` | 衝突判定情報 |

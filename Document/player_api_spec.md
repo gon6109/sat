@@ -8,6 +8,7 @@
 | Position | ```Vector{get;set;}``` | 現在座標 | 
 | HP | ```int{get;set;}``` | HP初期値(100) |
 | State | ```string{get;set;}``` | アニメーション状態 |
+| Color | ```Color{get;set;}``` | 色 |
 | Collision | ```ICollision{get;}``` | 衝突判定情報 |
 | AddAnimationPart | ```void(string animationGroup, string extension, int sheets, string partName, int interval)``` | アニメーションパートを追加する |
 | IsColligedWithGround | ```bool{get;}``` | 地面と接しているか | 
@@ -28,6 +29,7 @@
 | Position | ```Vector{get;}``` | 現在座標 | 
 | HP | ```int{get;}``` | HP初期値(100) |
 | State | ```string{get;}``` | アニメーション状態 |
+| Color | ```Color{get;}``` | 色 |
 | Collision | ```ICollision{get;}``` | 衝突判定情報 |
 | IsColligedWithGround | ```bool{get;}``` | 地面と接しているか | 
 | Velocity | ```Vector{get;}``` | 速度 | 

@@ -7,6 +7,7 @@ GlobalTypeで使う。
 | --- | --- | --- |
 | Tag | ```string{get;set;}``` | オブジェクト認識用 | 
 | Position | ```Vector{get;set;}``` | 現在座標 | 
+| Color | ```Color{get;set;}``` | 色 |
 | HP | ```int{get;set;}``` | HP初期値(100) |
 | State | ```string{get;set;}``` | アニメーション状態 |
 | AddAnimationPart | ```void(string animationGroup, string extension, int sheets, string partName, int interval)``` | アニメーションパートを追加する |
@@ -40,6 +41,7 @@ GlobalTypeで使う。
 | Position | ```Vector{get;}``` | 現在座標 | 
 | HP | ```int{get;}``` | HP初期値(100) |
 | State | ```string{get;}``` | アニメーション状態 |
+| Color | ```Color{get;}``` | 色 |
 | MapObjectType | ```MapObjectType{get;}``` | マップオブジェクトのタイプ |
 | Collision | ```ICollision{get;}``` | 衝突判定情報 |
 | Velocity | ```Vector{get;}``` | 速度 | 
