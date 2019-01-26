@@ -8,7 +8,7 @@ using SatIO;
 using BaseComponent;
 using System.Collections.Concurrent;
 using SatScript.MapObject;
-using AlteseedScript.Common;
+using AltseedScript.Common;
 using SatScript.Collision;
 
 namespace SatPlayer

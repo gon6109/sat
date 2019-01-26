@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AlteseedScript.Common;
+using AltseedScript.Common;
 using SatPlayer;
 using SatScript.Collision;
 

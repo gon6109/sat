@@ -9,7 +9,7 @@ using SatIO;
 using SatPlayer.MapEvent;
 using PhysicAltseed;
 using SatScript.MapObject;
-using AlteseedScript.Common;
+using AltseedScript.Common;
 using Microsoft.CodeAnalysis.Scripting;
 
 namespace SatPlayer
@@ -141,7 +141,7 @@ namespace SatPlayer
             Update(this);
         }
 
-        public int GetInputState(AlteseedScript.Common.Inputs inputs)
+        public int GetInputState(AltseedScript.Common.Inputs inputs)
             => inputState[(BaseComponent.Inputs)inputs];
 
         void IActor.OnUpdate()

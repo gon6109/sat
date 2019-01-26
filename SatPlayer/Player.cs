@@ -7,7 +7,7 @@ using PhysicAltseed;
 using System.Runtime.Serialization.Formatters.Binary;
 using BaseComponent;
 using SatScript.Player;
-using AlteseedScript.Common;
+using AltseedScript.Common;
 using SatScript.Collision;
 
 namespace SatPlayer
@@ -261,10 +261,10 @@ namespace SatPlayer
         /// </summary>
         /// <param name="inputs"></param>
         /// <returns></returns>
-        public int GetInputState(AlteseedScript.Common.Inputs inputs)
+        public int GetInputState(AltseedScript.Common.Inputs inputs)
         {
             if (IsEvent) return inputState[(BaseComponent.Inputs)inputs];
-            else return AlteseedScript.Common.Input.GetInputState(inputs);
+            else return AltseedScript.Common.Input.GetInputState(inputs);
         }
 
         void IActor.OnUpdate()

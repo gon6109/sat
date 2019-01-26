@@ -1,4 +1,4 @@
-﻿using AlteseedScript.Common;
+﻿using AltseedScript.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,5 +28,10 @@ namespace SatPlayer
         {
             return new Vector(vector.X, vector.Y);
         }
+
+        //public static Color ToScriptColor(this asd.Color color)
+        //{
+
+        //}
     }
 }

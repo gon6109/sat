@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SatScript.BackGround;
-using AlteseedScript.Common;
+using AltseedScript.Common;
 
 namespace SatPlayer
 {

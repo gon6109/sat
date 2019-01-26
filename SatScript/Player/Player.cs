@@ -1,4 +1,4 @@
-﻿using AlteseedScript.Common;
+﻿using AltseedScript.Common;
 using SatScript.Collision;
 using System;
 using System.Collections.Generic;
