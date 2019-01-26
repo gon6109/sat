@@ -56,6 +56,8 @@ namespace SatPlayer
 
         PhysicalShape IActor.CollisionShape => CollisionShape;
 
+        Color IEventObject.Color { get => Color.ToScriptColor(); set => Color = value.ToAsdColor(); }
+
         protected EventObject()
         {
             MoveCommands = new Queue<Dictionary<BaseComponent.Inputs, bool>>();

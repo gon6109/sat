@@ -133,6 +133,7 @@ namespace SatPlayer
         PhysicalShape IActor.CollisionShape => CollisionShape;
 
         public asd.RectangleShape GroundShape { get; }
+        Color IPlayer.Color { get => Color.ToScriptColor(); set => Color = value.ToAsdColor(); }
 
         private int hP;
 

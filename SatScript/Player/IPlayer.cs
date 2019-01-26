@@ -32,6 +32,11 @@ namespace SatScript.Player
         string State { get; set; }
 
         /// <summary>
+        /// 色
+        /// </summary>
+        Color Color { get; set; }
+
+        /// <summary>
         /// 衝突情報
         /// </summary>
         ICollision Collision { get; }

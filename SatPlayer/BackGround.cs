@@ -34,6 +34,8 @@ namespace SatPlayer
             set => Position = value.ToAsdVector();
         }
 
+        Color IBackGround.Color { get => Color.ToScriptColor(); set => Color = value.ToAsdColor(); }
+
         public BackGround(MainMapLayer2D layer)
         {
             Camera = new asd.CameraObject2D();

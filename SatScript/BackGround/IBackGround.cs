@@ -21,6 +21,11 @@ namespace SatScript.BackGround
         string State { get; set; }
 
         /// <summary>
+        /// 色
+        /// </summary>
+        Color Color { get; set; }
+
+        /// <summary>
         /// OnUpdate時に呼び出される関数のデリゲート
         /// </summary>
         Action<IBackGround> Update { get; set; }

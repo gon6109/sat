@@ -167,6 +167,8 @@ namespace SatPlayer
         /// </summary>
         public Dictionary<string, ISensor> Sensors => sensors.ToDictionary(obj => obj.Key, obj => (ISensor)obj.Value);
 
+        Color IMapObject.Color { get => Color.ToScriptColor(); set => Color = value.ToAsdColor(); }
+
         protected Dictionary<string, Sensor> sensors;
         protected Dictionary<string, MapObject> childMapObjectData;
         protected PhysicalWorld refWorld;

@@ -32,6 +32,11 @@ namespace SatScript.MapObject
         string State { get; set; }
 
         /// <summary>
+        /// 色
+        /// </summary>
+        Color Color { get; set; }
+
+        /// <summary>
         /// アニメーションパートを追加する
         /// </summary>
         /// <param name="animationGroup">ファイル名</param>

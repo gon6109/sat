@@ -52,6 +52,11 @@ namespace SatScript.MapObject
         public string State => _mapObjectImp.State;
 
         /// <summary>
+        /// 色
+        /// </summary>
+        public Color Color => _mapObjectImp.Color;
+
+        /// <summary>
         /// MapObjectのタイプ
         /// </summary>
         public MapObjectType MapObjectType => _mapObjectImp.MapObjectType;

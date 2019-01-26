@@ -53,6 +53,8 @@ namespace SatScript.Player
         /// </summary>
         public string State => _playerImp.State;
 
+        public Color Color => _playerImp.Color;
+
         /// <summary>
         /// 衝突情報
         /// </summary>
