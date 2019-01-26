@@ -89,7 +89,8 @@ namespace SatPlayer
         }
 
         protected asd.RectangleShape collisionShape;
-        public PhysicalRectangleShape CollisionShape { get => collisionShape as PhysicalRectangleShape; }
+        public asd.RectangleShape GetCoreShape() => collisionShape;
+        public PhysicalRectangleShape CollisionShape => collisionShape as PhysicalRectangleShape;
 
         /// <summary>
         /// エフェクト一覧
@@ -142,7 +143,7 @@ namespace SatPlayer
         /// <summary>
         /// 衝突情報
         /// </summary>
-        public ICollision Collision => throw new NotImplementedException();
+        public ICollision Collision { get; set; }
 
         /// <summary>
         /// 速度
@@ -259,8 +260,6 @@ namespace SatPlayer
                 base.Position = CollisionShape.CenterPosition + CollisionShape.DrawingArea.Position;
                 if (Math.Abs(CollisionShape.Angle) > 1.0f && !IsAllowRotation) CollisionShape.AngularVelocity = -CollisionShape.Angle * 30.0f;
             }
-
-            foreach (var item in sensors) item.Value.Update(this);
 
             Update(this);
 
@@ -398,33 +397,23 @@ namespace SatPlayer
                 set => circleShape.OuterDiameter = value * 2;
             }
 
-            public bool IsColligedWithCollisions { get; set; }
-            public bool IsColligedWithPlayer { get; set; }
-            public bool IsColligedWithMapObjects { get; set; }
-
-            public ICollision Collision => throw new NotImplementedException();
+            /// <summary>
+            /// 衝突情報
+            /// </summary>
+            public ICollision Collision { get; set; }
 
             public Sensor(asd.Vector2DF sensorPosition, float diameter)
             {
                 circleShape = new asd.CircleShape();
                 position = sensorPosition;
                 circleShape.OuterDiameter = diameter;
-                IsColligedWithCollisions = false;
-                IsColligedWithMapObjects = false;
-                IsColligedWithPlayer = false;
             }
 
-            public void Update(MapObject mapObject)
-            {
-                circleShape.Position = mapObject.Position + position;
-                IsColligedWithCollisions = mapObject.RefMainMapLayer2D.CollisionShapes.Any(obj => obj.GetIsCollidedWith(circleShape));
-                IsColligedWithMapObjects = mapObject.RefMainMapLayer2D.MapObjects.Any(obj =>
-                    {
-                        if (obj.MapObjectType == MapObjectType.Passive) return false;
-                        return obj.CollisionShape.GetIsCollidedWith(circleShape);
-                    });
-                IsColligedWithPlayer = mapObject.RefMainMapLayer2D.Player != null ? mapObject.RefMainMapLayer2D.Player.CollisionShape.GetIsCollidedWith(circleShape) : false;
-            }
+            public bool GetIsCollidedWith(asd.Shape shape)
+                => circleShape.GetIsCollidedWith(shape);
+
+            public bool GetIsCollidedWith(PhysicalShape shape)
+                => shape.GetIsCollidedWith(circleShape);
         }
     }
 }

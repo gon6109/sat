@@ -63,7 +63,7 @@ namespace SatScript.Player
         /// <summary>
         /// 地面と接しているか
         /// </summary>
-        bool IsColligedWithGround => _playerImp.IsColligedWithGround;
+        bool IsCollidedWithGround => _playerImp.IsCollidedWithGround;
 
         /// <summary>
         /// 速度

@@ -240,6 +240,7 @@ namespace SatPlayer
             }
 
             if (!SavePoints.Any(obj => obj.IsActive)) PhysicalWorld?.Update();
+            UpdateCollision();
         }
 
         protected override void OnUpdated()
@@ -260,8 +261,8 @@ namespace SatPlayer
                     {
                         var scene = asd.Engine.CurrentScene as Game;
                         scene?.OnChangeMapEvent
-                            (item.MoveToMap, 
-                            scene.CanUsePlayers, 
+                            (item.MoveToMap,
+                            scene.CanUsePlayers,
                             item.IsUseMoveToID ? new asd.Vector2DF() : item.MoveToPosition,
                             item.IsUseMoveToID ? item.MoveToID : -1);
                         IsUpdated = false;
@@ -281,6 +282,59 @@ namespace SatPlayer
             UpdateDamage();
 
             base.OnUpdated();
+        }
+
+        protected void UpdateCollision()
+        {
+            //初期化
+            Player.Collision = new Collision();
+            foreach (var item in Objects.OfType<MapObject>())
+            {
+                item.Collision = new Collision();
+                foreach (var item2 in item.Sensors)
+                {
+                    if (item2.Value is MapObject.Sensor sensor) sensor.Collision = new Collision();
+                }
+            }
+
+            //Player<=>MapObject,EventObject
+            if (Player.Collision is Collision playerCollision) playerCollision.ColligingMapObjectTags = Objects.OfType<MapObject>().Where(obj =>
+            {
+                bool result = Player.CollisionShape.GetIsCollidedWith(obj.GetCoreShape());
+                if (obj.Collision is Collision collision) collision.IsCollidedWithPlayer = result;
+                return result;
+            }).Select(obj => obj.Tag).Distinct();
+
+            //Player=>Obstacle
+            if (Player.Collision is Collision playerCollision2) playerCollision2.IsCollidedWithObstacle = CollisionShapes.Any(obj => Player.CollisionShape.GetIsCollidedWith(obj));
+
+            //MapObject,EventObject=>Obstacle
+            foreach (var item in Objects.OfType<MapObject>())
+            {
+                if (item.Collision is Collision mapObjectCollision) mapObjectCollision.IsCollidedWithObstacle = CollisionShapes.Any(obj => obj.GetIsCollidedWith(item.GetCoreShape()));
+            }
+
+            //Sensor=>All
+            foreach (var item in Objects.OfType<MapObject>().SelectMany(obj => obj.Sensors).OfType<MapObject.Sensor>())
+            {
+                if (item.Collision is Collision collision)
+                {
+                    collision.IsCollidedWithObstacle = CollisionShapes.Any(obj => item.GetIsCollidedWith(obj));
+                    collision.IsCollidedWithPlayer = item.GetIsCollidedWith((PhysicalShape)Player.CollisionShape);
+                    collision.ColligingMapObjectTags = Objects.OfType<MapObject>().Where(obj =>
+                        item.GetIsCollidedWith(obj.GetCoreShape())).Select(obj => obj.Tag).Distinct();
+                }
+            }
+
+            //MapObject=>MapObject
+            foreach (var item in Objects.OfType<MapObject>())
+            {
+                if (item.Collision is Collision collision)
+                {
+                    collision.ColligingMapObjectTags = Objects.OfType<MapObject>().Where(obj =>
+                        item.GetCoreShape().GetIsCollidedWith(obj.GetCoreShape())).Select(obj => obj.Tag).Distinct();
+                }
+            }
         }
 
         void UpdateDamage()

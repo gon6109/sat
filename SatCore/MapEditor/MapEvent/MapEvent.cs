@@ -582,7 +582,7 @@ namespace SatCore.MapEditor.MapEvent
                 }
             }
 
-            public bool IsColligedWithGround
+            public bool IsCollidedWithGround
             {
                 get
                 {

@@ -139,7 +139,7 @@ namespace SatPlayer
         {
 
             if (refPlayer.CollisionShape.GetIsCollidedWith(CollisionShape) && Input.GetInputState(Inputs.A) == 1 && !isCome
-                && refPlayer.IsColligedWithGround && MessageLayer2D.Count == 0)
+                && refPlayer.IsCollidedWithGround && MessageLayer2D.Count == 0)
             {
                 bool temp = true;
                 if (KeyScriptPath != "")

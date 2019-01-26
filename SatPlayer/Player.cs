@@ -65,7 +65,7 @@ namespace SatPlayer
         /// <summary>
         /// 地面と接しているか
         /// </summary>
-        public bool IsColligedWithGround { get; private set; }
+        public bool IsCollidedWithGround { get; private set; }
 
         /// <summary>
         /// イベント時か
@@ -113,7 +113,7 @@ namespace SatPlayer
         /// <summary>
         /// 衝突情報
         /// </summary>
-        public ICollision Collision => throw new NotImplementedException();
+        public ICollision Collision { get; set; }
 
         /// <summary>
         /// 速度
@@ -168,7 +168,7 @@ namespace SatPlayer
             CameraGroup = 1;
             base.Position = new asd.Vector2DF();
             Effects = new Dictionary<string, Effect>();
-            IsColligedWithGround = false;
+            IsCollidedWithGround = false;
             DamageRequests = new Queue<DamageRect>();
             DirectDamageRequests = new Queue<DirectDamage>();
             MoveCommands = new Queue<Dictionary<BaseComponent.Inputs, bool>>();
@@ -202,7 +202,7 @@ namespace SatPlayer
 
             if (Layer is MainMapLayer2D layer)
             {
-                IsColligedWithGround = layer.CollisionShapes.Any(obj => obj.GetIsCollidedWith(GroundShape));
+                IsCollidedWithGround = layer.CollisionShapes.Any(obj => obj.GetIsCollidedWith(GroundShape));
             }
 
             if (IsEvent)

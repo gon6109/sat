@@ -9,12 +9,12 @@ namespace SatScript.Collision
         /// <summary>
         /// 壁・床と衝突しているか
         /// </summary>
-        bool IsColligedWithObstacle { get; }
+        bool IsCollidedWithObstacle { get; }
 
         /// <summary>
         /// プレイヤーと衝突しているか
         /// </summary>
-        bool IsColligedWithPlayer { get; }
+        bool IsCollidedWithPlayer { get; }
 
         /// <summary>
         /// 衝突しているMapObject/Eventobjectのタグ

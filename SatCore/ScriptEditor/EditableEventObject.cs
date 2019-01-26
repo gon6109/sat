@@ -77,8 +77,8 @@ namespace SatCore.ScriptEditor
                     {
                         item.IsEvent = value;
                     }
+                    isChanging = false;
                 }
-                isChanging = false;
             }
         }
 
@@ -104,6 +104,7 @@ namespace SatCore.ScriptEditor
                 }
                 MoveCommands.Enqueue(moveCommand);
             }
+
             base.OnUpdate();
         }
 

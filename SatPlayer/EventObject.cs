@@ -38,7 +38,7 @@ namespace SatPlayer
         /// <summary>
         /// 地面と接しているか
         /// </summary>
-        public virtual bool IsColligedWithGround { get; private set; }
+        public virtual bool IsCollidedWithGround { get; private set; }
 
         public Queue<Dictionary<BaseComponent.Inputs, bool>> MoveCommands { get; private set; }
         Dictionary<BaseComponent.Inputs, int> inputState;
@@ -117,15 +117,18 @@ namespace SatPlayer
                 inputState[item] = 0;
             }
             GroundShape = new asd.RectangleShape();
+            UpdateGroudShape();
         }
 
         protected override void OnUpdate()
         {
             base.OnUpdate();
 
-            if (Layer is MainMapLayer2D)
+            UpdateGroudShape();
+
+            if (Layer is MainMapLayer2D layer)
             {
-                IsColligedWithGround = ((MainMapLayer2D)Layer).CollisionShapes.Any(obj => obj.GetIsCollidedWith(GroundShape));
+                IsCollidedWithGround = layer.CollisionShapes.Any(obj => obj.GetIsCollidedWith(GroundShape));
             }
 
             if (IsEvent)
@@ -149,6 +152,11 @@ namespace SatPlayer
         void IActor.OnUpdate()
         {
             OnUpdate();
+        }
+
+        protected void UpdateGroudShape()
+        {
+            GroundShape.DrawingArea = new asd.RectF(CollisionShape.DrawingArea.X + 3, CollisionShape.DrawingArea.Vertexes[2].Y, CollisionShape.DrawingArea.Width - 3, 5);
         }
 
         public new object Clone()
