@@ -29,9 +29,24 @@ namespace SatPlayer
             return new Vector(vector.X, vector.Y);
         }
 
-        //public static Color ToScriptColor(this asd.Color color)
-        //{
+        /// <summary>
+        /// スクリプト用Color型に変換する
+        /// </summary>
+        /// <param name="color">asd.Color</param>
+        /// <returns></returns>
+        public static Color ToScriptColor(this asd.Color color)
+        {
+            return new Color(color.R, color.G, color.B, color.A);
+        }
 
-        //}
+        /// <summary>
+        /// asd.Color型に変換する
+        /// </summary>
+        /// <param name="color">スクリプト用Color</param>
+        /// <returns></returns>
+        public static asd.Color ToAsdColor(this Color color)
+        {
+            return new asd.Color(color.R, color.G, color.B, color.A);
+        }
     }
 }

@@ -44,10 +44,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Input.cs" />
+    <Compile Include="Common\Color.cs" />
+    <Compile Include="Common\Input.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sound.cs" />
-    <Compile Include="Vector.cs" />
+    <Compile Include="Common\Sound.cs" />
+    <Compile Include="Common\Vector.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseComponent\BaseComponent.csproj">
@@ -55,5 +56,6 @@
       <Name>BaseComponent</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
