@@ -2,6 +2,7 @@
 ## SatScript.IMapObject
 スクリプト用インターフェース
 GlobalTypeで使う。
+
 | Member | Type | 概要 |
 | --- | --- | --- |
 | Tag | ```string{get;set;}``` | オブジェクト認識用 | 
@@ -31,6 +32,7 @@ GlobalTypeで使う。
 | Radius | ```float{get;set;}``` | センサーサイズ(半径) |
 ## SatScript.MapObject
 各スクリプトからMapObject(EventObject)の情報を取得するためのAPI
+
 | Member | Type | 概要 |
 | --- | --- | --- |
 | MapObjects | ```static IEnumerable<MapObject>``` | 現在稼働しているMapObject |

@@ -8,6 +8,7 @@
 | Collision | 衝突判定情報を提供する | T | T | F | T |
 ## GlobalType一覧
 直接オブジェクトのメンバを触れないようインターフェースを定義する。
+
 | GlobalType | 概要 | 
 | ---- | ---- |
 | IMapObject | MapObject用 |

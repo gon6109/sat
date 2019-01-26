@@ -1,6 +1,7 @@
 # Player API仕様
 ## SatScript.IPlayer
 スクリプト用インターフェース
+
 | Member | Type | 概要 |
 | --- | --- | --- |
 | Name | ```string{get;set;}``` | キャラクター名 | 
@@ -19,6 +20,7 @@
 | IsEvent | ```bool{get;}``` | イベント時か |
 ## SatScript.Player
 各スクリプトからPlayerの情報を取得するためのAPI
+
 | Member | Type | 概要 |
 | --- | --- | --- |
 | Players | ```static IEnumerable<string>{get;}``` | 使用されているキャラ名 |

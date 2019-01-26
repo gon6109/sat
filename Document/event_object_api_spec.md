@@ -3,6 +3,7 @@
 スクリプト用インターフェース
 GlobalTypeで使う。
 基本的には、MapObjectと共通。(内部的にはMapObjectの継承であるため)
+
 | Member | Type | 概要 |
 | --- | --- | --- |
 | Tag | ```string{get;set;}``` | オブジェクト認識用 | 
