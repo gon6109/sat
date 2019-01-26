@@ -49,6 +49,9 @@ GlobalTypeで使う。
 | MapObjectType | ```MapObjectType{get;}``` | マップオブジェクトのタイプ |
 | Collision | ```ICollision{get;}``` | 衝突判定情報 |
 | Velocity | ```Vector{get;}``` | 速度 | 
+| CollisionGroup | ```short{get;}``` | 衝突グループ |
+| CollisionCategory | ```ushort{get;}``` | 衝突カテゴリー |
+| CollisionMask | ```ushort{get;}``` | 衝突カテゴリー用マスク | 
 | IsAllowRotation | ```bool{get;}``` | 回転を許可する | 
 | IsReceiveDamage | ```bool{get;}``` | ダメージを受けるか |
 | Camp | ```OwnerType{get;}``` | 陣営 |
