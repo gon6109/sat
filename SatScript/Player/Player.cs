@@ -53,6 +53,9 @@ namespace SatScript.Player
         /// </summary>
         public string State => _playerImp.State;
 
+        /// <summary>
+        /// 色
+        /// </summary>
         public Color Color => _playerImp.Color;
 
         /// <summary>
