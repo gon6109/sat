@@ -170,6 +170,33 @@ namespace SatPlayer
 
         Color IMapObject.Color { get => Color.ToScriptColor(); set => Color = value.ToAsdColor(); }
 
+        public short CollisionGroup
+        {
+            get => CollisionShape?.GroupIndex ?? 0;
+            set
+            {
+                if (CollisionShape != null) CollisionShape.GroupIndex = value;
+            }
+        }
+
+        public ushort CollisionCategory
+        {
+            get => CollisionShape?.CategoryBits ?? 0;
+            set
+            {
+                if (CollisionShape != null) CollisionShape.CategoryBits = value;
+            }
+        }
+
+        public ushort CollisionMask
+        {
+            get => CollisionShape?.MaskBits ?? 0;
+            set
+            {
+                if (CollisionShape != null) CollisionShape.MaskBits = value;
+            }
+        }
+
         protected Dictionary<string, Sensor> sensors;
         protected Dictionary<string, MapObject> childMapObjectData;
         protected PhysicalWorld refWorld;
@@ -370,6 +397,9 @@ namespace SatPlayer
         /// <param name="position">力を加える場所の相対座標</param>
         public void SetForce(Vector direct, Vector position)
             => CollisionShape?.SetForce(direct.ToAsdVector(), position.ToAsdVector());
+
+        public void SetImpulse(Vector direct, Vector position)
+            => CollisionShape?.SetImpulse(direct.ToAsdVector(), position.ToAsdVector());
 
         /// <summary>
         /// センサー

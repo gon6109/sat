@@ -74,6 +74,28 @@ namespace SatScript.MapObject
         void SetForce(Vector direct, Vector position);
 
         /// <summary>
+        /// 衝撃を加える
+        /// </summary>
+        /// <param name="direct">衝撃の強さ・向き</param>
+        /// <param name="position">衝撃を加える場所の相対座標</param>
+        void SetImpulse(Vector direct, Vector position);
+
+        /// <summary>
+        /// 衝突グループ
+        /// </summary>
+        short CollisionGroup { get; set; }
+
+        /// <summary>
+        /// 衝突カテゴリー
+        /// </summary>
+        ushort CollisionCategory { get; set; }
+
+        /// <summary>
+        /// 衝突カテゴリー用マスク
+        /// </summary>
+        ushort CollisionMask { get; set; }
+
+        /// <summary>
         /// 回転を許可するか
         /// </summary>
         bool IsAllowRotation { get; set; }

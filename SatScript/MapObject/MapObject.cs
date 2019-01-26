@@ -72,6 +72,21 @@ namespace SatScript.MapObject
         public Vector Velocity => _mapObjectImp.Velocity;
 
         /// <summary>
+        /// 衝突グループ
+        /// </summary>
+        public short CollisionGroup => _mapObjectImp.CollisionGroup;
+
+        /// <summary>
+        /// 衝突カテゴリー
+        /// </summary>
+        public ushort CollisionCategory => _mapObjectImp.CollisionCategory;
+
+        /// <summary>
+        /// 衝突カテゴリー用マスク
+        /// </summary>
+        public ushort CollisionMask => _mapObjectImp.CollisionMask;
+
+        /// <summary>
         /// 回転を許可するか
         /// </summary>
         public bool IsAllowRotation => _mapObjectImp.IsAllowRotation;
