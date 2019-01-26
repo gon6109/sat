@@ -63,7 +63,7 @@ namespace SatUI
             host = new ScriptOjectRoslynHost(
                 ScriptOption.ScriptOptions[BindingSource.ScriptOptionName].GlobalType,
                 additionalAssemblies: additionalAssemblies,
-                references: RoslynHostReferences.Default.With(
+                references: RoslynHostReferences.Empty.With(
                     imports: ScriptOption.ScriptOptions[BindingSource.ScriptOptionName].UseNameSpaces,
                     assemblyReferences: ScriptOption.ScriptOptions[BindingSource.ScriptOptionName].Assemblies)
             );
