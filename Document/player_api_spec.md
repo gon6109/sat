@@ -14,6 +14,7 @@
 | IsColligedWithGround | ```bool{get;}``` | 地面と接しているか | 
 | Velocity | ```Vector{get;set;}``` | 速度 | 
 | SetForce | ```void(Vector direct, Vector position)``` | 指定点に力を加える |
+| SetImpulse | ```void(Vector direct, Vector position)``` | 指定点に衝撃を加える |
 | Update | ```Action<IPlayer>{get;set;}``` | OnUpdate時に行われるデリゲート |
 | GetInputState | ```int(Inputs inputs)``` | 入力状態を取得（Event対応) |
 | LoadEffect | ```void(string animatonGroup, string extension, int sheets, string name, int interval)``` | エフェクトをロードする |

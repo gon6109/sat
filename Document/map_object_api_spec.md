@@ -15,6 +15,10 @@ GlobalTypeで使う。
 | Collision | ```ICollision{get;}``` | 衝突判定情報 |
 | Velocity | ```Vector{get;set;}``` | 速度 | 
 | SetForce | ```void(Vector direct, Vector position)``` | 指定点に力を加える |
+| SetImpulse | ```void(Vector direct, Vector position)``` | 指定点に衝撃を加える |
+| CollisionGroup | ```short{get;set;}``` | 衝突グループ |
+| CollisionCategory | ```ushort{get;set;}``` | 衝突カテゴリー |
+| CollisionMask | ```ushort{get;set;}``` | 衝突カテゴリー用マスク | 
 | IsAllowRotation | ```bool{get;set;}``` | 回転を許可する | 
 | Sensors | ```Dictionary<string, ISensor>{get;}``` | センサー情報を設定・取得 |
 | Update | ```Action<IMapObject>{get;set;}``` | OnUpdate時に行われるデリゲート |
