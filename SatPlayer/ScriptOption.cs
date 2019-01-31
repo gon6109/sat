@@ -23,29 +23,29 @@ namespace SatPlayer
             {
                 {"MapObject", new ScriptOption()
                 {
-                    UseNameSpaces = new List<string>{ "SatScript.Common", "SatScript.Player", "SatScript.Collision", "SatScript.MapObject", "AltseedScript.Common"},
-                    Assemblies = new List<Assembly>{Assembly.GetAssembly(typeof(SatScript.MapObject.MapObject)), Assembly.GetAssembly(typeof(Vector)), Assembly.GetAssembly(typeof(List<>))},
+                    UseNameSpaces = new List<string>{ "SatScript.Common", "SatScript.Player", "SatScript.Collision", "SatScript.MapObject", "AltseedScript.Common" },
+                    Assemblies = new List<Assembly>{Assembly.GetAssembly(typeof(SatScript.MapObject.MapObject)), Assembly.GetAssembly(typeof(Vector)), Assembly.GetAssembly(typeof(List<>)), Assembly.GetAssembly(typeof(Enumerable)) },
                     GlobalType = typeof(SatScript.MapObject.IMapObject)
                 }
                 },
                 {"EventObject", new ScriptOption()
                 {
                     UseNameSpaces = new List<string>{ "SatScript.Common", "SatScript.Player", "SatScript.Collision", "SatScript.MapObject", "AltseedScript.Common" },
-                    Assemblies = new List<Assembly>{Assembly.GetAssembly(typeof(SatScript.MapObject.MapObject)), Assembly.GetAssembly(typeof(Vector)), Assembly.GetAssembly(typeof(List<>))},
+                    Assemblies = new List<Assembly>{Assembly.GetAssembly(typeof(SatScript.MapObject.MapObject)), Assembly.GetAssembly(typeof(Vector)), Assembly.GetAssembly(typeof(List<>)), Assembly.GetAssembly(typeof(Enumerable)) },
                     GlobalType = typeof(SatScript.MapObject.IEventObject)
                 }
                 },
                 {"BackGround", new ScriptOption()
                 {
                     UseNameSpaces = new List<string>{ "SatScript.Common", "SatScript.Player", "SatScript.MapObject", "SatScript.BackGround", "AltseedScript.Common" },
-                    Assemblies = new List<Assembly>{Assembly.GetAssembly(typeof(SatScript.MapObject.MapObject)), Assembly.GetAssembly(typeof(Vector)), Assembly.GetAssembly(typeof(List<>))},
+                    Assemblies = new List<Assembly>{Assembly.GetAssembly(typeof(SatScript.MapObject.MapObject)), Assembly.GetAssembly(typeof(Vector)), Assembly.GetAssembly(typeof(List<>)), Assembly.GetAssembly(typeof(Enumerable)) },
                     GlobalType = typeof(SatScript.BackGround.IBackGround)
                 }
                 },
                 {"Player", new ScriptOption()
                 {
                     UseNameSpaces = new List<string>{ "SatScript.Common", "SatScript.Player", "SatScript.Collision", "SatScript.MapObject", "AltseedScript.Common" },
-                    Assemblies = new List<Assembly>{Assembly.GetAssembly(typeof(SatScript.MapObject.MapObject)), Assembly.GetAssembly(typeof(Vector)), Assembly.GetAssembly(typeof(List<>))},
+                    Assemblies = new List<Assembly>{Assembly.GetAssembly(typeof(SatScript.MapObject.MapObject)), Assembly.GetAssembly(typeof(Vector)), Assembly.GetAssembly(typeof(List<>)), Assembly.GetAssembly(typeof(Enumerable)) },
                     GlobalType = typeof(SatScript.Player.IPlayer)
                 }
                 },
