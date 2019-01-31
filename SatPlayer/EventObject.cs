@@ -143,7 +143,15 @@ namespace SatPlayer
                 }
             }
 
-            Update(this);
+            try
+            {
+                Update(this);
+            }
+            catch (Exception e)
+            {
+                ErrorIO.AddError(e);
+                Dispose();
+            }
         }
 
         public int GetInputState(AltseedScript.Common.Inputs inputs)
@@ -168,6 +176,7 @@ namespace SatPlayer
             clone.refWorld = refWorld;
             clone.Update = Update;
             clone.State = State;
+            clone.Tag = Tag;
             clone.Clone(this);
             clone.MapObjectType = MapObjectType;
             try

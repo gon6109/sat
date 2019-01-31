@@ -288,7 +288,15 @@ namespace SatPlayer
                 if (Math.Abs(CollisionShape.Angle) > 1.0f && !IsAllowRotation) CollisionShape.AngularVelocity = -CollisionShape.Angle * 30.0f;
             }
 
-            Update(this);
+            try
+            {
+                Update(this);
+            }
+            catch (Exception e)
+            {
+                ErrorIO.AddError(e);
+                Dispose();
+            }
 
             base.OnUpdate();
         }
@@ -334,6 +342,7 @@ namespace SatPlayer
             clone.refWorld = refWorld;
             clone.Update = Update;
             clone.State = State;
+            clone.Tag = Tag;
             clone.Clone(this);
             clone.MapObjectType = MapObjectType;
             try

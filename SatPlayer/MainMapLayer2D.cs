@@ -287,7 +287,7 @@ namespace SatPlayer
         protected void UpdateCollision()
         {
             //初期化
-            Player.Collision = new Collision();
+            if (Player != null) Player.Collision = new Collision();
             foreach (var item in Objects.OfType<MapObject>())
             {
                 item.Collision = new Collision();
@@ -298,15 +298,15 @@ namespace SatPlayer
             }
 
             //Player<=>MapObject,EventObject
-            if (Player.Collision is Collision playerCollision) playerCollision.ColligingMapObjectTags = Objects.OfType<MapObject>().Where(obj =>
+            if (Player?.Collision is Collision playerCollision) playerCollision.ColligingMapObjectTags = Objects.OfType<MapObject>().Where(obj =>
             {
                 bool result = Player.CollisionShape.GetIsCollidedWith(obj.GetCoreShape());
                 if (obj.Collision is Collision collision) collision.IsCollidedWithPlayer = result;
                 return result;
-            }).Select(obj => obj.Tag).Distinct();
+            }).Select(obj => obj.Tag).Distinct().ToList();
 
             //Player=>Obstacle
-            if (Player.Collision is Collision playerCollision2) playerCollision2.IsCollidedWithObstacle = CollisionShapes.Any(obj => Player.CollisionShape.GetIsCollidedWith(obj));
+            if (Player?.Collision is Collision playerCollision2) playerCollision2.IsCollidedWithObstacle = CollisionShapes.Any(obj => Player.CollisionShape.GetIsCollidedWith(obj));
 
             //MapObject,EventObject=>Obstacle
             foreach (var item in Objects.OfType<MapObject>())
@@ -320,9 +320,9 @@ namespace SatPlayer
                 if (item.Collision is Collision collision)
                 {
                     collision.IsCollidedWithObstacle = CollisionShapes.Any(obj => item.GetIsCollidedWith(obj));
-                    collision.IsCollidedWithPlayer = item.GetIsCollidedWith((PhysicalShape)Player.CollisionShape);
+                    if (Player != null) collision.IsCollidedWithPlayer = item.GetIsCollidedWith((PhysicalShape)Player.CollisionShape);
                     collision.ColligingMapObjectTags = Objects.OfType<MapObject>().Where(obj =>
-                        item.GetIsCollidedWith(obj.GetCoreShape())).Select(obj => obj.Tag).Distinct();
+                        item.GetIsCollidedWith(obj.GetCoreShape())).Select(obj => obj.Tag).Distinct().ToList();
                 }
             }
 
@@ -332,7 +332,7 @@ namespace SatPlayer
                 if (item.Collision is Collision collision)
                 {
                     collision.ColligingMapObjectTags = Objects.OfType<MapObject>().Where(obj =>
-                        item.GetCoreShape().GetIsCollidedWith(obj.GetCoreShape())).Select(obj => obj.Tag).Distinct();
+                        obj != item && item.GetCoreShape().GetIsCollidedWith(obj.GetCoreShape())).Select(obj => obj.Tag).Distinct().ToList();
                 }
             }
         }

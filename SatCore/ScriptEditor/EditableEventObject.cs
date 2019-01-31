@@ -117,6 +117,7 @@ namespace SatCore.ScriptEditor
             clone.refWorld = refWorld;
             clone.Update = Update;
             clone.State = State;
+            clone.Tag = Tag;
             clone.Clone(this);
             clone.MapObjectType = MapObjectType;
             try

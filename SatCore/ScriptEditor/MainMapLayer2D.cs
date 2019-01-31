@@ -30,7 +30,7 @@ namespace SatCore.ScriptEditor
 
         protected override void OnUpdating()
         {
-
+            UpdateCollision();
         }
 
         protected override void OnUpdated()

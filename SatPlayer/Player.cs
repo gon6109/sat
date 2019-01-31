@@ -217,7 +217,15 @@ namespace SatPlayer
                 }
             }
 
-            Update(this);
+            try
+            {
+                Update(this);
+            }
+            catch (Exception e)
+            {
+                ErrorIO.AddError(e);
+                Update = obj => { };
+            }
             base.OnUpdate();
         }
 

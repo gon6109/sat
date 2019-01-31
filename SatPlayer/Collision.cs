@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 
 namespace SatPlayer
 {
-    public struct Collision : ICollision
+    public class Collision : ICollision
     {
         public bool IsCollidedWithObstacle { get; set; }
 
         public bool IsCollidedWithPlayer { get; set; }
 
-        public IEnumerable<string> ColligingMapObjectTags { get; set; }
+        public List<string> ColligingMapObjectTags { get; set; }
+
+        IEnumerable<string> ICollision.ColligingMapObjectTags => ColligingMapObjectTags;
     }
 }
