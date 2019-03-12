@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Altseed">
-      <HintPath>..\..\Altseed_Test\Runtime\Altseed.dll</HintPath>
+      <HintPath>..\runtime\Altseed.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
