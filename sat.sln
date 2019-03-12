@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SatCore", "SatCore\SatCore.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SatPlayer", "SatPlayer\SatPlayer.csproj", "{0E108C70-5CDE-49FF-8217-96A498C8E2BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseComponent", "BaseComponent\BaseComponent.csproj", "{5E96B148-501F-48D1-B996-0DCE73A323C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseComponent", "BaseComponent\BaseComponent\BaseComponent.csproj", "{5E96B148-501F-48D1-B996-0DCE73A323C9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SatIO", "SatIO\SatIO.csproj", "{6B7E4F63-C309-497C-8C8A-092EB424EBBA}"
 EndProject
