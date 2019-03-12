@@ -179,7 +179,7 @@
       <Project>{26d7e1f6-c8f8-4fa1-a6f9-db2816b4a0cb}</Project>
       <Name>AltseedScript</Name>
     </ProjectReference>
-    <ProjectReference Include="..\BaseComponent\BaseComponent.csproj">
+    <ProjectReference Include="..\BaseComponent\BaseComponent\BaseComponent.csproj">
       <Project>{5e96b148-501f-48d1-b996-0dce73a323c9}</Project>
       <Name>BaseComponent</Name>
     </ProjectReference>

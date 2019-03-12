@@ -51,11 +51,10 @@
     <Compile Include="Common\Vector.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BaseComponent\BaseComponent.csproj">
+    <ProjectReference Include="..\BaseComponent\BaseComponent\BaseComponent.csproj">
       <Project>{5e96b148-501f-48d1-b996-0dce73a323c9}</Project>
       <Name>BaseComponent</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
