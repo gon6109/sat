@@ -17,7 +17,6 @@ namespace SatCore.ScriptEditor
 
         PhysicAltseed.PhysicalWorld PhysicalWorld { get; set; }
         MainMapLayer2D MainLayer { get; set; }
-        asd.CameraObject2D MainCamera { get; set; }
 
         public ScriptType Script { get; }
 
@@ -65,14 +64,9 @@ namespace SatCore.ScriptEditor
             }
 
             if (ScriptObject.IsSingle && ScriptObject is asd.Object2D obj) MainLayer.AddObject(obj);
-
-            MainCamera = new asd.CameraObject2D();
-            MainCamera.Src = new asd.RectI(new asd.Vector2DI(), Base.ScreenSize);
-            if ((float)asd.Engine.WindowSize.X / asd.Engine.WindowSize.Y >= (float)Base.ScreenSize.X / Base.ScreenSize.Y)
-                MainCamera.Dst = new asd.RectI((asd.Engine.WindowSize.X - Base.ScreenSize.X * asd.Engine.WindowSize.Y / Base.ScreenSize.Y) / 2, 0, Base.ScreenSize.X * asd.Engine.WindowSize.Y / Base.ScreenSize.Y, asd.Engine.WindowSize.Y);
-            else MainCamera.Dst = new asd.RectI(0, (asd.Engine.WindowSize.Y - Base.ScreenSize.Y * asd.Engine.WindowSize.X / Base.ScreenSize.X) / 2, asd.Engine.WindowSize.X, Base.ScreenSize.Y * asd.Engine.WindowSize.X / Base.ScreenSize.X);
-            MainLayer.AddObject(MainCamera);
             AddLayer(MainLayer);
+
+            MainLayer.IsUpdateScalingAuto = true;
         }
 
         void CreateObject()
@@ -113,12 +107,7 @@ namespace SatCore.ScriptEditor
             {
                 item.Color = ScriptObject.IsSuccessBuild ? new asd.Color(0, 255, 0) : new asd.Color(255, 0, 0);
             }
-
-            if ((float)asd.Engine.WindowSize.X / asd.Engine.WindowSize.Y >= (float)Base.ScreenSize.X / Base.ScreenSize.Y)
-                MainCamera.Dst = new asd.RectI((asd.Engine.WindowSize.X - Base.ScreenSize.X * asd.Engine.WindowSize.Y / Base.ScreenSize.Y) / 2, 0,
-                    Base.ScreenSize.X * asd.Engine.WindowSize.Y / Base.ScreenSize.Y, asd.Engine.WindowSize.Y);
-            else MainCamera.Dst = new asd.RectI(0, (asd.Engine.WindowSize.Y - Base.ScreenSize.Y * asd.Engine.WindowSize.X / Base.ScreenSize.X) / 2,
-                asd.Engine.WindowSize.X, Base.ScreenSize.Y * asd.Engine.WindowSize.X / Base.ScreenSize.X);
+            
             base.OnUpdated();
         }
 
@@ -126,20 +115,21 @@ namespace SatCore.ScriptEditor
         {
             if (obj is SatPlayer.MapObject mapObject)
             {
-                if ((float)asd.Engine.WindowSize.X / asd.Engine.WindowSize.Y >= (float)Base.ScreenSize.X / Base.ScreenSize.Y)
-                    mapObject.Position = ((Mouse.Position - new asd.Vector2DF((asd.Engine.WindowSize.X - Base.ScreenSize.X * asd.Engine.WindowSize.Y / Base.ScreenSize.Y) / 2, 0)))
-                        * Base.ScreenSize.Y / asd.Engine.WindowSize.Y;
-                else mapObject.Position = (Mouse.Position - new asd.Vector2DF(0, (asd.Engine.WindowSize.Y - Base.ScreenSize.Y * asd.Engine.WindowSize.X / Base.ScreenSize.X) / 2))
-                        * Base.ScreenSize.X / asd.Engine.WindowSize.X;
+                if ((float)asd.Engine.WindowSize.X / asd.Engine.WindowSize.Y >= ScalingLayer2D.OriginDisplaySize.X / ScalingLayer2D.OriginDisplaySize.Y)
+                    mapObject.Position = ((Mouse.Position - new asd.Vector2DF((asd.Engine.WindowSize.X - ScalingLayer2D.OriginDisplaySize.X * asd.Engine.WindowSize.Y / ScalingLayer2D.OriginDisplaySize.Y) / 2, 0)))
+                        * ScalingLayer2D.OriginDisplaySize.Y / asd.Engine.WindowSize.Y;
+                else mapObject.Position = (Mouse.Position - new asd.Vector2DF(0, (asd.Engine.WindowSize.Y - ScalingLayer2D.OriginDisplaySize.Y * asd.Engine.WindowSize.X / ScalingLayer2D.OriginDisplaySize.X) / 2))
+                        * ScalingLayer2D.OriginDisplaySize.X / asd.Engine.WindowSize.X;
             }
             else
             {
-                if ((float)asd.Engine.WindowSize.X / asd.Engine.WindowSize.Y >= (float)Base.ScreenSize.X / Base.ScreenSize.Y)
-                    obj.Position = ((Mouse.Position - new asd.Vector2DF((asd.Engine.WindowSize.X - Base.ScreenSize.X * asd.Engine.WindowSize.Y / Base.ScreenSize.Y) / 2, 0)))
-                        * Base.ScreenSize.Y / asd.Engine.WindowSize.Y;
-                else obj.Position = (Mouse.Position - new asd.Vector2DF(0, (asd.Engine.WindowSize.Y - Base.ScreenSize.Y * asd.Engine.WindowSize.X / Base.ScreenSize.X) / 2))
-                        * Base.ScreenSize.X / asd.Engine.WindowSize.X;
+                if ((float)asd.Engine.WindowSize.X / asd.Engine.WindowSize.Y >= ScalingLayer2D.OriginDisplaySize.X / ScalingLayer2D.OriginDisplaySize.Y)
+                    obj.Position = ((Mouse.Position - new asd.Vector2DF((asd.Engine.WindowSize.X - ScalingLayer2D.OriginDisplaySize.X * asd.Engine.WindowSize.Y / ScalingLayer2D.OriginDisplaySize.Y) / 2, 0)))
+                        * ScalingLayer2D.OriginDisplaySize.Y / asd.Engine.WindowSize.Y;
+                else obj.Position = (Mouse.Position - new asd.Vector2DF(0, (asd.Engine.WindowSize.Y - ScalingLayer2D.OriginDisplaySize.Y * asd.Engine.WindowSize.X / ScalingLayer2D.OriginDisplaySize.X) / 2))
+                        * ScalingLayer2D.OriginDisplaySize.X / asd.Engine.WindowSize.X;
             }
+
             MainLayer.AddObject(obj);
         }
 

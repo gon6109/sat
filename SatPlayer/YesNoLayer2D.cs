@@ -11,7 +11,7 @@ namespace SatPlayer
     /// <summary>
     /// 二択選択レイヤ
     /// </summary>
-    public class YesNoLayer2D : asd.Layer2D
+    public class YesNoLayer2D : ScalingLayer2D
     {
         private bool _isYes;
         private IEnumerator enumerator;
@@ -51,7 +51,7 @@ namespace SatPlayer
                 Font = asd.Engine.Graphics.CreateDynamicFont(Base.MainFont, 100, new asd.Color(255, 255, 255), 0, new asd.Color()),
                 Text = text,
             };
-            Title.Position = new asd.Vector2DF(Base.ScreenSize.X / 2, 250) - Title.Font.CalcTextureSize(Title.Text, asd.WritingDirection.Horizontal).To2DF() / 2;
+            Title.Position = new asd.Vector2DF(OriginDisplaySize.X / 2, 250) - Title.Font.CalcTextureSize(Title.Text, asd.WritingDirection.Horizontal).To2DF() / 2;
             AddObject(Title);
 
             Yes = new asd.TextObject2D()
@@ -59,7 +59,7 @@ namespace SatPlayer
                 Font = asd.Engine.Graphics.CreateDynamicFont(Base.MainFont, 100, new asd.Color(255, 255, 255), 0, new asd.Color()),
                 Text = "Yes",
             };
-            Yes.Position = new asd.Vector2DF(Base.ScreenSize.X / 2, 500) - Yes.Font.CalcTextureSize(Yes.Text, asd.WritingDirection.Horizontal).To2DF() / 2;
+            Yes.Position = new asd.Vector2DF(OriginDisplaySize.X / 2, 500) - Yes.Font.CalcTextureSize(Yes.Text, asd.WritingDirection.Horizontal).To2DF() / 2;
             AddObject(Yes);
 
             No = new asd.TextObject2D()
@@ -67,13 +67,13 @@ namespace SatPlayer
                 Font = asd.Engine.Graphics.CreateDynamicFont(Base.MainFont, 100, new asd.Color(255, 255, 255), 0, new asd.Color()),
                 Text = "No",
             };
-            No.Position = new asd.Vector2DF(Base.ScreenSize.X / 2, 625) - No.Font.CalcTextureSize(No.Text, asd.WritingDirection.Horizontal).To2DF() / 2;
+            No.Position = new asd.Vector2DF(OriginDisplaySize.X / 2, 625) - No.Font.CalcTextureSize(No.Text, asd.WritingDirection.Horizontal).To2DF() / 2;
             AddObject(No);
 
             Cursor = new asd.TextureObject2D()
             {
                 Texture = TextureManager.LoadTexture("Static/cursor.png"),
-                Position = new asd.Vector2DF(Base.ScreenSize.X / 2, 500),
+                Position = new asd.Vector2DF(OriginDisplaySize.X / 2, 500),
             };
             Cursor.CenterPosition = Cursor.Texture.Size.To2DF() / 2;
             AddObject(Cursor);

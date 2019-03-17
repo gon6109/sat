@@ -10,7 +10,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using SatPlayer;
-using asd;
 
 namespace SatCore.MapEditor.MapEvent
 {
@@ -498,8 +497,8 @@ namespace SatCore.MapEditor.MapEvent
             private asd.Vector2DF _initPosition;
             private IActor _actorImp;
 
-            public Object2D ToObject2D()
-                => _actorImp as Object2D;
+            public asd.Object2D ToObject2D()
+                => _actorImp as asd.Object2D;
 
             public int ID => _actorImp.ID;
             public string Name
@@ -606,11 +605,11 @@ namespace SatCore.MapEditor.MapEvent
                 _actorImp.OnUpdate();
             }
 
-            public RectangleShape GroundShape { get; private set; }
-            public Texture2D Texture => _actorImp.Texture;
+            public asd.RectangleShape GroundShape { get; private set; }
+            public asd.Texture2D Texture => _actorImp.Texture;
 
-            public Vector2DF Position { get => _actorImp.Position; set => _actorImp.Position = value; }
-            public Layer2D Layer => _actorImp.Layer;
+            public asd.Vector2DF Position { get => _actorImp.Position; set => _actorImp.Position = value; }
+            public asd.Layer2D Layer => _actorImp.Layer;
 
             public void AddRequest(Dictionary<Inputs, bool> input)
             {
@@ -697,7 +696,7 @@ namespace SatCore.MapEditor.MapEvent
                 geometryObject.CameraGroup = 1;
                 geometryObject.Shape = new asd.RectangleShape()
                 {
-                    DrawingArea = new asd.RectF(position, BaseComponent.Base.ScreenSize.To2DF()),
+                    DrawingArea = new asd.RectF(position, ScalingLayer2D.OriginDisplaySize),
                 };
                 GeometryObjects.Add(geometryObject);
                 layer.AddObject(geometryObject);

@@ -13,7 +13,7 @@ namespace SatCore.ScriptEditor
 
         public MainMapLayer2D()
         {
-            PhysicalWorld = new PhysicAltseed.PhysicalWorld(new asd.RectF(new asd.Vector2DF(), Base.ScreenSize.To2DF()), new asd.Vector2DF(0, 2000));
+            PhysicalWorld = new PhysicAltseed.PhysicalWorld(new asd.RectF(new asd.Vector2DF(), OriginDisplaySize), new asd.Vector2DF(0, 2000));
         }
 
         protected override void OnAdded()

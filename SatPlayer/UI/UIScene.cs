@@ -59,7 +59,7 @@ namespace SatPlayer.UI
     /// <summary>
     /// UI用レイヤー
     /// </summary>
-    public class UILayer2D : asd.Layer2D
+    public class UILayer2D : ScalingLayer2D
     {
         private UIElement _selectedElement;
         private Sound move;

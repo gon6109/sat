@@ -113,9 +113,11 @@ namespace SatPlayer
 
             if (TargetType != MoveType.Input) targetPosition = SrcCenter;
 
-            if ((float)asd.Engine.WindowSize.X / asd.Engine.WindowSize.Y >= (float)Base.ScreenSize.X / Base.ScreenSize.Y)
-                Dst = new asd.RectI((asd.Engine.WindowSize.X - Base.ScreenSize.X * asd.Engine.WindowSize.Y / Base.ScreenSize.Y) / 2, 0, Base.ScreenSize.X * asd.Engine.WindowSize.Y / Base.ScreenSize.Y, asd.Engine.WindowSize.Y);
-            else Dst = new asd.RectI(0, (asd.Engine.WindowSize.Y - Base.ScreenSize.Y * asd.Engine.WindowSize.X / Base.ScreenSize.X) / 2, asd.Engine.WindowSize.X, Base.ScreenSize.Y * asd.Engine.WindowSize.X / Base.ScreenSize.X);
+            if ((float)asd.Engine.WindowSize.X / asd.Engine.WindowSize.Y >= ScalingLayer2D.OriginDisplaySize.X / ScalingLayer2D.OriginDisplaySize.Y)
+                Dst = new asd.RectI((int)(asd.Engine.WindowSize.X - ScalingLayer2D.OriginDisplaySize.X * asd.Engine.WindowSize.Y / ScalingLayer2D.OriginDisplaySize.Y) / 2, 0,
+                    (int)(ScalingLayer2D.OriginDisplaySize.X * asd.Engine.WindowSize.Y / ScalingLayer2D.OriginDisplaySize.Y) , asd.Engine.WindowSize.Y);
+            else Dst = new asd.RectI(0, (int)(asd.Engine.WindowSize.Y - ScalingLayer2D.OriginDisplaySize.Y * asd.Engine.WindowSize.X / ScalingLayer2D.OriginDisplaySize.X) / 2,
+                asd.Engine.WindowSize.X, (int)(ScalingLayer2D.OriginDisplaySize.Y * asd.Engine.WindowSize.X / ScalingLayer2D.OriginDisplaySize.X));
 
             base.OnUpdate();
         }
@@ -195,8 +197,8 @@ namespace SatPlayer
 
             pos = Src.Position + velocity.To2DI();
 
-            if (MapSize.Y < Base.ScreenSize.Y) pos.Y = (Base.ScreenSize.Y - (int)MapSize.Y) / 2;
-            if (MapSize.X < Base.ScreenSize.X) pos.X = (Base.ScreenSize.X - (int)MapSize.X) / 2;
+            if (MapSize.Y < ScalingLayer2D.OriginDisplaySize.Y) pos.Y = (int)(ScalingLayer2D.OriginDisplaySize.Y - MapSize.Y) / 2;
+            if (MapSize.X < ScalingLayer2D.OriginDisplaySize.X) pos.X = (int)(ScalingLayer2D.OriginDisplaySize.X - MapSize.X) / 2;
 
             Src = new asd.RectI(pos, Src.Size);
             TargetType = MoveType.Holming;

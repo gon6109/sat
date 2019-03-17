@@ -92,12 +92,9 @@ namespace SatPlayer.MapEvent
 
         public override IEnumerator Update()
         {
-            Layer = new asd.Layer2D();
+            Layer = new ScalingLayer2D();
             asd.Engine.CurrentScene.AddLayer(Layer);
             Layer.DrawingPriority = 3;
-
-            TalkCamera camera = new TalkCamera();
-            camera.Src = new asd.RectI(0, 0, Base.ScreenSize.X, Base.ScreenSize.Y);
 
             Text = new MessageBox();
             Layer.AddObject(Text);
@@ -106,7 +103,6 @@ namespace SatPlayer.MapEvent
                 item.Position = new asd.Vector2DF(-200, 0);
                 Layer.AddObject(item);
             }
-            Layer.AddObject(camera);
 
             var messageIterator = Text.Open();
             while (messageIterator.MoveNext())
@@ -131,17 +127,6 @@ namespace SatPlayer.MapEvent
 
             Layer.Dispose(false);
             yield return 0;
-        }
-
-        public class TalkCamera : asd.CameraObject2D
-        {
-            protected override void OnUpdate()
-            {
-                if ((float)asd.Engine.WindowSize.X / asd.Engine.WindowSize.Y >= (float)Base.ScreenSize.X / Base.ScreenSize.Y)
-                    Dst = new asd.RectI((asd.Engine.WindowSize.X - Base.ScreenSize.X * asd.Engine.WindowSize.Y / Base.ScreenSize.Y) / 2, 0, Base.ScreenSize.X * asd.Engine.WindowSize.Y / Base.ScreenSize.Y, asd.Engine.WindowSize.Y);
-                else Dst = new asd.RectI(0, (asd.Engine.WindowSize.Y - Base.ScreenSize.Y * asd.Engine.WindowSize.X / Base.ScreenSize.X) / 2, asd.Engine.WindowSize.X, Base.ScreenSize.Y * asd.Engine.WindowSize.X / Base.ScreenSize.X);
-                base.OnUpdate();
-            }
         }
 
         public abstract class BaseTalkElement
@@ -173,7 +158,7 @@ namespace SatPlayer.MapEvent
 
             public override IEnumerator Update(TalkComponent component)
             {
-                CharacterImage.Position = new asd.Vector2DF(Index < 2 ? -200 : Base.ScreenSize.X + 200, Index == 1 || Index == 2 ? 100 : 50);
+                CharacterImage.Position = new asd.Vector2DF(Index < 2 ? -200 : ScalingLayer2D.OriginDisplaySize.X + 200, Index == 1 || Index == 2 ? 100 : 50);
                 component.Text.Index = Index;
                 component.Text.Name = CharacterImage.Name;
                 var targetPosition = new asd.Vector2DF(GetXByIndex(), Index == 1 || Index == 2 ? 100 : 50);
@@ -297,7 +282,7 @@ namespace SatPlayer.MapEvent
                 if (component.Index.ContainsValue(CharacterImage))
                 {
                     int index = component.Index.First(obj => obj.Value == CharacterImage).Key;
-                    var targetPosition = new asd.Vector2DF(index < 2 ? -200 : Base.ScreenSize.X + 200, index == 1 || index == 2 ? 100 : 50);
+                    var targetPosition = new asd.Vector2DF(index < 2 ? -200 : ScalingLayer2D.OriginDisplaySize.X + 200, index == 1 || index == 2 ? 100 : 50);
                     while ((targetPosition - CharacterImage.Position).Length > 2)
                     {
                         asd.Vector2DF velocity = new asd.Vector2DF();

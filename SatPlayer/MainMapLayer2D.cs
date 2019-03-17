@@ -12,7 +12,7 @@ namespace SatPlayer
     /// <summary>
     /// メインレイヤー
     /// </summary>
-    public class MainMapLayer2D : asd.Layer2D, IDamageManeger
+    public class MainMapLayer2D : ScalingLayer2D, IDamageManeger
     {
         public ScrollCamera PlayerCamera { get; private set; }
 
@@ -73,9 +73,12 @@ namespace SatPlayer
             {
                 PlayerCamera = new ScrollCamera(mapIO.CameraRestrictions);
                 PlayerCamera.HomingObject = Player;
-                PlayerCamera.Src = new asd.RectI(0, 0, Base.ScreenSize.X, Base.ScreenSize.Y);
+                PlayerCamera.Src = new asd.RectI(0, 0, (int)ScalingLayer2D.OriginDisplaySize.X, (int)ScalingLayer2D.OriginDisplaySize.Y);
                 PlayerCamera.MapSize = mapIO.Size;
                 AddObject(PlayerCamera);
+
+                Camera.IsDrawn = false;
+                Camera.IsUpdated = false;
             }
 
             foreach (var item in mapIO.CollisionBoxes)
