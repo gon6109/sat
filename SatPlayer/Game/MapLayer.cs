@@ -31,7 +31,7 @@ namespace SatPlayer.Game
 
         public List<SavePoint> SavePoints => Objects.Where(obj => obj is SavePoint).Cast<SavePoint>().ToList();
 
-        public List<MapEvent.MapEvent> MapEvents => Objects.Where(obj => obj is MapEvent.MapEvent).Cast<MapEvent.MapEvent>().ToList();
+        public List<Object.MapEvent.MapEvent> MapEvents => Objects.Where(obj => obj is Object.MapEvent.MapEvent).Cast<Object.MapEvent.MapEvent>().ToList();
 
         public List<DamageRect> Damages { get; private set; }
 
@@ -188,7 +188,7 @@ namespace SatPlayer.Game
                         }
                     }
                     if (isSkip) continue;
-                    MapEvent.MapEvent temp = new MapEvent.MapEvent(item, actors, PlayerCamera);
+                    Object.MapEvent.MapEvent temp = new Object.MapEvent.MapEvent(item, actors, PlayerCamera);
                     AddObject(temp);
                 }
                 catch (Exception e)

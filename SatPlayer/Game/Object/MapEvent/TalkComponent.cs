@@ -1,5 +1,6 @@
 ﻿using BaseComponent;
 using SatIO.MapEventIO;
+using SatPlayer.Game.Object.MapEvent;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SatPlayer.MapEvent
+namespace SatPlayer.Game.Object.MapEvent
 {
     /// <summary>
     /// テキスト表示コンポーネント
@@ -220,7 +221,7 @@ namespace SatPlayer.MapEvent
                 }
                 else
                 {
-                    component.Text.Name = new string('?',CharacterImage.Name.Length);
+                    component.Text.Name = new string('?', CharacterImage.Name.Length);
                     component.Text.Index = 3;
                 }
                 var iterator = component.Text.ShowText();

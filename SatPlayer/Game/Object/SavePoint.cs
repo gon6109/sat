@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SatPlayer
+namespace SatPlayer.Game.Object
 {
     /// <summary>
     /// セーブポイント
@@ -39,7 +39,7 @@ namespace SatPlayer
         {
             IsActive = true;
             Layer.Scene.HDRMode = true;
-            foreach (var item in Layer.Objects.Where(obj => (obj != this) && !(obj is MapEvent.MapEvent)))
+            foreach (var item in Layer.Objects.Where(obj => obj != this && !(obj is MapEvent.MapEvent)))
             {
                 item.IsUpdated = false;
             }

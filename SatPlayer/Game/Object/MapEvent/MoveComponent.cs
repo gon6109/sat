@@ -1,6 +1,7 @@
 ﻿using BaseComponent;
 using SatIO.MapEventIO;
 using SatPlayer.Game.Object;
+using SatPlayer.Game.Object.MapEvent;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SatPlayer.MapEvent
+namespace SatPlayer.Game.Object.MapEvent
 {
     /// <summary>
     /// キャラクターを動かす
@@ -18,9 +19,9 @@ namespace SatPlayer.MapEvent
 
         public Dictionary<MapEvent.Actor, CharacterMoveCommand> Commands { get; set; }
         public CharacterMoveCommand CameraCommand { get; set; }
-        
+
         public int Frame { get; set; }
-        
+
         public List<MapEvent.Actor> Actors { get; set; }
 
         public ScrollCamera MainCamera { get; set; }

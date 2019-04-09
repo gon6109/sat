@@ -10,8 +10,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using SatPlayer.Game.Object;
+using SatPlayer.MapEvent;
 
-namespace SatPlayer.MapEvent
+namespace SatPlayer.Game.Object.MapEvent
 {
     /// <summary>
     /// イベント
@@ -68,7 +69,7 @@ namespace SatPlayer.MapEvent
         {
             ID = mapEventIO.ID;
             Shape.DrawingArea = new asd.RectF(mapEventIO.Position, mapEventIO.Size);
-            InitCameraPosition = mapEventIO.Camera.InitPosition + new asd.Vector2DF(400,300);
+            InitCameraPosition = mapEventIO.Camera.InitPosition + new asd.Vector2DF(400, 300);
             ToMapPath = mapEventIO.ToMapPath;
             MoveToPosition = mapEventIO.MoveToPosition;
             DoorID = mapEventIO.DoorID;
@@ -117,7 +118,7 @@ namespace SatPlayer.MapEvent
         protected override void OnUpdate()
         {
             if (enumerator == null) enumerator = Init();
-            
+
             var result = enumerator.MoveNext();
             if (!result)
             {
