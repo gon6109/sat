@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using PhysicAltseed;
 using SatPlayer;
+using SatPlayer.Game.Object;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,7 +17,7 @@ namespace SatCore.ScriptEditor
     /// <summary>
     /// 編集可能マップオブジェクト
     /// </summary>
-    public class EditableMapObject : SatPlayer.MapObject, INotifyPropertyChanged, IScriptObject
+    public class EditableMapObject : MapObject, INotifyPropertyChanged, IScriptObject
     {
         private string _code;
         private bool isEdited;
@@ -79,7 +80,7 @@ namespace SatCore.ScriptEditor
         {
             sensors = new Dictionary<string, Sensor>();
             Effects = new Dictionary<string, SatPlayer.Effect>();
-            childMapObjectData = new Dictionary<string, SatPlayer.MapObject>();
+            childMapObjectData = new Dictionary<string, MapObject>();
             Update = (obj) => { };
         }
     }

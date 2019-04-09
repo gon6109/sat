@@ -10,8 +10,9 @@ using System.Collections.Concurrent;
 using SatScript.MapObject;
 using AltseedScript.Common;
 using SatScript.Collision;
+using SatPlayer.Game;
 
-namespace SatPlayer
+namespace SatPlayer.Game.Object
 {
     /// <summary>
     /// マップオブジェクト
@@ -34,7 +35,7 @@ namespace SatPlayer
             {
                 base.Position = value;
                 if (MapObjectType == MapObjectType.Active) CollisionShape.DrawingArea = new asd.RectF(value - CollisionShape.CenterPosition, CollisionShape.DrawingArea.Size);
-                else collisionShape.DrawingArea = new asd.RectF(value - collisionShape.DrawingArea.Size / 2, collisionShape.DrawingArea.Size);
+                else collision.DrawingArea = new asd.RectF(value - collision.DrawingArea.Size / 2, collision.DrawingArea.Size);
             }
         }
 
@@ -72,25 +73,25 @@ namespace SatPlayer
                 switch (value)
                 {
                     case MapObjectType.Active:
-                        collisionShape = new PhysicalRectangleShape(PhysicalShapeType.Dynamic, refWorld);
+                        collision = new PhysicalRectangleShape(PhysicalShapeType.Dynamic, refWorld);
                         DrawingPriority = 2;
                         IsReceiveDamage = true;
                         break;
                     case MapObjectType.Passive:
-                        collisionShape = new asd.RectangleShape();
+                        collision = new asd.RectangleShape();
                         DrawingPriority = 1;
                         IsReceiveDamage = false;
                         break;
                     default:
-                        collisionShape = new asd.RectangleShape();
+                        collision = new asd.RectangleShape();
                         break;
                 }
             }
         }
 
-        protected asd.RectangleShape collisionShape;
-        public asd.RectangleShape GetCoreShape() => collisionShape;
-        public PhysicalRectangleShape CollisionShape => collisionShape as PhysicalRectangleShape;
+        protected asd.RectangleShape collision;
+        public asd.RectangleShape GetCoreShape() => collision;
+        public PhysicalRectangleShape CollisionShape => collision as PhysicalRectangleShape;
 
         /// <summary>
         /// エフェクト一覧
@@ -100,12 +101,12 @@ namespace SatPlayer
         /// <summary>
         /// マップレイヤーへの参照
         /// </summary>
-        public MainMapLayer2D RefMainMapLayer2D => Layer as MainMapLayer2D;
+        public MapLayer RefMainMapLayer2D => Layer as MapLayer;
 
         /// <summary>
-        /// OnUpdate時に呼び出される関数のデリゲート
+        /// OnUpdate時に呼び出されるイベント
         /// </summary>
-        public Action<IMapObject> Update { get; set; }
+        public event Action<IMapObject> Update = delegate { };
 
         /// <summary>
         /// HP
@@ -136,7 +137,7 @@ namespace SatPlayer
         /// </summary>
         public DamageRect.OwnerType OwnerType { get; set; }
 
-        asd.Shape IDamageControler.CollisionShape => collisionShape;
+        asd.Shape IDamageControler.CollisionShape => collision;
 
         public Queue<DirectDamage> DirectDamageRequests { get; private set; }
 
@@ -237,13 +238,13 @@ namespace SatPlayer
                 {
                     try
                     {
-                        collisionShape.DrawingArea = new asd.RectF(new asd.Vector2DF(), AnimationPart.First().Value.Textures.First().Size.To2DF());
+                        collision.DrawingArea = new asd.RectF(new asd.Vector2DF(), AnimationPart.First().Value.Textures.First().Size.To2DF());
                     }
                     catch (Exception e)
                     {
                         ErrorIO.AddError(e);
                     }
-                    CenterPosition = collisionShape.DrawingArea.Size / 2;
+                    CenterPosition = collision.DrawingArea.Size / 2;
                     Position = Position;
                 });
             });
@@ -263,7 +264,7 @@ namespace SatPlayer
             Effects = new Dictionary<string, Effect>();
             childMapObjectData = new Dictionary<string, MapObject>();
             Update = (obj) => { };
-            collisionShape = new asd.RectangleShape();
+            collision = new asd.RectangleShape();
             DirectDamageRequests = new Queue<DirectDamage>();
             MapObjectType = MapObjectType.Passive;
         }
@@ -347,13 +348,13 @@ namespace SatPlayer
             clone.MapObjectType = MapObjectType;
             try
             {
-                clone.collisionShape.DrawingArea = new asd.RectF(new asd.Vector2DF(), clone.AnimationPart.First().Value.Textures.First().Size.To2DF());
+                clone.collision.DrawingArea = new asd.RectF(new asd.Vector2DF(), clone.AnimationPart.First().Value.Textures.First().Size.To2DF());
             }
             catch (Exception e)
             {
                 ErrorIO.AddError(e);
             }
-            clone.CenterPosition = clone.collisionShape.DrawingArea.Size / 2;
+            clone.CenterPosition = clone.collision.DrawingArea.Size / 2;
             if (MapObjectType == MapObjectType.Active)
             {
                 clone.CollisionShape.GroupIndex = CollisionShape.GroupIndex;

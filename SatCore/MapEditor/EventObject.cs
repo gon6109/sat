@@ -16,7 +16,7 @@ namespace SatCore.MapEditor
     /// <summary>
     /// Event対応キャラクター
     /// </summary>
-    public class EventObject : SatPlayer.EventObject, ICopyPasteObject
+    public class EventObject : SatPlayer.Game.Object.EventObject, ICopyPasteObject
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

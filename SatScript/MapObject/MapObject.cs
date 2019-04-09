@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AltseedScript.Common;
-using SatPlayer;
+using SatPlayer.Game;
 using SatScript.Collision;
 
 namespace SatScript.MapObject
@@ -15,8 +15,8 @@ namespace SatScript.MapObject
     public class MapObject
     {
         public static IEnumerable<MapObject> MapObjects
-            => (asd.Engine.CurrentScene as SatPlayer.Game)?
-            .Layers.OfType<SatPlayer.MainMapLayer2D>()
+            => (asd.Engine.CurrentScene as SatPlayer.GameScene)?
+            .Layers.OfType<MapLayer>()
             .FirstOrDefault()?
             .Objects.OfType<IMapObject>()
             .Select(obj => ToScript(obj));

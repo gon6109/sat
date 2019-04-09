@@ -291,7 +291,7 @@ namespace SatCore.MapEditor
         public class MapViewer
         {
             IEnumerator<int> enumerator;
-            SatPlayer.Game newScene;
+            SatPlayer.GameScene newScene;
 
             [ListInput("プレイヤー", additionButtonEventMethodName: "AddPlayerData")]
             public ObservableCollection<PlayerName> PlayerNames { get; set; }

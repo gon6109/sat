@@ -21,7 +21,7 @@ namespace SatScript.Common
         /// <param name="doorID">遷移先ドア</param>
         public static void MoveMap(string dstMapPath, Vector vector, int? doorID = null)
         {
-            var scene = asd.Engine.CurrentScene as SatPlayer.Game;
+            var scene = asd.Engine.CurrentScene as SatPlayer.GameScene;
             scene?.OnChangeMapEvent
                 (dstMapPath,
                 scene.CanUsePlayers,
@@ -34,7 +34,7 @@ namespace SatScript.Common
         /// </summary>
         public static void GameOver()
         {
-            var scene = asd.Engine.CurrentScene as SatPlayer.Game;
+            var scene = asd.Engine.CurrentScene as SatPlayer.GameScene;
             scene?.OnGameOver();
         }
 
@@ -46,7 +46,7 @@ namespace SatScript.Common
             /// <summary>
             /// マップ名
             /// </summary>
-            public static string Name => (asd.Engine.CurrentScene as SatPlayer.Game)?.MapName;
+            public static string Name => (asd.Engine.CurrentScene as SatPlayer.GameScene)?.MapName;
         }
     }
 }

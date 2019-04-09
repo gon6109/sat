@@ -9,8 +9,9 @@ using BaseComponent;
 using SatScript.Player;
 using AltseedScript.Common;
 using SatScript.Collision;
+using SatPlayer.Game;
 
-namespace SatPlayer
+namespace SatPlayer.Game.Object
 {
     /// <summary>
     /// プレイヤー
@@ -128,30 +129,33 @@ namespace SatPlayer
             }
         }
 
-        public Action<IPlayer> Update { get; set; } = obj => { };
+        /// <summary>
+        /// OnUpdate時に呼び出されイベント
+        /// </summary>
+        public event Action<IPlayer> Update = delegate { };
 
         PhysicalShape IActor.CollisionShape => CollisionShape;
 
-        public asd.RectangleShape GroundShape { get; }
+        public asd.RectangleShape GroundCollision { get; }
         Color IPlayer.Color { get => Color.ToScriptColor(); set => Color = value.ToAsdColor(); }
 
         private int hP;
 
         public Player(string playerDataPath, int playerGroup = 0)
         {
-            GroundShape = new asd.RectangleShape();
+            GroundCollision = new asd.RectangleShape();
             PlayerGroup = playerGroup;
             Init();
             try
             {
                 using (var stream = IO.GetStream(playerDataPath))
                 {
-                    var script = SatPlayer.ScriptOption.ScriptOptions["Player"].CreateScript<object>(stream.ToString());
+                    var script = ScriptOption.ScriptOptions["Player"].CreateScript<object>(stream.ToString());
                     var task = script.RunAsync(playerDataPath);
                     task.Wait();
                 }
             }
-            catch 
+            catch
             {
                 throw;
             }
@@ -159,7 +163,7 @@ namespace SatPlayer
 
         protected Player(int playerGroup = 0)
         {
-            GroundShape = new asd.RectangleShape();
+            GroundCollision = new asd.RectangleShape();
             Init();
         }
 
@@ -190,7 +194,7 @@ namespace SatPlayer
             CollisionShape.GroupIndex = -1;
             DrawingPriority = 2;
 
-            GroundShape.DrawingArea = new asd.RectF(CollisionShape.DrawingArea.X + 3, CollisionShape.DrawingArea.Vertexes[2].Y, CollisionShape.DrawingArea.Width - 3, 5);
+            GroundCollision.DrawingArea = new asd.RectF(CollisionShape.DrawingArea.X + 3, CollisionShape.DrawingArea.Vertexes[2].Y, CollisionShape.DrawingArea.Width - 3, 5);
             base.OnAdded();
         }
 
@@ -198,11 +202,11 @@ namespace SatPlayer
         {
             base.Position = CollisionShape.CenterPosition + CollisionShape.DrawingArea.Position;
             if (Math.Abs(CollisionShape.Angle) > 1.0f) CollisionShape.AngularVelocity = -CollisionShape.Angle * 30.0f;
-            GroundShape.DrawingArea = new asd.RectF(CollisionShape.DrawingArea.X + 3, CollisionShape.DrawingArea.Vertexes[2].Y, CollisionShape.DrawingArea.Width - 3, 5);
+            GroundCollision.DrawingArea = new asd.RectF(CollisionShape.DrawingArea.X + 3, CollisionShape.DrawingArea.Vertexes[2].Y, CollisionShape.DrawingArea.Width - 3, 5);
 
-            if (Layer is MainMapLayer2D layer)
+            if (Layer is MapLayer layer)
             {
-                IsCollidedWithGround = layer.CollisionShapes.Any(obj => obj.GetIsCollidedWith(GroundShape));
+                IsCollidedWithGround = layer.CollisionShapes.Any(obj => obj.GetIsCollidedWith(GroundCollision));
             }
 
             if (IsEvent)

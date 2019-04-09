@@ -1,4 +1,6 @@
 ﻿using BaseComponent;
+using SatPlayer.Game;
+using SatPlayer.Game.Object;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -128,7 +130,7 @@ namespace SatPlayer
 
                 while (!askEnd.IsEnd) yield return 0;
 
-                if (askEnd.IsYes) (Layer.Scene as Game)?.OnEnd();
+                if (askEnd.IsYes) (Layer.Scene as GameScene)?.OnEnd();
 
                 for (int i = 0; i < 15; i++)
                 {
@@ -165,7 +167,7 @@ namespace SatPlayer
         protected override void OnUpdate()
         {
             if (enumerator != null && enumerator.MoveNext()) return;
-            var mainLayer = Layer as MainMapLayer2D;
+            var mainLayer = Layer as MapLayer;
             if (mainLayer != null && Input.GetInputState(Inputs.A) == 1 && (mainLayer.Player.Position - Position).Length < 40) OpenSaveMenu();
             base.OnUpdate();
         }

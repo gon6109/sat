@@ -29,7 +29,7 @@ namespace SatPlayer
                 {
                     var comp = obj as SaveDataComponent;
                     IsEnd = true;
-                    var game = comp?.Layer.Scene as Game;
+                    var game = comp?.Layer.Scene as GameScene;
                     var saveData = game?.ToSaveData();
                     saveData.SavePointID = id;
                     if (!Directory.Exists("Save")) Directory.CreateDirectory("Save");

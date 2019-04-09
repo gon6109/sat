@@ -20,7 +20,7 @@ namespace SatPlayer
 
         Queue<Dictionary<BaseComponent.Inputs, bool>> MoveCommands { get; }
         PhysicAltseed.PhysicalShape CollisionShape { get; }
-        asd.RectangleShape GroundShape { get; }
+        asd.RectangleShape GroundCollision { get; }
         Texture2D Texture { get; set; }
         Layer2D Layer { get; }
 

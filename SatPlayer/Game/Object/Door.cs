@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis.Scripting;
 using SatIO;
 using BaseComponent;
 using System.Collections.Concurrent;
+using SatPlayer.Game.Object;
 
 namespace SatPlayer
 {
@@ -17,16 +18,16 @@ namespace SatPlayer
                                                          .WithReferences(System.Reflection.Assembly.GetAssembly(typeof(MapObject))
                                                                          , System.Reflection.Assembly.GetAssembly(typeof(asd.Vector2DF)));
         /// <summary>
-        /// IDを設定・取得
+        /// IDを取得
         /// </summary>
-        public int ID { get; set; }
+        public int ID { get; private set; }
 
+        /// <summary>
+        /// 座標
+        /// </summary>
         public new asd.Vector2DF Position
         {
-            get
-            {
-                return base.Position;
-            }
+            get => base.Position;
 
             set
             {
@@ -40,51 +41,42 @@ namespace SatPlayer
         /// </summary>
         public new asd.Vector2DF CenterPosition
         {
-            get
-            {
-                return base.CenterPosition;
-            }
-
-            private set
-            {
-                base.CenterPosition = value;
-            }
+            get => base.CenterPosition;
+            private set => base.CenterPosition = value;
         }
 
         /// <summary>
         /// リソースへのパス
         /// </summary>
-        public string TexturePath { get; set; }
+        public string ResourcePath { get; }
 
         /// <summary>
         /// 遷移先のマップ名
         /// </summary>
-        public string MoveToMap { get; set; }
+        public string MoveToMap { get; }
 
         /// <summary>
         /// 遷移先の指定にDoor IDを使用するか
         /// </summary>
-        public bool IsUseMoveToID { get; set; }
+        public bool IsUseMoveToID { get; }
 
         /// <summary>
         /// 遷移先のDoor ID
         /// </summary>
-        public int MoveToID { get; set; }
+        public int MoveToID { get; }
 
         /// <summary>
         /// 遷移先の座標
         /// </summary>
-        public asd.Vector2DF MoveToPosition { get; set; }
+        public asd.Vector2DF MoveToPosition { get; }
 
         /// <summary>
         /// 解放条件スクリプト
         /// </summary>
-        public string KeyScriptPath { get; set; }
+        public string KeyScriptPath { get; }
 
         public asd.RectangleShape CollisionShape { get; set; }
-
-        Player refPlayer;
-        public Player RefPlayer { get => refPlayer; }
+        public Player RefPlayer { get; }
 
         bool isLeave;
         bool isCome;
@@ -96,7 +88,7 @@ namespace SatPlayer
             if (State == "open" && isLeave)
             {
                 isLeave = false;
-                refPlayer.IsDrawn = false;
+                RefPlayer.IsDrawn = false;
                 return true;
             }
             return false;
@@ -113,9 +105,9 @@ namespace SatPlayer
         public Door(BlockingCollection<Action> subThreadQueue, string texturePath, string keyScriptPath, Player player)
         {
             CameraGroup = 1;
-            refPlayer = player;
+            RefPlayer = player;
             CollisionShape = new asd.RectangleShape();
-            TexturePath = texturePath;
+            ResourcePath = texturePath;
             LoadAnimationScript(texturePath);
             State = "close";
             CollisionShape.DrawingArea = new asd.RectF(new asd.Vector2DF(), Texture.Size.To2DF());
@@ -138,8 +130,8 @@ namespace SatPlayer
         protected override void OnUpdate()
         {
 
-            if (refPlayer.CollisionShape.GetIsCollidedWith(CollisionShape) && Input.GetInputState(Inputs.A) == 1 && !isCome
-                && refPlayer.IsCollidedWithGround && MessageLayer2D.Count == 0)
+            if (RefPlayer.CollisionShape.GetIsCollidedWith(CollisionShape) && Input.GetInputState(Inputs.A) == 1 && !isCome
+                && RefPlayer.IsCollidedWithGround && MessageLayer2D.Count == 0)
             {
                 bool temp = true;
                 if (KeyScriptPath != "")
@@ -154,20 +146,20 @@ namespace SatPlayer
                     State = "opening";
                     IsOneLoop = true;
                     isLeave = true;
-                    refPlayer.IsUpdated = false;
+                    RefPlayer.IsUpdated = false;
                 }
             }
 
             if (State == "open" && isLeave)
             {
-                refPlayer.IsDrawn = false;
+                RefPlayer.IsDrawn = false;
             }
 
             if (State == "open" && isCome)
             {
-                refPlayer.IsDrawn = true;
-                refPlayer.IsUpdated = true;
-                refPlayer.IsDrawn = true;
+                RefPlayer.IsDrawn = true;
+                RefPlayer.IsUpdated = true;
+                RefPlayer.IsDrawn = true;
                 isCome = false;
                 State = "close";
                 State = "closing";

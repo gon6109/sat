@@ -1,5 +1,6 @@
 ﻿using BaseComponent;
 using SatIO.MapEventIO;
+using SatPlayer.Game.Object;
 using System;
 using System.Collections;
 using System.Collections.Generic;

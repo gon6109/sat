@@ -6,13 +6,14 @@ using System.Linq;
 using PhysicAltseed;
 using BaseComponent;
 using System.Collections.Concurrent;
+using SatPlayer.Game.Object;
 
-namespace SatPlayer
+namespace SatPlayer.Game
 {
     /// <summary>
     /// メインレイヤー
     /// </summary>
-    public class MainMapLayer2D : ScalingLayer2D, IDamageManeger
+    public class MapLayer : ScalingLayer2D, IDamageManeger
     {
         public ScrollCamera PlayerCamera { get; private set; }
 
@@ -34,14 +35,14 @@ namespace SatPlayer
 
         public List<DamageRect> Damages { get; private set; }
 
-        public MainMapLayer2D(Player refPlayer)
+        public MapLayer(Player refPlayer)
         {
             Player = refPlayer;
             CollisionShapes = new List<PhysicalShape>();
             Damages = new List<DamageRect>();
         }
 
-        public MainMapLayer2D()
+        public MapLayer()
         {
             CollisionShapes = new List<PhysicalShape>();
             Damages = new List<DamageRect>();
@@ -73,7 +74,7 @@ namespace SatPlayer
             {
                 PlayerCamera = new ScrollCamera(mapIO.CameraRestrictions);
                 PlayerCamera.HomingObject = Player;
-                PlayerCamera.Src = new asd.RectI(0, 0, (int)ScalingLayer2D.OriginDisplaySize.X, (int)ScalingLayer2D.OriginDisplaySize.Y);
+                PlayerCamera.Src = new asd.RectI(0, 0, (int)OriginDisplaySize.X, (int)OriginDisplaySize.Y);
                 PlayerCamera.MapSize = mapIO.Size;
                 AddObject(PlayerCamera);
 
@@ -220,7 +221,7 @@ namespace SatPlayer
                 if (item == Player) continue;
                 for (int i = 0; i < count; i++)
                 {
-                    item.MoveCommands.Enqueue(new Dictionary<BaseComponent.Inputs, bool>());
+                    item.MoveCommands.Enqueue(new Dictionary<Inputs, bool>());
                 }
                 item.Color = new asd.Color(100, 100, 100);
             }
@@ -262,7 +263,7 @@ namespace SatPlayer
                 {
                     if (item.MoveToMap != null && asd.Engine.File.Exists(item.MoveToMap))
                     {
-                        var scene = asd.Engine.CurrentScene as Game;
+                        var scene = asd.Engine.CurrentScene as GameScene;
                         scene?.OnChangeMapEvent
                             (item.MoveToMap,
                             scene.CanUsePlayers,
@@ -272,7 +273,7 @@ namespace SatPlayer
                     }
                     else
                     {
-                        var door = Doors.Find((Door obj) => obj.ID == item.MoveToID);
+                        var door = Doors.Find((obj) => obj.ID == item.MoveToID);
                         if (door != null)
                         {
                             door.AcceptCome();

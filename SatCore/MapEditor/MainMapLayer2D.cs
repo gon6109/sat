@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using BaseComponent;
 using SatPlayer;
+using SatPlayer.Game.Object;
 
 namespace SatCore.MapEditor
 {

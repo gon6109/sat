@@ -11,8 +11,9 @@ using PhysicAltseed;
 using SatScript.MapObject;
 using AltseedScript.Common;
 using Microsoft.CodeAnalysis.Scripting;
+using SatPlayer.Game;
 
-namespace SatPlayer
+namespace SatPlayer.Game.Object
 {
     /// <summary>
     /// NPCオブジェクト
@@ -33,7 +34,10 @@ namespace SatPlayer
         /// </summary>
         public bool IsEvent { get; set; }
 
-        public asd.RectangleShape GroundShape { get; set; }
+        /// <summary>
+        /// 接地判定用コリジョン
+        /// </summary>
+        public asd.RectangleShape GroundCollision { get; set; }
 
         /// <summary>
         /// 地面と接しているか
@@ -66,7 +70,7 @@ namespace SatPlayer
             {
                 inputState[item] = 0;
             }
-            GroundShape = new asd.RectangleShape();
+            GroundCollision = new asd.RectangleShape();
         }
 
         public EventObject(BlockingCollection<Action> subThreadQueue, BlockingCollection<Action> mainThreadQueue, string scriptPath, PhysicalWorld world, string eventObjectPath)
@@ -100,13 +104,13 @@ namespace SatPlayer
                 {
                     try
                     {
-                        collisionShape.DrawingArea = new asd.RectF(new asd.Vector2DF(), AnimationPart.First().Value.Textures.First().Size.To2DF());
+                        collision.DrawingArea = new asd.RectF(new asd.Vector2DF(), AnimationPart.First().Value.Textures.First().Size.To2DF());
                     }
                     catch (Exception e)
                     {
                         ErrorIO.AddError(e);
                     }
-                    CenterPosition = collisionShape.DrawingArea.Size / 2;
+                    CenterPosition = collision.DrawingArea.Size / 2;
                     Position = Position;
                 });
             });
@@ -116,7 +120,7 @@ namespace SatPlayer
             {
                 inputState[item] = 0;
             }
-            GroundShape = new asd.RectangleShape();
+            GroundCollision = new asd.RectangleShape();
             UpdateGroudShape();
         }
 
@@ -126,9 +130,9 @@ namespace SatPlayer
 
             UpdateGroudShape();
 
-            if (Layer is MainMapLayer2D layer)
+            if (Layer is MapLayer layer)
             {
-                IsCollidedWithGround = layer.CollisionShapes.Any(obj => obj.GetIsCollidedWith(GroundShape));
+                IsCollidedWithGround = layer.CollisionShapes.Any(obj => obj.GetIsCollidedWith(GroundCollision));
             }
 
             if (IsEvent)
@@ -164,7 +168,7 @@ namespace SatPlayer
 
         protected void UpdateGroudShape()
         {
-            GroundShape.DrawingArea = new asd.RectF(CollisionShape.DrawingArea.X + 3, CollisionShape.DrawingArea.Vertexes[2].Y, CollisionShape.DrawingArea.Width - 3, 5);
+            GroundCollision.DrawingArea = new asd.RectF(CollisionShape.DrawingArea.X + 3, CollisionShape.DrawingArea.Vertexes[2].Y, CollisionShape.DrawingArea.Width - 3, 5);
         }
 
         public new object Clone()
@@ -181,14 +185,14 @@ namespace SatPlayer
             clone.MapObjectType = MapObjectType;
             try
             {
-                clone.collisionShape.DrawingArea = new asd.RectF(new asd.Vector2DF(), clone.AnimationPart.First().Value.Textures.First().Size.To2DF());
+                clone.collision.DrawingArea = new asd.RectF(new asd.Vector2DF(), clone.AnimationPart.First().Value.Textures.First().Size.To2DF());
             }
             catch (Exception e)
             {
                 ErrorIO.AddError(e);
             }
-            clone.CenterPosition = clone.collisionShape.DrawingArea.Size / 2;
-            if (MapObjectType == SatScript.MapObject.MapObjectType.Active)
+            clone.CenterPosition = clone.collision.DrawingArea.Size / 2;
+            if (MapObjectType == MapObjectType.Active)
             {
                 clone.CollisionShape.GroupIndex = CollisionShape.GroupIndex;
                 clone.CollisionShape.MaskBits = CollisionShape.MaskBits;

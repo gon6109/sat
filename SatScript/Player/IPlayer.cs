@@ -64,7 +64,7 @@ namespace SatScript.Player
         /// <summary>
         /// OnUpdate時に呼び出される関数のデリゲート
         /// </summary>
-        Action<IPlayer> Update { get; set; }
+        event Action<IPlayer> Update;
 
         /// <summary>
         /// 入力状態を取得する(Event時対応)

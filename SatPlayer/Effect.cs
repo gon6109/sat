@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace SatPlayer
 {
+    /// <summary>
+    /// エフェクト
+    /// </summary>
     public class Effect : AnimationObject2D, ICloneable
     {
         public Effect()

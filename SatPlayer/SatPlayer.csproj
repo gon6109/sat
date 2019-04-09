@@ -137,33 +137,33 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BackGround.cs" />
-    <Compile Include="Collision.cs" />
-    <Compile Include="Door.cs" />
+    <Compile Include="Game\Object\BackGround.cs" />
+    <Compile Include="Game\Collision.cs" />
+    <Compile Include="Game\Object\Door.cs" />
     <Compile Include="Effect.cs" />
-    <Compile Include="Game.cs" />
+    <Compile Include="Game\GameScene.cs" />
     <Compile Include="IActor.cs" />
     <Compile Include="IDamageControler.cs" />
     <Compile Include="IDamageManeger.cs" />
     <Compile Include="IEffectManeger.cs" />
-    <Compile Include="MainMapLayer2D.cs" />
+    <Compile Include="Game\MapLayer.cs" />
     <Compile Include="MapEvent\CharacterImage.cs" />
     <Compile Include="MapEvent\MapEvent.cs" />
     <Compile Include="MapEvent\MapEventComponent.cs" />
     <Compile Include="MapEvent\MessageBox.cs" />
     <Compile Include="MapEvent\MoveComponent.cs" />
     <Compile Include="MapEvent\TalkComponent.cs" />
-    <Compile Include="MapObject.cs" />
+    <Compile Include="Game\Object\MapObject.cs" />
     <Compile Include="MapObjectParameter.cs" />
-    <Compile Include="EventObject.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Game\Object\EventObject.cs" />
+    <Compile Include="Game\Object\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SaveDataComponent.cs" />
     <Compile Include="SaveLayer2D.cs" />
     <Compile Include="SavePoint.cs" />
     <Compile Include="ScriptExtension.cs" />
     <Compile Include="ScriptOption.cs" />
-    <Compile Include="ScrollCamera.cs" />
+    <Compile Include="Game\Object\ScrollCamera.cs" />
     <Compile Include="UI\Button.cs" />
     <Compile Include="UI\Gauge.cs" />
     <Compile Include="UI\UIElements.cs" />

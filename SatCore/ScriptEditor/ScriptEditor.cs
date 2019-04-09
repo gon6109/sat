@@ -1,4 +1,5 @@
 ﻿using BaseComponent;
+using SatPlayer.Game.Object;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -67,6 +68,7 @@ namespace SatCore.ScriptEditor
             AddLayer(MainLayer);
 
             MainLayer.IsUpdateScalingAuto = true;
+            MainLayer.IsFixAspectRatio = true;
         }
 
         void CreateObject()
@@ -113,7 +115,7 @@ namespace SatCore.ScriptEditor
 
         void SetObject(asd.Object2D obj)
         {
-            if (obj is SatPlayer.MapObject mapObject)
+            if (obj is MapObject mapObject)
             {
                 if ((float)asd.Engine.WindowSize.X / asd.Engine.WindowSize.Y >= ScalingLayer2D.OriginDisplaySize.X / ScalingLayer2D.OriginDisplaySize.Y)
                     mapObject.Position = ((Mouse.Position - new asd.Vector2DF((asd.Engine.WindowSize.X - ScalingLayer2D.OriginDisplaySize.X * asd.Engine.WindowSize.Y / ScalingLayer2D.OriginDisplaySize.Y) / 2, 0)))

@@ -1,6 +1,7 @@
 ﻿using BaseComponent;
 using Microsoft.CodeAnalysis.Scripting;
 using SatPlayer;
+using SatPlayer.Game.Object;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SatCore.ScriptEditor
 {
-    public class EditableBackGround : SatPlayer.BackGround, IScriptObject, ICloneable
+    public class EditableBackGround : BackGround, IScriptObject, ICloneable
     {
         private bool isEdited;
         private string _code;

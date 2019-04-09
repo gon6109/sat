@@ -9,58 +9,46 @@ using PhysicAltseed;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections.Concurrent;
 using SatIO;
+using SatPlayer.Game.Object;
 
-namespace SatPlayer
+namespace SatPlayer.Game
 {
     public delegate void ChangeMapEvent(string path, List<Player> initPlayers, asd.Vector2DF playerPosition, int doorID = -1, int savePointID = -1);
-
-    public class Game : asd.Scene
+    
+    /// <summary>
+    /// ゲームシーン
+    /// </summary>
+    public class GameScene : asd.Scene
     {
-        public static List<Player> Players { get; private set; } = new List<Player>();
-        public static List<KeyValuePair<string, int>> EndEvents { get; private set; } = new List<KeyValuePair<string, int>>();
+        public static List<Player> Players { get; } = new List<Player>();
+        public static List<KeyValuePair<string, int>> EndEvents { get; } = new List<KeyValuePair<string, int>>();
 
-        public ChangeMapEvent OnChangeMapEvent { get; set; }
-        public Action OnGameOver { get; set; }
-        public Action OnEnd { get; set; }
-        void DefaulFunc() { }
+        public event ChangeMapEvent OnChangeMapEvent = delegate { };
+        public event Action OnGameOver = delegate { };
+        public event Action OnEnd = delegate { };
 
-        public bool IsPreviewMode { get; set; }
+        public bool IsPreviewMode { get; }
 
         public string MapName { get; private set; }
 
-        MainMapLayer2D mainLayer;
+        MapLayer Map { get; }
 
         public List<Player> CanUsePlayers { get; set; }
 
-        public int ElementCount
-        {
-            get => mainLayer != null ? mainLayer.ElementCount : 0;
-            private set
-            {
-                if (mainLayer != null) mainLayer.ElementCount = value;
-            }
-        }
-
-        public int LoadingElementCount
-        {
-            get => mainLayer != null ? mainLayer.LoadingElementCount : 0;
-            private set
-            {
-                if (mainLayer != null) mainLayer.LoadingElementCount = value;
-            }
-        }
-
-        public string MapPath { get; private set; }
-
-        int initDoorID;
-        int initSavePointID;
+        string MapPath { get; }
+        int InitDoorID { get; }
+        int InitSavePointID { get; }
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="path">マップへのパス</param>
+        /// <param name="initPlayers">使用プレイヤーたち</param>
         /// <param name="playerPosition">プレイヤーの初期座標</param>
-        public Game(string path, List<Player> initPlayers, asd.Vector2DF playerPosition, int doorID = -1, int savePointID = -1, bool isPreviewMode = false)
+        /// <param name="doorID">初期ドアID</param>
+        /// <param name="savePointID">初期セーブポイントID</param>
+        /// <param name="isPreviewMode">プレビューモードか</param>
+        public GameScene(string path, List<Player> initPlayers, asd.Vector2DF playerPosition, int doorID = -1, int savePointID = -1, bool isPreviewMode = false)
         {
             CanUsePlayers = initPlayers;
             foreach (var item in CanUsePlayers)
@@ -71,14 +59,11 @@ namespace SatPlayer
 
             //レイヤー登録
             {
-                mainLayer = new MainMapLayer2D(CanUsePlayers[0]);
+                Map = new MapLayer(CanUsePlayers[0]);
             }
 
-            OnGameOver = DefaulFunc;
-            OnEnd = DefaulFunc;
-            OnChangeMapEvent = (iPath, iInitPlayers, iPlayerPosition, iDoorID, isavePointID) => { };
-            initDoorID = doorID;
-            initSavePointID = savePointID;
+            InitDoorID = doorID;
+            InitSavePointID = savePointID;
             IsPreviewMode = isPreviewMode;
         }
 
@@ -87,7 +72,7 @@ namespace SatPlayer
 
         public IEnumerator<int> Init()
         {
-            AddLayer(mainLayer);
+            AddLayer(Map);
             MessageLayer2D.Reset();
             AddLayer(MessageLayer2D.Instance);
 
@@ -100,17 +85,15 @@ namespace SatPlayer
             mapIO = BaseIO.Load<MapIO>(MapPath);
             MapName = mapIO.MapName;
 
-            ElementCount = mapIO.BackGrounds.Count + mapIO.Doors.Count + mapIO.MapObjects.Count + mapIO.EventObjects.Count + mapIO.MapEvents.Count;
-
-            var enumerator = mainLayer.LoadMapData(subThreadTasks, mainThreadTasks, mapIO, initDoorID, initSavePointID);
+            var enumerator = Map.LoadMapData(subThreadTasks, mainThreadTasks, mapIO, InitDoorID, InitSavePointID);
             while (enumerator.MoveNext()) yield return 0;
             isFin = true;
 
             foreach (var item in CanUsePlayers)
             {
-                item.CollisionShape = new PhysicalRectangleShape(PhysicalShapeType.Dynamic, mainLayer.PhysicalWorld);
+                item.CollisionShape = new PhysicalRectangleShape(PhysicalShapeType.Dynamic, Map.PhysicalWorld);
                 item.CollisionShape.GroupIndex = -1;
-                mainLayer.AddObject(item);
+                Map.AddObject(item);
             }
 
             Sound.StartBgm(new Sound(mapIO.BGMPath), 2);
@@ -153,8 +136,8 @@ namespace SatPlayer
         protected override void OnStopUpdating()
         {
             asd.Engine.Sound.StopAll();
-            OnGameOver = DefaulFunc;
-            OnEnd = DefaulFunc;
+            OnGameOver = delegate { };
+            OnEnd = delegate { };
             OnChangeMapEvent = (iPath, iInitPlayers, iPlayerPosition, iDoorID, isavePointID) => { };
             base.OnStopUpdating();
         }
@@ -166,15 +149,15 @@ namespace SatPlayer
             base.OnUpdating();
             if (MessageLayer2D.Count != 0)
             {
-                mainLayer.Player.CollisionShape.IsActive = false;
-                mainLayer.Player.IsUpdated = false;
+                Map.Player.CollisionShape.IsActive = false;
+                Map.Player.IsUpdated = false;
                 isMessageClose = true;
             }
             else if (isMessageClose)
             {
                 isMessageClose = false;
-                mainLayer.Player.CollisionShape.IsActive = true;
-                mainLayer.Player.IsUpdated = true;
+                Map.Player.CollisionShape.IsActive = true;
+                Map.Player.IsUpdated = true;
             }
         }
 
@@ -187,12 +170,12 @@ namespace SatPlayer
 
         protected override void OnUnregistered()
         {
-            OnGameOver = DefaulFunc;
-            OnChangeMapEvent = (iPath, iInitPlayers, iPlayerPosition, iDoorID, iSavePointID) => { };
-            OnEnd = DefaulFunc;
+            OnGameOver = delegate { };
+            OnChangeMapEvent = delegate { };
+            OnEnd = delegate { };
             foreach (var item in CanUsePlayers)
             {
-                mainLayer.RemoveObject(item);
+                Map.RemoveObject(item);
             }
             base.OnUnregistered();
         }

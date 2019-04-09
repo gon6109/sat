@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SatCore.ScriptEditor
 {
-    public class MainMapLayer2D : SatPlayer.MainMapLayer2D
+    public class MainMapLayer2D : SatPlayer.Game.MapLayer
     {
         public bool IsPreparePlayer { get; set; }
 
@@ -31,11 +31,12 @@ namespace SatCore.ScriptEditor
         protected override void OnUpdating()
         {
             UpdateCollision();
+            base.OnUpdating();
         }
 
         protected override void OnUpdated()
         {
-
+            base.OnUpdated();
         }
     }
 }

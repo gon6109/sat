@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BaseComponent;
 
-namespace SatPlayer
+namespace SatPlayer.Game.Object
 {
     /// <summary>
     /// メインのカメラ
@@ -115,7 +115,7 @@ namespace SatPlayer
 
             if ((float)asd.Engine.WindowSize.X / asd.Engine.WindowSize.Y >= ScalingLayer2D.OriginDisplaySize.X / ScalingLayer2D.OriginDisplaySize.Y)
                 Dst = new asd.RectI((int)(asd.Engine.WindowSize.X - ScalingLayer2D.OriginDisplaySize.X * asd.Engine.WindowSize.Y / ScalingLayer2D.OriginDisplaySize.Y) / 2, 0,
-                    (int)(ScalingLayer2D.OriginDisplaySize.X * asd.Engine.WindowSize.Y / ScalingLayer2D.OriginDisplaySize.Y) , asd.Engine.WindowSize.Y);
+                    (int)(ScalingLayer2D.OriginDisplaySize.X * asd.Engine.WindowSize.Y / ScalingLayer2D.OriginDisplaySize.Y), asd.Engine.WindowSize.Y);
             else Dst = new asd.RectI(0, (int)(asd.Engine.WindowSize.Y - ScalingLayer2D.OriginDisplaySize.Y * asd.Engine.WindowSize.X / ScalingLayer2D.OriginDisplaySize.X) / 2,
                 asd.Engine.WindowSize.X, (int)(ScalingLayer2D.OriginDisplaySize.Y * asd.Engine.WindowSize.X / ScalingLayer2D.OriginDisplaySize.X));
 

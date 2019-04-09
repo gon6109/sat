@@ -1,4 +1,5 @@
 ﻿using AltseedScript.Common;
+using SatPlayer.Game;
 using SatScript.Collision;
 using System;
 using System.Collections.Generic;
@@ -13,13 +14,13 @@ namespace SatScript.Player
         /// 使用されているキャラクター名
         /// </summary>
         public static IEnumerable<string> Players
-           => (asd.Engine.CurrentScene as SatPlayer.Game)?
+           => (asd.Engine.CurrentScene as SatPlayer.GameScene)?
            .CanUsePlayers
            .Select(obj => obj.Name);
 
         public static Player CurrentPlayer
-            => ToScript((asd.Engine.CurrentScene as SatPlayer.Game)?
-            .Layers.OfType<SatPlayer.MainMapLayer2D>()
+            => ToScript((asd.Engine.CurrentScene as SatPlayer.GameScene)?
+            .Layers.OfType<MapLayer>()
             .FirstOrDefault()?
             .Player);
 

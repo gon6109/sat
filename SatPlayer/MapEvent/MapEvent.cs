@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using SatPlayer.Game.Object;
 
 namespace SatPlayer.MapEvent
 {
@@ -134,7 +135,7 @@ namespace SatPlayer.MapEvent
             MainCamera.IsEvent = false;
             if (ToMapPath != null && asd.Engine.File.Exists(ToMapPath))
             {
-                var scene = asd.Engine.CurrentScene as Game;
+                var scene = asd.Engine.CurrentScene as GameScene;
                 scene?.OnChangeMapEvent
                     (
                     ToMapPath,
@@ -179,7 +180,7 @@ namespace SatPlayer.MapEvent
                 }
                 item.ActorObject.IsEvent = false;
             }
-            var path = (Layer.Scene as Game)?.MapPath;
+            var path = (Layer.Scene as GameScene)?.MapPath;
             Game.EndEvents.Add(new KeyValuePair<string, int>(path, ID));
             Dispose();
             yield return 0;

@@ -105,7 +105,7 @@ namespace SatScript.MapObject
         /// <summary>
         /// OnUpdate時に呼び出される関数のデリゲート
         /// </summary>
-        Action<IMapObject> Update { get; set; }
+        event Action<IMapObject> Update;
 
         /// <summary>
         /// ダメージを受けるか

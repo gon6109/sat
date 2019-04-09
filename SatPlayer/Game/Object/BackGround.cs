@@ -10,36 +10,42 @@ using System.Threading.Tasks;
 using SatScript.BackGround;
 using AltseedScript.Common;
 
-namespace SatPlayer
+namespace SatPlayer.Game.Object
 {
     /// <summary>
     /// 背景
     /// </summary>
     public class BackGround : MultiAnimationObject2D, IBackGround
     {
-        public asd.CameraObject2D Camera { get; private set; }
-
-        protected MainMapLayer2D mainMap;
+        /// <summary>
+        /// 表示用カメラ
+        /// </summary>
+        public asd.CameraObject2D Camera { get; }
 
         public float Zoom { get; set; }
 
         /// <summary>
-        /// OnUpdade時に呼び出される関数のデリゲート
+        /// OnUpdade時に呼び出されるイベント
         /// </summary>
-        public Action<IBackGround> Update { get; set; } = obj => { };
+        public event Action<IBackGround> Update = delegate { };
 
+        /// <summary>
+        /// スクリプト用Position
+        /// </summary>
         Vector IBackGround.Position
         {
             get => Position.ToScriptVector();
             set => Position = value.ToAsdVector();
         }
 
+        /// <summary>
+        /// スクリプト用Color
+        /// </summary>
         Color IBackGround.Color { get => Color.ToScriptColor(); set => Color = value.ToAsdColor(); }
 
-        public BackGround(MainMapLayer2D layer)
+        public BackGround()
         {
             Camera = new asd.CameraObject2D();
-            mainMap = layer;
             Zoom = 1;
             Camera.UpdatePriority = 10;
             DrawingPriority = -1;
@@ -55,18 +61,23 @@ namespace SatPlayer
 
         protected override void OnUpdate()
         {
-            if (mainMap != null)
+            if (Layer is MapLayer mapLayer)
             {
-                Camera.Dst = mainMap.PlayerCamera.Dst;
-                Camera.Src = new asd.RectI((mainMap.PlayerCamera.Src.Position.To2DF() * Zoom).To2DI(), mainMap.PlayerCamera.Src.Size);
+                Camera.Dst = mapLayer.PlayerCamera.Dst;
+                Camera.Src = new asd.RectI((mapLayer.PlayerCamera.Src.Position.To2DF() * Zoom).To2DI(), mapLayer.PlayerCamera.Src.Size);
             }
             Update(this);
             base.OnUpdate();
         }
 
-        public static BackGround LoadBackGroud(BackGroundIO backGroundIO, MainMapLayer2D layer)
+        /// <summary>
+        /// 背景情報から背景を作成する
+        /// </summary>
+        /// <param name="backGroundIO">背景情報</param>
+        /// <returns>背景</returns>
+        public static BackGround CreateBackGroud(BackGroundIO backGroundIO)
         {
-            BackGround backGround = new BackGround(layer);
+            BackGround backGround = new BackGround();
             backGround.Position = backGroundIO.Position;
             backGround.Zoom = backGroundIO.Zoom;
             if (backGroundIO.TexturePath.IndexOf(".bg") > -1)
@@ -75,7 +86,7 @@ namespace SatPlayer
                 {
                     using (var stream = IO.GetStream(backGroundIO.TexturePath))
                     {
-                        var script = SatPlayer.ScriptOption.ScriptOptions["BackGround"].CreateScript<object>(stream.ToString());
+                        var script = ScriptOption.ScriptOptions["BackGround"].CreateScript<object>(stream.ToString());
                         var task = script.RunAsync(backGround);
                         task.Wait();
                         GC.Collect();

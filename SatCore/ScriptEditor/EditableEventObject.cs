@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.Scripting;
 using PhysicAltseed;
 using SatPlayer;
+using SatPlayer.Game.Object;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SatCore.ScriptEditor
 {
-    public class EditableEventObject : SatPlayer.EventObject, IScriptObject
+    public class EditableEventObject : EventObject, IScriptObject
     {
         private bool isEdited;
         private string _code;
@@ -122,13 +123,13 @@ namespace SatCore.ScriptEditor
             clone.MapObjectType = MapObjectType;
             try
             {
-                clone.collisionShape.DrawingArea = new asd.RectF(new asd.Vector2DF(), clone.AnimationPart.First().Value.Textures.First().Size.To2DF());
+                clone.collision.DrawingArea = new asd.RectF(new asd.Vector2DF(), clone.AnimationPart.First().Value.Textures.First().Size.To2DF());
             }
             catch (Exception e)
             {
                 ErrorIO.AddError(e);
             }
-            clone.CenterPosition = clone.collisionShape.DrawingArea.Size / 2;
+            clone.CenterPosition = clone.collision.DrawingArea.Size / 2;
             if (MapObjectType == SatScript.MapObject.MapObjectType.Active)
             {
                 clone.CollisionShape.GroupIndex = CollisionShape.GroupIndex;
@@ -143,7 +144,7 @@ namespace SatCore.ScriptEditor
         {
             sensors = new Dictionary<string, Sensor>();
             Effects = new Dictionary<string, SatPlayer.Effect>();
-            childMapObjectData = new Dictionary<string, SatPlayer.MapObject>();
+            childMapObjectData = new Dictionary<string, MapObject>();
             Update = (obj) => { };
         }
     }
