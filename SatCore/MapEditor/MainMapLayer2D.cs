@@ -9,8 +9,8 @@ using SatIO.MapEventIO;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using BaseComponent;
-using SatPlayer;
 using SatPlayer.Game.Object;
+using SatPlayer.Game;
 
 namespace SatCore.MapEditor
 {

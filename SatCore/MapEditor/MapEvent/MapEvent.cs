@@ -9,8 +9,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using SatPlayer;
 using SatPlayer.Game.Object;
+using SatPlayer.Game;
 
 namespace SatCore.MapEditor.MapEvent
 {

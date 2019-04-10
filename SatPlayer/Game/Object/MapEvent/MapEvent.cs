@@ -10,7 +10,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using SatPlayer.Game.Object;
-using SatPlayer.MapEvent;
 
 namespace SatPlayer.Game.Object.MapEvent
 {
@@ -33,7 +32,7 @@ namespace SatPlayer.Game.Object.MapEvent
 
         public List<MapEventComponent> EventComponents { get; set; }
 
-        public ScrollCamera MainCamera { get; private set; }
+        public ScrollCamera MainCamera { get; }
 
         public asd.Vector2DF InitCameraPosition { get; set; }
 
@@ -49,7 +48,7 @@ namespace SatPlayer.Game.Object.MapEvent
 
         IEnumerator enumerator;
 
-        public MapEvent(MapEventIO mapEventIO, List<IActor> allActors, ScrollCamera camera)
+        public MapEvent(ScrollCamera camera)
         {
             Shape = new asd.RectangleShape();
 
@@ -61,24 +60,23 @@ namespace SatPlayer.Game.Object.MapEvent
             PlayerNames = new List<PlayerName>();
             IsDrawn = false;
             IsUpdated = false;
-
-            LoadMapEventIO(mapEventIO, allActors);
         }
 
-        void LoadMapEventIO(MapEventIO mapEventIO, List<IActor> allActors)
+        public static async Task<MapEvent> CreateMapEventAsync(MapEventIO mapEventIO, List<IActor> allActors, ScrollCamera camera)
         {
-            ID = mapEventIO.ID;
-            Shape.DrawingArea = new asd.RectF(mapEventIO.Position, mapEventIO.Size);
-            InitCameraPosition = mapEventIO.Camera.InitPosition + new asd.Vector2DF(400, 300);
-            ToMapPath = mapEventIO.ToMapPath;
-            MoveToPosition = mapEventIO.MoveToPosition;
-            DoorID = mapEventIO.DoorID;
-            IsUseDoorID = mapEventIO.IsUseDoorID;
+            var mapEvent = new MapEvent(camera);
+            mapEvent.ID = mapEventIO.ID;
+            mapEvent.Shape.DrawingArea = new asd.RectF(mapEventIO.Position, mapEventIO.Size);
+            mapEvent.InitCameraPosition = mapEventIO.Camera.InitPosition + new asd.Vector2DF(400, 300);
+            mapEvent.ToMapPath = mapEventIO.ToMapPath;
+            mapEvent.MoveToPosition = mapEventIO.MoveToPosition;
+            mapEvent.DoorID = mapEventIO.DoorID;
+            mapEvent.IsUseDoorID = mapEventIO.IsUseDoorID;
             if (mapEventIO.PlayerNames != null)
             {
                 foreach (var item in mapEventIO.PlayerNames)
                 {
-                    PlayerNames.Add(new PlayerName() { Name = item });
+                    mapEvent.PlayerNames.Add(new PlayerName() { Name = item });
                 }
             }
             foreach (var item in mapEventIO.Actors)
@@ -88,31 +86,45 @@ namespace SatPlayer.Game.Object.MapEvent
                     var actor = new Actor();
                     actor.ActorObject = allActors.First(obj => obj.IsUseName ? obj.Name == item.Name : obj.ID == item.ID);
                     actor.InitPosition = item.InitPosition;
-                    Actors.Add(actor);
+                    mapEvent.Actors.Add(actor);
                 }
                 catch (Exception e)
                 {
                     ErrorIO.AddError(e);
                 }
             }
+
+            var tasks = new List<Task>();
             foreach (var item in mapEventIO.CharacterImagePaths)
             {
-                CharacterImages.Add(CharacterImage.LoadCharacterImage(item));
+                var task = Task.Run(async () =>
+                {
+                    var characterImage = await CharacterImage.CreateCharacterImageAsync(item);
+                    lock (mapEvent)
+                    {
+                        mapEvent.CharacterImages.Add(characterImage);
+                    }
+                });
+                tasks.Add(task);
             }
+            await Task.WhenAll(tasks);
+
             foreach (var item in mapEventIO.Components)
             {
-                if (item is MoveComponentIO)
+                if (item is MoveComponentIO moveComponent)
                 {
-                    var component = MoveComponent.LoadMoveComponent((MoveComponentIO)item, Actors, MainCamera);
-                    EventComponents.Add(component);
+                    var component = MoveComponent.LoadMoveComponent(moveComponent, mapEvent.Actors, mapEvent.MainCamera);
+                    mapEvent.EventComponents.Add(component);
                 }
-                if (item is TalkComponentIO)
+                if (item is TalkComponentIO talkComponent)
                 {
-                    var component = TalkComponent.LoadTalkComponent((TalkComponentIO)item, CharacterImages);
-                    EventComponents.Add(component);
+                    var component = TalkComponent.LoadTalkComponent(talkComponent, mapEvent.CharacterImages);
+                    mapEvent.EventComponents.Add(component);
                 }
             }
+            return mapEvent;
         }
+
         int counter = 0;
 
         protected override void OnUpdate()

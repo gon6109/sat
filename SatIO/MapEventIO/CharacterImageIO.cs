@@ -30,11 +30,12 @@ namespace SatIO.MapEventIO
             }
         }
 
-        public static CharacterImageIO LoadCharacterImage(string path)
+        public static async Task<CharacterImageIO> LoadCharacterImageAsync(string path)
         {
             if (path == null || !asd.Engine.File.Exists(path)) return new CharacterImageIO();
             BinaryFormatter serializer = new BinaryFormatter();
-            return (CharacterImageIO)serializer.Deserialize(IO.GetStream(path));
+            var stream = await IO.GetStreamAsync(path);
+            return (CharacterImageIO)serializer.Deserialize(stream);
         }
     }
 }

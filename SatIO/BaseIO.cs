@@ -90,5 +90,57 @@ namespace SatIO
                 throw new FileLoadException(path + ":" + e.Message);
             }
         }
+
+        /// <summary>
+        /// バイナリファイルから非同期ロードする
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path">パス</param>
+        /// <returns></returns>
+        static public async Task<T> LoadFromBinaryAsync<T>(string path) where T : BaseIO
+        {
+            try
+            {
+                BinaryFormatter serializer = new BinaryFormatter();
+                T data;
+                var stream = await IO.GetStreamAsync(path);
+                using (stream)
+                {
+                    data = (T)serializer.Deserialize(stream);
+                }
+                data.Path = System.IO.Path.GetDirectoryName(path);
+                return data;
+            }
+            catch (Exception e)
+            {
+                throw new FileLoadException(path + ":" + e.Message);
+            }
+        }
+
+        /// <summary>
+        /// ロード
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path">パス</param>
+        /// <returns></returns>
+        static public async Task<T> LoadAsync<T>(string path) where T : BaseIO
+        {
+            try
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(T));
+                T data;
+                var stream = await IO.GetStreamAsync(path);
+                using (stream)
+                {
+                    data = (T)serializer.Deserialize(stream);
+                }
+                data.Path = System.IO.Path.GetDirectoryName(path);
+                return data;
+            }
+            catch (Exception e)
+            {
+                throw new FileLoadException(path + ":" + e.Message);
+            }
+        }
     }
 }

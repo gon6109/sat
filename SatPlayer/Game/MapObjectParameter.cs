@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SatPlayer
+namespace SatPlayer.Game
 {
     public class MapObjectParameter<T>
     {
@@ -13,14 +13,14 @@ namespace SatPlayer
 
         public MapObjectParameter()
         {
-            datas = new Dictionary<MapObject, T>();    
+            datas = new Dictionary<MapObject, T>();
         }
 
-        public T this [MapObject obj]
+        public T this[MapObject obj]
         {
             get
             {
-                if (!datas.ContainsKey(obj)) return default(T);
+                if (!datas.ContainsKey(obj)) return default;
                 return datas[obj];
             }
             set => datas[obj] = value;

@@ -40,13 +40,27 @@ namespace SatPlayer.Game.Object.MapEvent
             DiffImages = new Dictionary<string, asd.Texture2D>();
         }
 
-        public static CharacterImage LoadCharacterImage(string path)
+        public static async Task<CharacterImage> CreateCharacterImageAsync(string path)
         {
-            var characterImageIO = CharacterImageIO.LoadCharacterImage(path);
+            var characterImageIO = await CharacterImageIO.LoadCharacterImageAsync(path);
             CharacterImage characterImage = new CharacterImage();
-            characterImage.Texture = TextureManager.LoadTexture(characterImageIO.BaseImagePath);
+            characterImage.Texture = await TextureManager.LoadTextureAsync(characterImageIO.BaseImagePath);
             characterImage.Name = characterImageIO.Name;
-            characterImage.DiffImages = characterImageIO.DiffImagePaths.ToDictionary(obj => obj.Key, obj => TextureManager.LoadTexture(obj.Value));
+            characterImage.DiffImages = new Dictionary<string, asd.Texture2D>();
+            List<Task> tasks = new List<Task>();
+            foreach (var item in characterImageIO.DiffImagePaths)
+            {
+                var task = Task.Run(async () =>
+                {
+                    var texture = await TextureManager.LoadTextureAsync(item.Value);
+                    lock (characterImage)
+                    {
+                        characterImage.DiffImages.Add(item.Key, texture);
+                    }
+                });
+                tasks.Add(task);
+            }
+            await Task.WhenAll(tasks);
             if (characterImage.DiffImages.Count > 0) characterImage.SelectedDiff = characterImage.DiffImages.First().Key;
             return characterImage;
         }

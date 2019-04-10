@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.Scripting;
 using PhysicAltseed;
 using SatPlayer;
+using SatPlayer.Game;
 using SatPlayer.Game.Object;
 using System;
 using System.Collections.Generic;
@@ -143,7 +144,7 @@ namespace SatCore.ScriptEditor
         void Reset()
         {
             sensors = new Dictionary<string, Sensor>();
-            Effects = new Dictionary<string, SatPlayer.Effect>();
+            Effects = new Dictionary<string, Effect>();
             childMapObjectData = new Dictionary<string, MapObject>();
             Update = (obj) => { };
         }

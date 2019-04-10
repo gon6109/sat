@@ -11,7 +11,6 @@ using PhysicAltseed;
 using SatScript.MapObject;
 using AltseedScript.Common;
 using Microsoft.CodeAnalysis.Scripting;
-using SatPlayer.Game;
 
 namespace SatPlayer.Game.Object
 {
@@ -71,57 +70,6 @@ namespace SatPlayer.Game.Object
                 inputState[item] = 0;
             }
             GroundCollision = new asd.RectangleShape();
-        }
-
-        public EventObject(BlockingCollection<Action> subThreadQueue, BlockingCollection<Action> mainThreadQueue, string scriptPath, PhysicalWorld world, string eventObjectPath)
-            : base()
-        {
-            refWorld = world;
-            subQueue = subThreadQueue;
-            mainQueue = mainThreadQueue;
-            Script<object> script;
-            subThreadQueue.TryAdd(() =>
-            {
-                if (scriptPath != "")
-                {
-                    try
-                    {
-                        using (var stream = IO.GetStream(scriptPath))
-                            script = ScriptOption.ScriptOptions["EventObject"]?.CreateScript<object>(stream.ToString());
-                        script.Compile();
-                    }
-                    catch (Exception e)
-                    {
-                        throw e;
-                    }
-                    mainThreadQueue.Add(() =>
-                    {
-                        var thread = script.RunAsync(this);
-                        thread.Wait();
-                    });
-                }
-                mainThreadQueue.TryAdd(() =>
-                {
-                    try
-                    {
-                        collision.DrawingArea = new asd.RectF(new asd.Vector2DF(), AnimationPart.First().Value.Textures.First().Size.To2DF());
-                    }
-                    catch (Exception e)
-                    {
-                        ErrorIO.AddError(e);
-                    }
-                    CenterPosition = collision.DrawingArea.Size / 2;
-                    Position = Position;
-                });
-            });
-            MoveCommands = new Queue<Dictionary<BaseComponent.Inputs, bool>>();
-            inputState = new Dictionary<BaseComponent.Inputs, int>();
-            foreach (BaseComponent.Inputs item in Enum.GetValues(typeof(BaseComponent.Inputs)))
-            {
-                inputState[item] = 0;
-            }
-            GroundCollision = new asd.RectangleShape();
-            UpdateGroudShape();
         }
 
         protected override void OnUpdate()
@@ -202,9 +150,45 @@ namespace SatPlayer.Game.Object
             return clone;
         }
 
-        public static async Task<EventObject> CreateEventObject(EventObjectIO eventObjectIO)
+        public static async Task<EventObject> CreateEventObjectAsync(EventObjectIO eventObjectIO)
         {
+            var eventObject = new EventObject();
+            if (eventObjectIO.ScriptPath != "")
+            {
+                try
+                {
+                    var stream = await IO.GetStreamAsync(eventObjectIO.ScriptPath);
+                    using (stream)
+                    {
+                        var script = ScriptOption.ScriptOptions["EventObject"]?.CreateScript<object>(stream.ToString());
+                        await Task.Run(() => script.Compile());
+                        await script.RunAsync(eventObject);
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
 
+            try
+            {
+                eventObject.collision.DrawingArea = new asd.RectF(new asd.Vector2DF(), eventObject.AnimationPart.First().Value.Textures.First().Size.To2DF());
+            }
+            catch (Exception e)
+            {
+                ErrorIO.AddError(e);
+            }
+            eventObject.CenterPosition = eventObject.collision.DrawingArea.Size / 2;
+            eventObject.Position = eventObjectIO.Position;
+
+            foreach (BaseComponent.Inputs item in Enum.GetValues(typeof(BaseComponent.Inputs)))
+            {
+                eventObject.inputState[item] = 0;
+            }
+            eventObject.UpdateGroudShape();
+
+            return eventObject;
         }
     }
 }

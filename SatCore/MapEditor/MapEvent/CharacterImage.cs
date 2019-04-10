@@ -29,7 +29,7 @@ namespace SatCore.MapEditor.MapEvent
 
         public static CharacterImage LoadCharacterImage(string path)
         {
-            var characterImage = (CharacterImage)CharacterImageIO.LoadCharacterImage(path);
+            var characterImage = (CharacterImage)CharacterImageIO.LoadCharacterImageAsync(path);
             characterImage.Path = path;
             return characterImage;
         }

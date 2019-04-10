@@ -1,10 +1,11 @@
-﻿using System;
+﻿using SatPlayer.Game;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SatPlayer
+namespace SatPlayer.Game
 {
     /// <summary>
     /// エフェクト発生オブジェクトインターフェース

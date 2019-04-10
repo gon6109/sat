@@ -7,6 +7,7 @@ using PhysicAltseed;
 using BaseComponent;
 using System.Collections.Concurrent;
 using SatPlayer.Game.Object;
+using System.Threading.Tasks;
 
 namespace SatPlayer.Game
 {
@@ -48,25 +49,19 @@ namespace SatPlayer.Game
             Damages = new List<DamageRect>();
         }
 
-        public int ElementCount { get; set; }
-        public int LoadingElementCount { get; set; }
-
         /// <summary>
         /// マップのロード
         /// </summary>
-        /// <param name="subThreadQueue">副スレッドへのタスクキュー</param>
-        /// <param name="mainThreadQueue">メインスレッドへのタスクキュー</param>
         /// <param name="mapIO">マップデータ</param>
         /// <param name="initDoorID">初期ドアID</param>
         /// <param name="initSavePointID">初期セーブポイント</param>
         /// <returns></returns>
-        public IEnumerator<int> LoadMapData(BlockingCollection<Action> subThreadQueue, BlockingCollection<Action> mainThreadQueue, SatIO.MapIO mapIO, int initDoorID, int initSavePointID)
+        public async Task<bool> LoadMapData(SatIO.MapIO mapIO, int initDoorID, int initSavePointID)
         {
             foreach (var item in mapIO.BackGrounds)
             {
-                AddObject(BackGround.LoadBackGroud(item, this));
-                LoadingElementCount++;
-                yield return 0;
+                var backGround = await BackGround.CreateBackGroudAsync(item);
+                AddObject(backGround);
             }
 
             PhysicalWorld = new PhysicalWorld(new asd.RectF(new asd.Vector2DF(-200, -200), mapIO.Size + new asd.Vector2DF(200, 200) * 2), new asd.Vector2DF(0, 2000));
@@ -127,76 +122,64 @@ namespace SatPlayer.Game
             var tempDoors = new List<Door>();
             foreach (var item in mapIO.Doors)
             {
-                Door temp = new Door(subThreadQueue, item.ResourcePath, item.KeyScriptPath, Player);
-                temp.Position = item.Position;
-                temp.ID = item.ID;
-                temp.IsUseMoveToID = item.IsUseMoveToID;
-                temp.MoveToMap = item.MoveToMap;
-                temp.MoveToID = item.MoveToID;
-                AddObject(temp);
-                tempDoors.Add(temp);
-                yield return 0;
-                LoadingElementCount++;
+                var door = await Door.CreateDoorAsync(item);
+                AddObject(door);
+                tempDoors.Add(door);
             }
 
             foreach (var item in mapIO.MapObjects)
             {
                 try
                 {
-                    MapObject temp = new MapObject(subThreadQueue, mainThreadQueue, item.ScriptPath, PhysicalWorld);
-                    temp.Position = item.Position;
-                    AddObject(temp);
+                    var mapObject = await MapObject.CreateMapObjectAsync(item);
+                    AddObject(mapObject);
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Debug.WriteLine(e);
+                    ErrorIO.AddError(e);
                 }
-                yield return 0;
-                LoadingElementCount++;
             }
 
-            List<IActor> actors = new List<IActor>(Game.Players);
+            List<IActor> actors = new List<IActor>(GameScene.Players);
             foreach (var item in mapIO.EventObjects)
             {
                 try
                 {
-                    EventObject temp = new EventObject(subThreadQueue, mainThreadQueue, item.ScriptPath, PhysicalWorld, item.MotionPath);
-                    temp.Position = item.Position;
-                    AddObject(temp);
-                    actors.Add(temp);
+                    var eventObject = await EventObject.CreateEventObjectAsync(item);
+                    AddObject(eventObject);
+                    actors.Add(eventObject);
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Debug.WriteLine(e);
+                    ErrorIO.AddError(e);
                 }
-                yield return 0;
-                LoadingElementCount++;
             }
 
-            foreach (var item in mapIO.MapEvents)
+            if (Scene is GameScene gameScene)
             {
-                if (Game.EndEvents.Any(obj => obj.Key == ((Game)Scene).MapPath && obj.Value == item.ID)) continue;
-                try
+                foreach (var item in mapIO.MapEvents)
                 {
-                    bool isSkip = false;
-                    foreach (var item2 in item.Actors.Where(obj => obj.IsUseName))
+                    if (GameScene.EndEvents.Any(obj => obj.Key == gameScene.MapPath && obj.Value == item.ID)) continue;
+                    try
                     {
-                        if (!((Game)Scene).CanUsePlayers.Any(obj => obj.Name == item2.Name))
+                        bool isSkip = false;
+                        foreach (var item2 in item.Actors.Where(obj => obj.IsUseName))
                         {
-                            isSkip = true;
-                            break;
+                            if (!gameScene.CanUsePlayers.Any(obj => obj.Name == item2.Name))
+                            {
+                                isSkip = true;
+                                break;
+                            }
                         }
+                        if (isSkip) continue;
+                        Object.MapEvent.MapEvent temp = await Object.MapEvent.MapEvent.CreateMapEventAsync(item, actors, PlayerCamera);
+                        AddObject(temp);
                     }
-                    if (isSkip) continue;
-                    Object.MapEvent.MapEvent temp = new Object.MapEvent.MapEvent(item, actors, PlayerCamera);
-                    AddObject(temp);
+                    catch (Exception e)
+                    {
+                        ErrorIO.AddError(e);
+                    }
                 }
-                catch (Exception e)
-                {
-                    System.Diagnostics.Debug.WriteLine(e);
-                }
-                yield return 0;
-                LoadingElementCount++;
             }
 
             List<SavePoint> tempSavePoints = new List<SavePoint>();
@@ -211,19 +194,24 @@ namespace SatPlayer.Game
                 Player.Position = tempSavePoints.Find(savePoint => savePoint.ID == initSavePointID).Position;
             else if (initDoorID != -1 && tempDoors.Find(door => door.ID == initDoorID) != null)
                 Player.Position = tempDoors.Find(door => door.ID == initDoorID).Position;
+
+            return true;
         }
 
         protected override void OnAdded()
         {
             int count = 15;
-            foreach (var item in ((Game)Scene).CanUsePlayers)
+            if (Scene is GameScene gameScene)
             {
-                if (item == Player) continue;
-                for (int i = 0; i < count; i++)
+                foreach (var item in gameScene.CanUsePlayers)
                 {
-                    item.MoveCommands.Enqueue(new Dictionary<Inputs, bool>());
+                    if (item == Player) continue;
+                    for (int i = 0; i < count; i++)
+                    {
+                        item.MoveCommands.Enqueue(new Dictionary<Inputs, bool>());
+                    }
+                    item.Color = new asd.Color(100, 100, 100);
                 }
-                item.Color = new asd.Color(100, 100, 100);
             }
             base.OnAdded();
         }
@@ -237,12 +225,15 @@ namespace SatPlayer.Game
             {
                 key[item] = Input.GetInputState(item) > 0;
             }
-            foreach (var item in ((Game)Scene).CanUsePlayers)
-            {
-                if (item == Player) continue;
-                item.MoveCommands.Enqueue(key);
-            }
 
+            if (Scene is GameScene gameScene)
+            {
+                foreach (var item in gameScene.CanUsePlayers)
+                {
+                    if (item == Player) continue;
+                    item.MoveCommands.Enqueue(key);
+                }
+            }
             if (!SavePoints.Any(obj => obj.IsActive)) PhysicalWorld?.Update();
             UpdateCollision();
         }

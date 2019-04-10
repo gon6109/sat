@@ -10,7 +10,6 @@ using System.Collections.Concurrent;
 using SatScript.MapObject;
 using AltseedScript.Common;
 using SatScript.Collision;
-using SatPlayer.Game;
 using System.Threading.Tasks;
 
 namespace SatPlayer.Game.Object

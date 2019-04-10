@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using asd;
 
-namespace SatPlayer
+namespace SatPlayer.Game
 {
     /// <summary>
     /// Event用インターフェース
@@ -20,7 +20,7 @@ namespace SatPlayer
 
         Queue<Dictionary<BaseComponent.Inputs, bool>> MoveCommands { get; }
         PhysicAltseed.PhysicalShape CollisionShape { get; }
-        asd.RectangleShape GroundCollision { get; }
+        RectangleShape GroundCollision { get; }
         Texture2D Texture { get; set; }
         Layer2D Layer { get; }
 

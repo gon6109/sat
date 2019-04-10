@@ -140,12 +140,12 @@
     <Compile Include="Game\Object\BackGround.cs" />
     <Compile Include="Game\Collision.cs" />
     <Compile Include="Game\Object\Door.cs" />
-    <Compile Include="Effect.cs" />
+    <Compile Include="Game\Effect.cs" />
     <Compile Include="Game\GameScene.cs" />
-    <Compile Include="IActor.cs" />
-    <Compile Include="IDamageControler.cs" />
-    <Compile Include="IDamageManeger.cs" />
-    <Compile Include="IEffectManeger.cs" />
+    <Compile Include="Game\IActor.cs" />
+    <Compile Include="Game\IDamageControler.cs" />
+    <Compile Include="Game\IDamageManeger.cs" />
+    <Compile Include="Game\IEffectManeger.cs" />
     <Compile Include="Game\MapLayer.cs" />
     <Compile Include="Game\Object\MapEvent\CharacterImage.cs" />
     <Compile Include="Game\Object\MapEvent\MapEvent.cs" />
@@ -154,7 +154,7 @@
     <Compile Include="Game\Object\MapEvent\MoveComponent.cs" />
     <Compile Include="Game\Object\MapEvent\TalkComponent.cs" />
     <Compile Include="Game\Object\MapObject.cs" />
-    <Compile Include="MapObjectParameter.cs" />
+    <Compile Include="Game\MapObjectParameter.cs" />
     <Compile Include="Game\Object\EventObject.cs" />
     <Compile Include="Game\Object\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

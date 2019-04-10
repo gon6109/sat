@@ -35,7 +35,7 @@ namespace SatPlayer.Game
 
         public List<Player> CanUsePlayers { get; set; }
 
-        string MapPath { get; }
+        public string MapPath { get; }
         int InitDoorID { get; }
         int InitSavePointID { get; }
 
@@ -67,27 +67,18 @@ namespace SatPlayer.Game
             IsPreviewMode = isPreviewMode;
         }
 
-        BlockingCollection<Action> subThreadTasks;
-        bool isFin;
-
         public IEnumerator<int> Init()
         {
             AddLayer(Map);
             MessageLayer2D.Reset();
             AddLayer(MessageLayer2D.Instance);
 
-            subThreadTasks = new BlockingCollection<Action>();
-            BlockingCollection<Action> mainThreadTasks = new BlockingCollection<Action>();
-            isFin = false;
-            var task = SubInit();
 
             MapIO mapIO = new MapIO();
             mapIO = BaseIO.Load<MapIO>(MapPath);
             MapName = mapIO.MapName;
 
-            var enumerator = Map.LoadMapData(subThreadTasks, mainThreadTasks, mapIO, InitDoorID, InitSavePointID);
-            while (enumerator.MoveNext()) yield return 0;
-            isFin = true;
+            var enumerator = Map.LoadMapData( mapIO, InitDoorID, InitSavePointID);
 
             foreach (var item in CanUsePlayers)
             {
@@ -97,29 +88,18 @@ namespace SatPlayer.Game
             }
 
             Sound.StartBgm(new Sound(mapIO.BGMPath), 2);
-
-            while (!task.IsCompleted || mainThreadTasks.Count != 0)
-            {
-                Action action;
-                mainThreadTasks.TryTake(out action, 100);
-                action?.Invoke();
-                yield return 0;
-            }
         }
 
-        async Task SubInit()
+        public async Task CreateMapAsync()
         {
-            await Task.Run(() => RunSubThread(subThreadTasks, ref isFin));
-        }
+            AddLayer(Map);
+            MessageLayer2D.Reset();
+            AddLayer(MessageLayer2D.Instance);
 
-        void RunSubThread(BlockingCollection<Action> queue, ref bool isFinish)
-        {
-            while (!isFinish || queue.Count != 0)
-            {
-                Action task;
-                queue.TryTake(out task, 100);
-                task?.Invoke();
-            }
+
+            MapIO mapIO = new MapIO();
+            mapIO = BaseIO.Load<MapIO>(MapPath);
+            MapName = mapIO.MapName;
         }
 
         protected override void OnStartUpdating()

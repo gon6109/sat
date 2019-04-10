@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SatPlayer
+namespace SatPlayer.Game
 {
     /// <summary>
     /// エフェクト
