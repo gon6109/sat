@@ -17,7 +17,7 @@ namespace SatIO
         /// <summary>
         /// リソースへのパス
         /// </summary>
-        public string TexturePath { get; set; }
+        public string ResourcePath { get; set; }
 
         /// <summary>
         /// 遷移先のマップ名

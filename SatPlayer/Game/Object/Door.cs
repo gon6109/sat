@@ -6,6 +6,7 @@ using SatIO;
 using BaseComponent;
 using System.Collections.Concurrent;
 using SatPlayer.Game.Object;
+using System.Threading.Tasks;
 
 namespace SatPlayer
 {
@@ -48,7 +49,7 @@ namespace SatPlayer
         /// <summary>
         /// リソースへのパス
         /// </summary>
-        public string ResourcePath { get; }
+        public string ResourcePath { get; private set; }
 
         /// <summary>
         /// 遷移先のマップ名
@@ -73,10 +74,9 @@ namespace SatPlayer
         /// <summary>
         /// 解放条件スクリプト
         /// </summary>
-        public string KeyScriptPath { get; }
+        public string KeyScriptPath { get; private set; }
 
-        public asd.RectangleShape CollisionShape { get; set; }
-        public Player RefPlayer { get; }
+        public asd.RectangleShape CollisionShape { get; }
 
         bool isLeave;
         bool isCome;
@@ -102,16 +102,10 @@ namespace SatPlayer
             isCome = true;
         }
 
-        public Door(BlockingCollection<Action> subThreadQueue, string texturePath, string keyScriptPath, Player player)
+        public Door()
         {
             CameraGroup = 1;
-            RefPlayer = player;
             CollisionShape = new asd.RectangleShape();
-            ResourcePath = texturePath;
-            LoadAnimationScript(texturePath);
-            State = "close";
-            CollisionShape.DrawingArea = new asd.RectF(new asd.Vector2DF(), Texture.Size.To2DF());
-            CenterPosition = Texture.Size.To2DF() / 2.0f;
             MoveToID = 0;
             ID = 0;
             IsUseMoveToID = true;
@@ -119,12 +113,6 @@ namespace SatPlayer
             isCome = false;
             MoveToMap = "hoge";
             DrawingPriority = 1;
-            KeyScriptPath = keyScriptPath;
-            if (KeyScriptPath != "")
-            {
-                Script<bool> keyScript = CSharpScript.Create<bool>(IO.GetStream(KeyScriptPath), options: options, globalsType: this.GetType());
-                subThreadQueue.TryAdd(() => keyScriptRunner = keyScript.CreateDelegate());
-            }
         }
 
         protected override void OnUpdate()
@@ -166,6 +154,36 @@ namespace SatPlayer
                 IsOneLoop = true;
             }
             base.OnUpdate();
+        }
+
+        public static async Task<Door> CreateDoorAsync(DoorIO doorIO)
+        {
+            var door = new Door();
+
+            door.ResourcePath = doorIO.ResourcePath;
+            await door.LoadAnimationScriptAsync(door.ResourcePath);
+            door.State = "close";
+            door.CollisionShape.DrawingArea = new asd.RectF(new asd.Vector2DF(), door.Texture.Size.To2DF());
+            door.CenterPosition = door.Texture.Size.To2DF() / 2.0f;
+            door.KeyScriptPath = doorIO.KeyScriptPath;
+            if (door.KeyScriptPath != "")
+            {
+                try
+                {
+                    var stream = await IO.GetStreamAsync(door.KeyScriptPath);
+                    using (stream)
+                    {
+                        Script<bool> keyScript = CSharpScript.Create<bool>(stream, options: options, globalsType: door.GetType());
+                        await Task.Run(() => door.keyScriptRunner = keyScript.CreateDelegate());
+                    }
+                }
+                catch (Exception e)
+                {
+                    ErrorIO.AddError(e);
+                }
+            }
+
+            return door;
         }
     }
 }

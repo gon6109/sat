@@ -11,6 +11,7 @@ using SatScript.MapObject;
 using AltseedScript.Common;
 using SatScript.Collision;
 using SatPlayer.Game;
+using System.Threading.Tasks;
 
 namespace SatPlayer.Game.Object
 {
@@ -97,11 +98,6 @@ namespace SatPlayer.Game.Object
         /// エフェクト一覧
         /// </summary>
         public Dictionary<string, Effect> Effects { get; protected set; }
-
-        /// <summary>
-        /// マップレイヤーへの参照
-        /// </summary>
-        public MapLayer RefMainMapLayer2D => Layer as MapLayer;
 
         /// <summary>
         /// OnUpdate時に呼び出されるイベント
@@ -200,57 +196,10 @@ namespace SatPlayer.Game.Object
 
         protected Dictionary<string, Sensor> sensors;
         protected Dictionary<string, MapObject> childMapObjectData;
-        protected PhysicalWorld refWorld;
         private int hP;
-
-        protected BlockingCollection<Action> subQueue;
-        protected BlockingCollection<Action> mainQueue;
         private MapObjectType _mapObjectType;
 
-        public MapObject(BlockingCollection<Action> subThreadQueue, BlockingCollection<Action> mainThreadQueue, string scriptPath, PhysicalWorld world)
-        {
-            Init();
-            refWorld = world;
-            subQueue = subThreadQueue;
-            mainQueue = mainThreadQueue;
-            Script<object> script;
-            subThreadQueue.TryAdd(() =>
-            {
-                if (scriptPath != "")
-                {
-                    try
-                    {
-                        using (var stream = IO.GetStream(scriptPath))
-                            script = ScriptOption.ScriptOptions["MapObject"]?.CreateScript<object>(stream.ToString());
-                        script.Compile();
-                    }
-                    catch (Exception e)
-                    {
-                        throw e;
-                    }
-                    mainThreadQueue.Add(() =>
-                    {
-                        var thread = script.RunAsync(this);
-                        thread.Wait();
-                    });
-                }
-                mainThreadQueue.TryAdd(() =>
-                {
-                    try
-                    {
-                        collision.DrawingArea = new asd.RectF(new asd.Vector2DF(), AnimationPart.First().Value.Textures.First().Size.To2DF());
-                    }
-                    catch (Exception e)
-                    {
-                        ErrorIO.AddError(e);
-                    }
-                    CenterPosition = collision.DrawingArea.Size / 2;
-                    Position = Position;
-                });
-            });
-        }
-
-        protected MapObject()
+        public MapObject()
         {
             Init();
         }
@@ -263,7 +212,6 @@ namespace SatPlayer.Game.Object
             sensors = new Dictionary<string, Sensor>();
             Effects = new Dictionary<string, Effect>();
             childMapObjectData = new Dictionary<string, MapObject>();
-            Update = (obj) => { };
             collision = new asd.RectangleShape();
             DirectDamageRequests = new Queue<DirectDamage>();
             MapObjectType = MapObjectType.Passive;
@@ -340,11 +288,10 @@ namespace SatPlayer.Game.Object
             clone.sensors = new Dictionary<string, Sensor>(sensors);
             clone.childMapObjectData = new Dictionary<string, MapObject>(childMapObjectData);
             clone.Effects = new Dictionary<string, Effect>(Effects);
-            clone.refWorld = refWorld;
             clone.Update = Update;
             clone.State = State;
             clone.Tag = Tag;
-            clone.Clone(this);
+            clone.Copy(this);
             clone.MapObjectType = MapObjectType;
             try
             {
@@ -410,6 +357,41 @@ namespace SatPlayer.Game.Object
 
         public void SetImpulse(Vector direct, Vector position)
             => CollisionShape?.SetImpulse(direct.ToAsdVector(), position.ToAsdVector());
+
+        public static async Task<MapObject> CreateMapObjectAsync(MapObjectIO mapObjectIO)
+        {
+            var mapObject = new MapObject();
+            if (mapObjectIO.ScriptPath != "")
+            {
+                try
+                {
+                    var stream = await IO.GetStreamAsync(mapObjectIO.ScriptPath);
+                    using (stream)
+                    {
+                        var script = ScriptOption.ScriptOptions["MapObject"]?.CreateScript<object>(stream.ToString());
+                        await Task.Run(() => script.Compile());
+                        await script.RunAsync(mapObject);
+                    }
+                }
+                catch (Exception e)
+                {
+                    ErrorIO.AddError(e);
+                }
+            }
+
+            try
+            {
+                mapObject.collision.DrawingArea = new asd.RectF(new asd.Vector2DF(), mapObject.AnimationPart.First().Value.Textures.First().Size.To2DF());
+            }
+            catch (Exception e)
+            {
+                ErrorIO.AddError(e);
+            }
+            mapObject.CenterPosition = mapObject.collision.DrawingArea.Size / 2;
+            mapObject.Position = mapObject.Position;
+
+            return mapObject;
+        }
 
         /// <summary>
         /// センサー

@@ -10,6 +10,7 @@ using SatScript.Player;
 using AltseedScript.Common;
 using SatScript.Collision;
 using SatPlayer.Game;
+using System.Threading.Tasks;
 
 namespace SatPlayer.Game.Object
 {
@@ -141,34 +142,9 @@ namespace SatPlayer.Game.Object
 
         private int hP;
 
-        public Player(string playerDataPath, int playerGroup = 0)
+        public Player()
         {
             GroundCollision = new asd.RectangleShape();
-            PlayerGroup = playerGroup;
-            Init();
-            try
-            {
-                using (var stream = IO.GetStream(playerDataPath))
-                {
-                    var script = ScriptOption.ScriptOptions["Player"].CreateScript<object>(stream.ToString());
-                    var task = script.RunAsync(playerDataPath);
-                    task.Wait();
-                }
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-        protected Player(int playerGroup = 0)
-        {
-            GroundCollision = new asd.RectangleShape();
-            Init();
-        }
-
-        protected void Init()
-        {
             CameraGroup = 1;
             base.Position = new asd.Vector2DF();
             Effects = new Dictionary<string, Effect>();
@@ -283,6 +259,26 @@ namespace SatPlayer.Game.Object
         void IActor.OnUpdate()
         {
             OnUpdate();
+        }
+
+        public static async Task<Player> CreatePlayerAsync(string playerDataPath, int playerGroup = 0)
+        {
+            try
+            {
+                var player = new Player();
+                player.PlayerGroup = playerGroup;
+                var stream = await IO.GetStreamAsync(playerDataPath);
+                using (stream)
+                {
+                    var script = ScriptOption.ScriptOptions["Player"].CreateScript<object>(stream.ToString());
+                    await script.RunAsync(playerDataPath);
+                }
+                return player;
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

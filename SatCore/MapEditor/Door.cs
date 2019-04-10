@@ -219,7 +219,7 @@ namespace SatCore.MapEditor
             {
                 ID = door.ID,
                 Position = door.Position,
-                TexturePath = door.TexturePath,
+                ResourcePath = door.TexturePath,
                 MoveToMap = door.MoveToMap,
                 IsUseMoveToID = door.IsUseMoveToID,
                 MoveToID = door.MoveToID,
@@ -233,11 +233,11 @@ namespace SatCore.MapEditor
         {
             try
             {
-                var result = new Door(door.TexturePath)
+                var result = new Door(door.ResourcePath)
                 {
                     ID = door.ID,
                     Position = door.Position,
-                    TexturePath = door.TexturePath,
+                    TexturePath = door.ResourcePath,
                     MoveToMap = door.MoveToMap,
                     IsUseMoveToID = door.IsUseMoveToID,
                     MoveToID = door.MoveToID,

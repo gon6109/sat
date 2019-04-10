@@ -75,7 +75,7 @@ namespace SatPlayer.Game.Object
         /// </summary>
         /// <param name="backGroundIO">背景情報</param>
         /// <returns>背景</returns>
-        public static BackGround CreateBackGroud(BackGroundIO backGroundIO)
+        public static async Task<BackGround> CreateBackGroudAsync(BackGroundIO backGroundIO)
         {
             BackGround backGround = new BackGround();
             backGround.Position = backGroundIO.Position;
@@ -84,13 +84,12 @@ namespace SatPlayer.Game.Object
             {
                 try
                 {
-                    using (var stream = IO.GetStream(backGroundIO.TexturePath))
+                    var stream = await IO.GetStreamAsync(backGroundIO.TexturePath);
+                    using (stream)
                     {
                         var script = ScriptOption.ScriptOptions["BackGround"].CreateScript<object>(stream.ToString());
-                        var task = script.RunAsync(backGround);
-                        task.Wait();
-                        GC.Collect();
-                        GC.WaitForPendingFinalizers();
+                        await Task.Run(() => script.Compile());
+                        await script.RunAsync(backGround);
                     }
                 }
                 catch (Exception e)
@@ -98,7 +97,7 @@ namespace SatPlayer.Game.Object
                     ErrorIO.AddError(e);
                 }
             }
-            else backGround.Texture = TextureManager.LoadTexture(backGroundIO.TexturePath);
+            else backGround.Texture = await TextureManager.LoadTextureAsync(backGroundIO.TexturePath);
             if (backGround.Zoom > 1) backGround.Camera.DrawingPriority = 3;
             else backGround.Camera.DrawingPriority = -1;
             return backGround;

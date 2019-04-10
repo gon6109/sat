@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BaseComponent;
 using SatIO;
-using SatPlayer.MapEvent;
+using SatPlayer.Game.Object.MapEvent;
 using PhysicAltseed;
 using SatScript.MapObject;
 using AltseedScript.Common;
@@ -181,7 +181,7 @@ namespace SatPlayer.Game.Object
             clone.Update = Update;
             clone.State = State;
             clone.Tag = Tag;
-            clone.Clone(this);
+            clone.Copy(this);
             clone.MapObjectType = MapObjectType;
             try
             {
@@ -200,6 +200,11 @@ namespace SatPlayer.Game.Object
             }
             clone.IsEvent = IsEvent;
             return clone;
+        }
+
+        public static async Task<EventObject> CreateEventObject(EventObjectIO eventObjectIO)
+        {
+
         }
     }
 }

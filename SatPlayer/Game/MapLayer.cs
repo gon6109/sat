@@ -127,7 +127,7 @@ namespace SatPlayer.Game
             var tempDoors = new List<Door>();
             foreach (var item in mapIO.Doors)
             {
-                Door temp = new Door(subThreadQueue, item.TexturePath, item.KeyScriptPath, Player);
+                Door temp = new Door(subThreadQueue, item.ResourcePath, item.KeyScriptPath, Player);
                 temp.Position = item.Position;
                 temp.ID = item.ID;
                 temp.IsUseMoveToID = item.IsUseMoveToID;
