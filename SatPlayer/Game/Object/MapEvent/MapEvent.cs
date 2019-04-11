@@ -194,7 +194,7 @@ namespace SatPlayer.Game.Object.MapEvent
                 item.ActorObject.IsEvent = false;
             }
             var path = (Layer.Scene as GameScene)?.MapPath;
-            Game.EndEvents.Add(new KeyValuePair<string, int>(path, ID));
+            GameScene.EndEvents.Add(new KeyValuePair<string, int>(path, ID));
             Dispose();
             yield return 0;
         }

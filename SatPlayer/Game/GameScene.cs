@@ -67,18 +67,17 @@ namespace SatPlayer.Game
             IsPreviewMode = isPreviewMode;
         }
 
-        public IEnumerator<int> Init()
+        public async Task CreateMapAsync()
         {
             AddLayer(Map);
             MessageLayer2D.Reset();
             AddLayer(MessageLayer2D.Instance);
 
-
             MapIO mapIO = new MapIO();
-            mapIO = BaseIO.Load<MapIO>(MapPath);
+            mapIO = await BaseIO.LoadAsync<MapIO>(MapPath);
             MapName = mapIO.MapName;
 
-            var enumerator = Map.LoadMapData( mapIO, InitDoorID, InitSavePointID);
+            await Map.LoadMapData(mapIO, InitDoorID, InitSavePointID);
 
             foreach (var item in CanUsePlayers)
             {
@@ -88,18 +87,6 @@ namespace SatPlayer.Game
             }
 
             Sound.StartBgm(new Sound(mapIO.BGMPath), 2);
-        }
-
-        public async Task CreateMapAsync()
-        {
-            AddLayer(Map);
-            MessageLayer2D.Reset();
-            AddLayer(MessageLayer2D.Instance);
-
-
-            MapIO mapIO = new MapIO();
-            mapIO = BaseIO.Load<MapIO>(MapPath);
-            MapName = mapIO.MapName;
         }
 
         protected override void OnStartUpdating()
@@ -175,7 +162,7 @@ namespace SatPlayer.Game
         /// <summary>
         /// プレイヤーデータの読み込み
         /// </summary>
-        public static void LoadPlayersData()
+        public static async Task LoadPlayersDataAsync()
         {
             Players.Clear();
             BinaryFormatter serializser = new BinaryFormatter();
@@ -183,7 +170,7 @@ namespace SatPlayer.Game
             foreach (var item in playerDataPaths)
             {
                 if (!asd.Engine.File.Exists(item)) continue;
-                Player player = new Player(item);
+                Player player = await Player.CreatePlayerAsync(item);
                 Players.Add(player);
             }
         }
