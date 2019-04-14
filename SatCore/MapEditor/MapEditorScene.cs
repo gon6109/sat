@@ -9,13 +9,14 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using BaseComponent;
 using SatCore.Attribute;
+using SatCore.MapEditor.Object;
 
 namespace SatCore.MapEditor
 {
     /// <summary>
     /// マップ編集シーン
     /// </summary>
-    public class MapEditor : UndoRedoScene, INotifyPropertyChanged
+    public class MapEditorScene : UndoRedoScene, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -25,7 +26,7 @@ namespace SatCore.MapEditor
         private string _bGMPath;
         private IEnumerator<int> cameraUpdater;
 
-        public MainMapLayer2D Map { get; private set; }
+        public MapLayer Map { get; }
 
         public string Path { get; set; }
 
@@ -42,7 +43,7 @@ namespace SatCore.MapEditor
         }
 
         [ListInput("背景", selectedObjectBindingPath: "SelectedBackGround", additionButtonEventMethodName: "AddBackGround")]
-        public UndoRedoCollection<BackGround> BackGrounds { get; private set; }
+        public UndoRedoCollection<BackGround> BackGrounds { get; }
 
         bool isSelectedBackGround;
 
@@ -62,7 +63,7 @@ namespace SatCore.MapEditor
 
         public void AddBackGround()
         {
-            BackGrounds.Add(new BackGround(Map));
+            BackGrounds.Add(new BackGround());
         }
 
         [FileInput("BGM", "WAVE File|*.wav|All File|*.*")]
@@ -127,7 +128,7 @@ namespace SatCore.MapEditor
             }
         }
 
-        public Action<bool, bool> OnCopyObjectChanged { get; set; }
+        public event Action<bool, bool> OnCopyObjectChanged = delegate { };
 
         [ListInput("Map Objectテンプレート", "SelectedTemplate", "AddTemplate")]
         public ObservableCollection<MapObjectTemplate> MapObjectTemplates { get; set; }
@@ -142,20 +143,13 @@ namespace SatCore.MapEditor
         [Group("マップヴューア")]
         public MapViewer Viewer { get; set; }
 
-        public MapEditor(string path = null)
+        public MapEditorScene(string path = null)
         {
-            Init();
-            Path = path;
-        }
+            Map = new MapLayer();
 
-        /// <summary>
-        /// 初期化
-        /// </summary>
-        void Init()
-        {
-            Map = new MainMapLayer2D();
             BackGrounds = new UndoRedoCollection<BackGround>();
             BackGrounds.CollectionChanged += BackGrounds_CollectionChanged;
+
             Map.OnChangeSelectedObject += () =>
             {
                 isSelectedBackGround = false;
@@ -184,7 +178,8 @@ namespace SatCore.MapEditor
             Viewer = new MapViewer(this);
 
             AddLayer(Map);
-        }
+            Path = path;
+        } 
 
         /// <summary>
         /// 背景更新時
@@ -230,7 +225,6 @@ namespace SatCore.MapEditor
         protected override void OnUpdated()
         {
             cameraUpdater?.MoveNext();
-            Viewer.Update();
             base.OnUpdated();
         }
 
@@ -261,7 +255,7 @@ namespace SatCore.MapEditor
                 {
                     foreach (var item in mapdata.BackGrounds)
                     {
-                        BackGrounds.Add(BackGround.LoadBackGroud(item, Map));
+                        BackGrounds.Add(BackGround.CreateBackGroud(item));
                     }
                 }
                 Map.LoadMapData(mapdata);
@@ -279,7 +273,7 @@ namespace SatCore.MapEditor
             {
                 BGMPath = BGMPath,
                 Path = Path,
-                BackGrounds = BackGrounds.Select(obj => (SatIO.BackGroundIO)obj).ToList(),
+                BackGrounds = BackGrounds.Select(obj => obj.ToIO()).ToList(),
                 MapName = MapName,
             };
             Map.SaveMapData(mapdata);
@@ -291,8 +285,6 @@ namespace SatCore.MapEditor
         /// </summary>
         public class MapViewer
         {
-            IEnumerator<int> enumerator;
-            SatPlayer.GameScene newScene;
 
             [ListInput("プレイヤー", additionButtonEventMethodName: "AddPlayerData")]
             public ObservableCollection<PlayerName> PlayerNames { get; set; }
@@ -312,42 +304,40 @@ namespace SatCore.MapEditor
             [VectorInput("初期座標")]
             public asd.Vector2DF PlayerPosition { get; set; }
 
-            public MapEditor RefMapEditor { get; private set; }
+            public MapEditorScene RefMapEditor { get; private set; }
 
-            public MapViewer(MapEditor mapEditor)
+            bool isLoading;
+
+            public MapViewer(MapEditorScene mapEditor)
             {
                 RefMapEditor = mapEditor;
                 PlayerNames = new ObservableCollection<PlayerName>();
             }
 
             [Button("Play")]
-            public void PlayMap()
+            public async Task PlayMapAsync()
             {
-                if (enumerator != null || PlayerNames.Count == 0 || asd.Engine.CurrentScene != RefMapEditor) return;
+                if (isLoading || PlayerNames.Count == 0 || asd.Engine.CurrentScene != RefMapEditor) return;
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
                 RefMapEditor.SaveMapData("temp.map");
-                SatPlayer.Game.LoadPlayersData();
-                newScene = new SatPlayer.Game("temp.map", SatPlayer.Game.Players.Where(obj => PlayerNames.Any(obj2 => obj.Name == obj2.Name)).ToList(), PlayerPosition, isPreviewMode: true);
-                newScene.OnGameOver = (() =>
+                await SatPlayer.Game.GameScene.LoadPlayersDataAsync();
+                var newScene = new SatPlayer.Game.GameScene("temp.map", SatPlayer.Game.GameScene.Players.Where(obj => PlayerNames.Any(obj2 => obj.Name == obj2.Name)).ToList(), PlayerPosition, isPreviewMode: true);
+                newScene.OnGameOver += (() =>
                 {
                     asd.Engine.ChangeScene(RefMapEditor);
                 });
-                newScene.OnChangeMapEvent = (path, initPlayers, playerPosition, doorID, savePointID) =>
+                newScene.OnChangeMap += (path, initPlayers, playerPosition, doorID, savePointID) =>
                 {
                     asd.Engine.ChangeScene(RefMapEditor);
                 };
-                enumerator = newScene.Init();
-            }
-
-            public void Update()
-            {
-                if (enumerator != null && !enumerator.MoveNext())
+                newScene.OnEnd += () =>
                 {
-                    asd.Engine.ChangeScene(newScene, false);
-                    enumerator = null;
-                    newScene = null;
-                }
+                    asd.Engine.ChangeScene(RefMapEditor);
+                };
+                (int taskCount, int progress) info = default;
+                await newScene.LoadMapAsync(info);
+                asd.Engine.ChangeScene(newScene, false);
             }
 
             public class PlayerName : IListInput

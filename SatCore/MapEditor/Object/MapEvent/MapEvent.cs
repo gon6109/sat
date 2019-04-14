@@ -13,7 +13,7 @@ using SatPlayer.Game.Object;
 using SatPlayer.Game;
 using SatCore.Attribute;
 
-namespace SatCore.MapEditor.MapEvent
+namespace SatCore.MapEditor.Object.MapEvent
 {
     /// <summary>
     /// 強制イベント
@@ -23,9 +23,8 @@ namespace SatCore.MapEditor.MapEvent
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        PhysicalWorld refWorld;
         private MapEventComponent _selectedComponent;
 
         public new asd.RectangleShape Shape
@@ -71,15 +70,15 @@ namespace SatCore.MapEditor.MapEvent
 
         public void AddActor()
         {
-            if (((MainMapLayer2D)Layer).CurrentToolType != ToolType.Select ||
-                ((MainMapLayer2D)Layer).Objects.Count(obj => obj is EventObject) <= Actors.Count(obj => !obj.IsUseName))
+            if (((MapLayer)Layer).CurrentToolType != ToolType.Select ||
+                ((MapLayer)Layer).Objects.Count(obj => obj is EventObject) <= Actors.Count(obj => !obj.IsUseName))
                 return;
-            ((MainMapLayer2D)Layer).CurrentToolType = ToolType.SelectEventObject;
+            ((MapLayer)Layer).CurrentToolType = ToolType.SelectEventObject;
         }
 
         public void AddEventObjectActor(IActor actorObject, int id, asd.Vector2DF initPosition)
         {
-            var actor = new Actor(actorObject, refWorld);
+            var actor = new Actor(actorObject);
             Actors.Add(actor);
             actor.SetTexture(Layer, actor.InitPosition, new asd.Color(255, 255, 255));
         }
@@ -94,13 +93,16 @@ namespace SatCore.MapEditor.MapEvent
 
             try
             {
-                var actor = new Actor(new Player(playersListDialog.FileName), refWorld);
+                var task = Player.CreatePlayerAsync(playersListDialog.FileName);
+                while (!task.IsCompleted) ;
+                var actor = new Actor(task.Result);
                 actor.InitPosition = Position + new asd.Vector2DF(Size.X, 0) - actor.Texture.Size.To2DF();
                 actor.Position = actor.InitPosition;
-                for (int i = 0; i < 60; i++)
-                {
-                    refWorld.Update();
-                }
+                if (Layer is MapLayer map)
+                    for (int i = 0; i < 60; i++)
+                    {
+                        map.PhysicalWorld.Update();
+                    }
                 actor.InitPosition = actor.Position;
                 Actors.Add(actor);
                 actor.SetTexture(Layer, actor.InitPosition, new asd.Color(255, 255, 255));
@@ -119,16 +121,16 @@ namespace SatCore.MapEditor.MapEvent
         [ListInput("キャラグラフィックデータ", additionButtonEventMethodName: "AddCharacterImage")]
         public UndoRedoCollection<CharacterImage> CharacterImages { get; set; }
 
-        public void AddCharacterImage()
+        public async Task AddCharacterImageAsync()
         {
             var file = RequireOpenFileDialog();
             if (file == "" || !asd.Engine.File.Exists(file)) return;
-            CharacterImages.Add(CharacterImage.LoadCharacterImage(file));
+            CharacterImages.Add(await CharacterImage.LoadCharacterImageAsync(file));
         }
 
-        public Func<string> RequireOpenFileDialog { get; set; }
+        public event Func<string> RequireOpenFileDialog = delegate { return null; };
 
-        public Func<MapEventIO.ActorIO, IActor> SearchActor { get; set; }
+        public event Func<MapEventIO.ActorIO, IActor> SearchActor = delegate { return null; };
 
         [ListInput("シナリオ", "SelectedComponent")]
         public UndoRedoCollection<MapEventComponent> EventComponents { get; set; }
@@ -180,12 +182,14 @@ namespace SatCore.MapEditor.MapEvent
                         if (((MoveComponent)component).CameraCommand.MoveCommandElements.Count > i)
                             MainCamera.AddRequest(((MoveComponent)component).CameraCommand.MoveCommandElements[i]);
                         MainCamera.Update();
-                        refWorld.Update();
+                        if (Layer is MapLayer map)
+                            map.PhysicalWorld.Update();
                     }
 
                     for (int i = 0; i < 30; i++)
                     {
-                        refWorld.Update();
+                        if (Layer is MapLayer map)
+                            map.PhysicalWorld.Update();
                     }
 
                     foreach (var item in Actors)
@@ -279,7 +283,7 @@ namespace SatCore.MapEditor.MapEvent
         {
             PlayersListDialog playersListDialog = new PlayersListDialog();
             if (playersListDialog.Show() != PlayersListDialogResult.OK) return;
-            
+
             var playerName = new PlayerName()
             {
                 Name = playersListDialog.PlayerName,
@@ -313,8 +317,7 @@ namespace SatCore.MapEditor.MapEvent
             UndoRedoManager.ChangeProperty(this, Rect, rect, "Rect");
         }
 
-        public MapEvent(Func<string> requireOpenFileDialogFunc,
-            Func<MapEventIO.ActorIO, IActor> searchActor, PhysicalWorld world)
+        public MapEvent()
         {
             CameraGroup = 1;
             Shape = new asd.RectangleShape();
@@ -322,14 +325,11 @@ namespace SatCore.MapEditor.MapEvent
             DrawingPriority = 2;
 
             EventComponents = new UndoRedoCollection<MapEventComponent>();
-            RequireOpenFileDialog = requireOpenFileDialogFunc;
-            SearchActor = searchActor;
             Actors = new UndoRedoCollection<Actor>();
             Actors.CollectionChanged += Actors_CollectionChanged;
             CharacterImages = new UndoRedoCollection<CharacterImage>();
             PlayerNames = new UndoRedoCollection<PlayerName>();
             MainCamera = new Camera();
-            refWorld = world;
         }
 
         public void SetInitCameraPosition()
@@ -345,53 +345,32 @@ namespace SatCore.MapEditor.MapEvent
             if (actor.ToObject2D() is Player player) player.Dispose();
         }
 
-        public MapEvent(MapEventIO mapEventIO, Func<string> requireOpenFileDialogFunc,
-            Func<MapEventIO.ActorIO, IActor> searchActor, PhysicalWorld world)
+        public static MapEvent CreateMapEvent(MapEventIO mapEventIO)
         {
-            Shape = new asd.RectangleShape();
-            Color = new asd.Color(0, 255, 0, 100);
-            DrawingPriority = 2;
-            CameraGroup = 1;
-
-            EventComponents = new UndoRedoCollection<MapEventComponent>();
-            RequireOpenFileDialog = requireOpenFileDialogFunc;
-            SearchActor = searchActor;
-            Actors = new UndoRedoCollection<Actor>();
-            Actors.CollectionChanged += Actors_CollectionChanged;
-            CharacterImages = new UndoRedoCollection<CharacterImage>();
-
-            PlayerNames = new UndoRedoCollection<PlayerName>();
-            MainCamera = new Camera();
-            refWorld = world;
-
-            LoadMapEventIO(mapEventIO, world);
-        }
-
-        void LoadMapEventIO(MapEventIO mapEventIO, PhysicalWorld world)
-        {
-            Position = mapEventIO.Position;
-            Size = mapEventIO.Size;
-            MainCamera.InitPosition = (mapEventIO.Camera != null && mapEventIO.Camera.InitPosition != null) ?
+            var mapEvent = new MapEvent();
+            mapEvent.Position = mapEventIO.Position;
+            mapEvent.Size = mapEventIO.Size;
+            mapEvent.MainCamera.InitPosition = mapEventIO.Camera != null && mapEventIO.Camera.InitPosition != null ?
                 (asd.Vector2DF)mapEventIO.Camera.InitPosition : new asd.Vector2DF();
-            ToMapPath = mapEventIO.ToMapPath;
-            MoveToPosition = mapEventIO.MoveToPosition;
-            DoorID = mapEventIO.DoorID;
-            IsUseDoorID = mapEventIO.IsUseDoorID;
-            ID = mapEventIO.ID;
+            mapEvent.ToMapPath = mapEventIO.ToMapPath;
+            mapEvent.MoveToPosition = mapEventIO.MoveToPosition;
+            mapEvent.DoorID = mapEventIO.DoorID;
+            mapEvent.IsUseDoorID = mapEventIO.IsUseDoorID;
+            mapEvent.ID = mapEventIO.ID;
             if (mapEventIO.PlayerNames != null)
             {
                 foreach (var item in mapEventIO.PlayerNames)
                 {
-                    PlayerNames.Add(new PlayerName() { Name = item });
+                    mapEvent.PlayerNames.Add(new PlayerName() { Name = item });
                 }
             }
             foreach (var item in mapEventIO.Actors)
             {
                 try
                 {
-                    var actor = new Actor(SearchActor(item), world);
+                    var actor = new Actor(mapEvent.SearchActor(item));
                     actor.InitPosition = item.InitPosition;
-                    Actors.Add(actor);
+                    mapEvent.Actors.Add(actor);
                 }
                 catch (Exception e)
                 {
@@ -400,21 +379,24 @@ namespace SatCore.MapEditor.MapEvent
             }
             foreach (var item in mapEventIO.CharacterImagePaths)
             {
-                CharacterImages.Add(CharacterImage.LoadCharacterImage(item));
+                var task = CharacterImage.LoadCharacterImageAsync(item);
+                while (!task.IsCompleted) ;
+                mapEvent.CharacterImages.Add(task.Result);
             }
             foreach (var item in mapEventIO.Components)
             {
                 if (item is MoveComponentIO)
                 {
-                    var component = MoveComponent.LoadMoveComponent((MoveComponentIO)item, Actors, MainCamera);
-                    EventComponents.Add(component);
+                    var component = MoveComponent.LoadMoveComponent((MoveComponentIO)item, mapEvent.Actors, mapEvent.MainCamera);
+                    mapEvent.EventComponents.Add(component);
                 }
                 if (item is TalkComponentIO)
                 {
-                    var component = TalkComponent.LoadTalkComponent((TalkComponentIO)item, CharacterImages);
-                    EventComponents.Add(component);
+                    var component = TalkComponent.LoadTalkComponent((TalkComponentIO)item, mapEvent.CharacterImages);
+                    mapEvent.EventComponents.Add(component);
                 }
             }
+            return mapEvent;
         }
 
         protected override void OnUpdate()
@@ -460,30 +442,30 @@ namespace SatCore.MapEditor.MapEvent
             Layer.RemoveObject(this);
         }
 
-        public static explicit operator MapEventIO(MapEvent mapEvent)
+        public MapEventIO ToIO()
         {
             MapEventIO mapEventIO = new MapEventIO()
             {
-                Position = mapEvent.Position,
-                Size = mapEvent.Size,
-                Actors = mapEvent.Actors.Select(obj => (MapEventIO.ActorIO)obj).ToList(),
-                Components = mapEvent.EventComponents.Select<MapEventComponent, MapEventComponentIO>(obj =>
+                Position = Position,
+                Size = Size,
+                Actors = Actors.Select(obj => (MapEventIO.ActorIO)obj).ToList(),
+                Components = EventComponents.Select<MapEventComponent, MapEventComponentIO>(obj =>
                      {
                          if (obj is MoveComponent) return (MoveComponentIO)(MoveComponent)obj;
                          else if (obj is TalkComponent) return (TalkComponentIO)(TalkComponent)obj;
                          return null;
                      }).ToList(),
-                CharacterImagePaths = mapEvent.CharacterImages.Select(obj => obj.Path).ToList(),
+                CharacterImagePaths = CharacterImages.Select(obj => obj.Path).ToList(),
                 Camera = new MapEventIO.CameraIO()
                 {
-                    InitPosition = mapEvent.MainCamera.InitPosition,
+                    InitPosition = MainCamera.InitPosition,
                 },
-                ToMapPath = mapEvent.ToMapPath,
-                PlayerNames = mapEvent.PlayerNames.Select(obj => obj.Name).ToList(),
-                MoveToPosition = mapEvent.MoveToPosition,
-                DoorID = mapEvent.DoorID,
-                IsUseDoorID = mapEvent.IsUseDoorID,
-                ID = mapEvent.ID,
+                ToMapPath = ToMapPath,
+                PlayerNames = PlayerNames.Select(obj => obj.Name).ToList(),
+                MoveToPosition = MoveToPosition,
+                DoorID = DoorID,
+                IsUseDoorID = IsUseDoorID,
+                ID = ID,
             };
             return mapEventIO;
         }
@@ -493,7 +475,7 @@ namespace SatCore.MapEditor.MapEvent
             public event PropertyChangedEventHandler PropertyChanged;
 
             protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
             private bool _active;
             private asd.Vector2DF _initPosition;
@@ -529,7 +511,7 @@ namespace SatCore.MapEditor.MapEvent
 
             List<asd.TextureObject2D> TextureObjects { get; set; }
 
-            public Actor(IActor originActor, PhysicalWorld world)
+            public Actor(IActor originActor)
             {
                 _actorImp = originActor;
                 TextureObjects = new List<asd.TextureObject2D>();
@@ -636,7 +618,7 @@ namespace SatCore.MapEditor.MapEvent
             public event PropertyChangedEventHandler PropertyChanged;
 
             protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
             private asd.Vector2DF _position;
             private bool _active;

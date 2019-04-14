@@ -15,7 +15,7 @@ namespace SatCore.MapEditor
     /// </summary>
     public class Door : MultiAnimationObject2D, INotifyPropertyChanged, IMovable, ICopyPasteObject
     {
-        private string _texturePath;
+        private string _resourcePath;
         private string _moveToMap;
         private string _keyScriptPath;
         private bool _isUseMoveToID;
@@ -69,13 +69,18 @@ namespace SatCore.MapEditor
         /// リソースへのパス
         /// </summary>
         [FileInput("アニメーションスクリプトへのパス", "Script File|*.csx|All File|*.*")]
-        public string TexturePath
+        public string ResourcePath
         {
-            get => _texturePath;
+            get => _resourcePath;
             set
             {
                 UndoRedoManager.ChangeProperty(this, value);
-                _texturePath = value;
+                _resourcePath = value;
+                AnimationPart.Clear();
+                LoadAnimationScript(ResourcePath);
+                State = AnimationPart.First().Key;
+                CollisionShape.DrawingArea = new asd.RectF(new asd.Vector2DF(), Texture.Size.To2DF());
+                CenterPosition = Texture.Size.To2DF() / 2.0f;
                 OnPropertyChanged();
             }
         }
@@ -157,17 +162,13 @@ namespace SatCore.MapEditor
 
         public asd.RectangleShape CollisionShape { get; set; }
 
-        public Door(string animationScriptPath)
+        public Door()
         {
             try
             {
                 CameraGroup = 1;
                 CollisionShape = new asd.RectangleShape();
-                TexturePath = animationScriptPath;
-                LoadAnimationScript(animationScriptPath);
-                State = AnimationPart.First().Key;
-                CollisionShape.DrawingArea = new asd.RectF(new asd.Vector2DF(), Texture.Size.To2DF());
-                CenterPosition = Texture.Size.To2DF() / 2.0f;
+                ResourcePath = "Static/door.csx";
                 Color = new asd.Color(255, 255, 255, 200);
                 DrawingPriority = 2;
                 MoveToID = 0;
@@ -203,9 +204,9 @@ namespace SatCore.MapEditor
 
         public ICopyPasteObject Copy()
         {
-            Door copy = new Door(TexturePath);
+            Door copy = new Door();
             copy.Position = Position + new asd.Vector2DF(50, 50);
-            copy.TexturePath = TexturePath;
+            copy.ResourcePath = ResourcePath;
             copy.MoveToMap = MoveToMap;
             copy.IsUseMoveToID = IsUseMoveToID;
             copy.MoveToID = MoveToID;
@@ -214,31 +215,31 @@ namespace SatCore.MapEditor
             return copy;
         }
 
-        public static explicit operator DoorIO(Door door)
+        public DoorIO ToIO()
         {
             var result = new DoorIO()
             {
-                ID = door.ID,
-                Position = door.Position,
-                ResourcePath = door.TexturePath,
-                MoveToMap = door.MoveToMap,
-                IsUseMoveToID = door.IsUseMoveToID,
-                MoveToID = door.MoveToID,
-                MoveToPosition = door.MoveToPosition,
-                KeyScriptPath = door.KeyScriptPath
+                ID = ID,
+                Position = Position,
+                ResourcePath = ResourcePath,
+                MoveToMap = MoveToMap,
+                IsUseMoveToID = IsUseMoveToID,
+                MoveToID = MoveToID,
+                MoveToPosition = MoveToPosition,
+                KeyScriptPath = KeyScriptPath
             };
             return result;
         }
 
-        public static explicit operator Door(DoorIO door)
+        public static Door CreateDoor(DoorIO door)
         {
             try
             {
-                var result = new Door(door.ResourcePath)
+                var result = new Door()
                 {
                     ID = door.ID,
                     Position = door.Position,
-                    TexturePath = door.ResourcePath,
+                    ResourcePath = door.ResourcePath,
                     MoveToMap = door.MoveToMap,
                     IsUseMoveToID = door.IsUseMoveToID,
                     MoveToID = door.MoveToID,

@@ -82,7 +82,7 @@ namespace SatUI
 
         private void map_Click(object sender, RoutedEventArgs e)
         {
-            var newFile = new SatCore.MapEditor.MapEditor();
+            var newFile = new SatCore.MapEditor.MapEditorScene();
             newFile.Map.OnChangeSelectedObject += OnChangeSelectedObject;
             newFile.Map.OnCreateDoor = OnCreateDoor;
             newFile.Map.OnCreateMapObject = OnCreateMapObject;
@@ -181,7 +181,7 @@ namespace SatUI
         {
             try
             {
-                var loadFile = new SatCore.MapEditor.MapEditor();
+                var loadFile = new SatCore.MapEditor.MapEditorScene();
                 loadFile.Map.OnChangeSelectedObject += OnChangeSelectedObject;
                 loadFile.Map.OnCreateDoor = OnCreateDoor;
                 loadFile.Map.OnCreateMapObject = OnCreateMapObject;
@@ -233,43 +233,43 @@ namespace SatUI
 
         void OnChangeSelectedObject()
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor == null) return;
+            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
 
             Reset(PropertyPanel.ResetMode.Map);
-            switch (((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.GetSelectedObjectType())
+            switch (((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.GetSelectedObjectType())
             {
                 case SatCore.MapEditor.SelectType.None:
                     break;
                 case SatCore.MapEditor.SelectType.Box:
-                    Property boxProperty = new Property("Box", ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.SelectedObject);
+                    Property boxProperty = new Property("Box", ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.SelectedObject);
                     propertyPanel.AddProperty(boxProperty);
                     break;
                 case SatCore.MapEditor.SelectType.Triangle:
-                    Property triangleProperty = new Property("Triangle", ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.SelectedObject);
+                    Property triangleProperty = new Property("Triangle", ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.SelectedObject);
                     propertyPanel.AddProperty(triangleProperty);
                     break;
                 case SatCore.MapEditor.SelectType.Door:
-                    Property doorProperty = new Property("Door", ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.SelectedObject);
+                    Property doorProperty = new Property("Door", ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.SelectedObject);
                     propertyPanel.AddProperty(doorProperty);
                     break;
                 case SatCore.MapEditor.SelectType.Object:
-                    Property mapObjectProperty = new Property("Map Object", ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.SelectedObject);
+                    Property mapObjectProperty = new Property("Map Object", ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.SelectedObject);
                     propertyPanel.AddProperty(mapObjectProperty);
                     break;
                 case SatCore.MapEditor.SelectType.EventObject:
-                    Property npcMapObjectProperty = new Property("Non-Player Character", ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.SelectedObject);
+                    Property npcMapObjectProperty = new Property("Non-Player Character", ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.SelectedObject);
                     propertyPanel.AddProperty(npcMapObjectProperty);
                     break;
                 case SatCore.MapEditor.SelectType.Event:
-                    Property mapEventProperty = new Property("Event", ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.SelectedObject);
+                    Property mapEventProperty = new Property("Event", ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.SelectedObject);
                     propertyPanel.AddProperty(mapEventProperty);
                     break;
                 case SatCore.MapEditor.SelectType.CameraRestriction:
-                    Property cameraRestrictionProperty = new Property("カメラ制限", ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.SelectedObject);
+                    Property cameraRestrictionProperty = new Property("カメラ制限", ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.SelectedObject);
                     propertyPanel.AddProperty(cameraRestrictionProperty);
                     break;
                 case SatCore.MapEditor.SelectType.SavePoint:
-                    Property savePointProperty = new Property("セーブポイント", ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.SelectedObject);
+                    Property savePointProperty = new Property("セーブポイント", ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.SelectedObject);
                     propertyPanel.AddProperty(savePointProperty);
                     break;
                 default:
@@ -280,108 +280,108 @@ namespace SatUI
         void OnCreateDoor()
         {
             Reset(PropertyPanel.ResetMode.Map);
-            Property doorProperty = new Property("Door", ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.SelectedObject);
+            Property doorProperty = new Property("Door", ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.SelectedObject);
             propertyPanel.AddProperty(doorProperty);
         }
 
         void OnCreateMapObject()
         {
             Reset(PropertyPanel.ResetMode.Map);
-            Property mapObjectProperty = new Property("Map Object", ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.SelectedObject);
+            Property mapObjectProperty = new Property("Map Object", ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.SelectedObject);
             propertyPanel.AddProperty(mapObjectProperty);
         }
 
         private void select_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor == null) return;
+            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
 
-            ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Select;
+            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Select;
             EditorPanel.Cursor = Cursors.Arrow;
             Reset(PropertyPanel.ResetMode.Map);
         }
 
         private void box_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor == null) return;
+            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
 
-            ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Box;
+            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Box;
             EditorPanel.Cursor = Cursors.Cross;
             Reset(PropertyPanel.ResetMode.Map);
         }
 
         private void triangle_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor == null) return;
+            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
 
-            ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Triangle;
+            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Triangle;
             EditorPanel.Cursor = Cursors.Cross;
             Reset(PropertyPanel.ResetMode.Map);
         }
 
         private void door_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor == null) return;
+            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
 
-            ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Door;
+            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Door;
             EditorPanel.Cursor = Cursors.Arrow;
             Reset(PropertyPanel.ResetMode.Map);
         }
 
         private void mapObject_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor == null) return;
+            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
 
-            ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Object;
+            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Object;
             EditorPanel.Cursor = Cursors.Arrow;
             Reset(PropertyPanel.ResetMode.Map);
         }
 
         private void npc_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor == null) return;
+            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
 
-            ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.EventObject;
+            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.EventObject;
             EditorPanel.Cursor = Cursors.Arrow;
             Reset(PropertyPanel.ResetMode.Map);
         }
 
         private void mapEvent_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor == null) return;
+            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
 
-            ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Event;
+            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Event;
             EditorPanel.Cursor = Cursors.Cross;
             Reset(PropertyPanel.ResetMode.Map);
         }
 
         private void Camera_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor == null) return;
+            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
 
-            ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.CameraRestriction;
+            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.CameraRestriction;
             EditorPanel.Cursor = Cursors.Cross;
             Reset(PropertyPanel.ResetMode.Map);
         }
 
         private void SavePoint_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor == null) return;
+            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
 
-            ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.SavePoint;
+            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.SavePoint;
             EditorPanel.Cursor = Cursors.Cross;
             Reset(PropertyPanel.ResetMode.Map);
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor != null) SaveMap();
+            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene != null) SaveMap();
             if (asd.Engine.CurrentScene as SatCore.CharacterImageEditor.CharacterImageEditor != null) SaveCharacterImage();
             if (asd.Engine.CurrentScene as SatCore.ScriptEditor.ScriptEditor != null) SaveScript();
         }
 
         void SaveMap()
         {
-            if (((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Path == "" || ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Path == null)
+            if (((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Path == "" || ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Path == null)
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
                 saveFileDialog.FileName = "new.map";
@@ -390,9 +390,9 @@ namespace SatUI
                 saveFileDialog.Title = "保存";
                 saveFileDialog.RestoreDirectory = true;
                 if (saveFileDialog.ShowDialog() != true) return;
-                ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Path = saveFileDialog.FileName;
+                ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Path = saveFileDialog.FileName;
             }
-            ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).SaveMapData(((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Path);
+            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).SaveMapData(((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Path);
         }
 
         void SaveCharacterImage()
@@ -456,7 +456,7 @@ namespace SatUI
 
         private void SaveAs_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor != null) SaveAsMap();
+            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene != null) SaveAsMap();
             if (asd.Engine.CurrentScene as SatCore.CharacterImageEditor.CharacterImageEditor != null) SaveAsCharacterImage();
             if (asd.Engine.CurrentScene as SatCore.ScriptEditor.ScriptEditor != null) SaveAsScript();
         }
@@ -470,9 +470,9 @@ namespace SatUI
             saveFileDialog.Title = "別名で保存";
             saveFileDialog.RestoreDirectory = true;
             if (saveFileDialog.ShowDialog() != true) return;
-            ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Path = saveFileDialog.FileName;
+            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Path = saveFileDialog.FileName;
 
-            ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).SaveMapData(((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Path);
+            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).SaveMapData(((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Path);
         }
 
         void SaveAsCharacterImage()
@@ -578,7 +578,7 @@ namespace SatUI
 
         private void Save(object sender, ExecutedRoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor != null) SaveMap();
+            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene != null) SaveMap();
             if (asd.Engine.CurrentScene as SatCore.CharacterImageEditor.CharacterImageEditor != null) SaveCharacterImage();
             if (asd.Engine.CurrentScene as SatCore.ScriptEditor.ScriptEditor != null) SaveScript();
         }
@@ -595,26 +595,26 @@ namespace SatUI
 
         private void copy_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor == null) return;
-            ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Copy();
+            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
+            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Copy();
         }
 
         private void paste_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor == null) return;
-            ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Paste();
+            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
+            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Paste();
         }
 
         private void Copy(object sender, ExecutedRoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor == null) return;
-            ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Copy();
+            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
+            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Copy();
         }
 
         private void Paste(object sender, ExecutedRoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditor == null) return;
-            ((SatCore.MapEditor.MapEditor)asd.Engine.CurrentScene).Paste();
+            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
+            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Paste();
         }
 
         private void Copy_CanExecute(object sender, CanExecuteRoutedEventArgs e)

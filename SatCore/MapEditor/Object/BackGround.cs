@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SatCore.Attribute;
 
-namespace SatCore.MapEditor
+namespace SatCore.MapEditor.Object
 {
     /// <summary>
     /// 背景
@@ -26,16 +26,21 @@ namespace SatCore.MapEditor
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        public asd.CameraObject2D Camera { get; private set; }
-
-        MainMapLayer2D mainMap;
         private string _texturePath;
         private float _zoom;
         private bool _isMove;
         asd.Vector2DF prePosition;
 
+        /// <summary>
+        /// カメラ
+        /// </summary>
+        public asd.CameraObject2D Camera { get; }
+
+        /// <summary>
+        /// 動かすか
+        /// </summary>
         public bool IsMove
         {
             get => _isMove;
@@ -126,13 +131,9 @@ namespace SatCore.MapEditor
             IsMove = !IsMove;
         }
 
-        public BackGround(MainMapLayer2D layer)
+        public BackGround()
         {
             Camera = new asd.CameraObject2D();
-            mainMap = layer;
-            Camera.Dst = mainMap.ScrollCamera.Dst;
-            Camera.Src = new asd.RectI((mainMap.ScrollCamera.Src.Position.To2DF() * Zoom).To2DI(), mainMap.ScrollCamera.Src.Size);
-            Position = (mainMap.ScrollCamera.Src.Position + mainMap.ScrollCamera.Src.Size).To2DF();
             _zoom = 1;
             Camera.UpdatePriority = 10;
             DrawingPriority = -1;
@@ -142,13 +143,21 @@ namespace SatCore.MapEditor
         {
             CameraGroup = (int)Math.Pow(2, Layer.Objects.Count(obj => obj is BackGround) + 1);
             Camera.CameraGroup = CameraGroup;
+            if (Layer is MapLayer map)
+            {
+                Camera.Dst = map.ScrollCamera.Dst;
+                Camera.Src = new asd.RectI((map.ScrollCamera.Src.Position.To2DF() * Zoom).To2DI(), map.ScrollCamera.Src.Size);
+            }
             base.OnAdded();
         }
 
         protected override void OnUpdate()
         {
-            Camera.Dst = mainMap.ScrollCamera.Dst;
-            Camera.Src = new asd.RectI((mainMap.ScrollCamera.Src.Position.To2DF() * Zoom).To2DI(), mainMap.ScrollCamera.Src.Size);
+            if (Layer is MapLayer map)
+            {
+                Camera.Dst = map.ScrollCamera.Dst;
+                Camera.Src = new asd.RectI((map.ScrollCamera.Src.Position.To2DF() * Zoom).To2DI(), map.ScrollCamera.Src.Size);
+            }
 
             if (IsMove)
             {
@@ -175,35 +184,35 @@ namespace SatCore.MapEditor
             base.OnUpdate();
         }
 
-        public static BackGround LoadBackGroud(BackGroundIO backGroundIO, MainMapLayer2D layer)
-        {
-            BackGround backGround = new BackGround(layer);
-            backGround.Position = backGroundIO.Position;
-            backGround._zoom = backGroundIO.Zoom;
-            backGround.TexturePath = backGroundIO.TexturePath;
-            if (backGround.Zoom > 1) backGround.Camera.DrawingPriority = 3;
-            else backGround.Camera.DrawingPriority = -1;
-            return backGround;
-        }
-
         public ICopyPasteObject Copy()
         {
-            BackGround copy = new BackGround(mainMap);
+            BackGround copy = new BackGround();
             copy.Position = Position + new asd.Vector2DF(50, 50);
             copy.TexturePath = TexturePath;
             copy.Zoom = Zoom;
             return copy;
         }
 
-        public static explicit operator BackGroundIO(BackGround backGround)
+        public BackGroundIO ToIO()
         {
             BackGroundIO backGroundIO = new BackGroundIO()
             {
-                Position = backGround.Position,
-                Zoom = backGround.Zoom,
-                TexturePath = backGround.TexturePath,
+                Position = Position,
+                Zoom = Zoom,
+                TexturePath = TexturePath,
             };
             return backGroundIO;
+        }
+
+        public static BackGround CreateBackGroud(BackGroundIO backGroundIO)
+        {
+            BackGround backGround = new BackGround();
+            backGround.Position = backGroundIO.Position;
+            backGround._zoom = backGroundIO.Zoom;
+            backGround.TexturePath = backGroundIO.TexturePath;
+            if (backGround.Zoom > 1) backGround.Camera.DrawingPriority = 3;
+            else backGround.Camera.DrawingPriority = -1;
+            return backGround;
         }
     }
 }

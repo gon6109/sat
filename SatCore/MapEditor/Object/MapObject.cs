@@ -80,6 +80,7 @@ namespace SatCore.MapEditor
                     catch (Exception e)
                     {
                         ErrorIO.AddError(e);
+                        //TODO: 仮画像
                         Texture = TextureManager.LoadTexture("walk_g0000.png");
                     }
                 }
@@ -89,7 +90,7 @@ namespace SatCore.MapEditor
             }
         }
 
-        public asd.RectangleShape CollisionShape { get; set; }
+        public asd.RectangleShape CollisionShape { get; }
 
         public MapObject()
         {
@@ -97,20 +98,10 @@ namespace SatCore.MapEditor
             CollisionShape = new asd.RectangleShape();
             Color = new asd.Color(255, 255, 255, 200);
             DrawingPriority = 2;
+            //TODO: 仮画像
             Texture = TextureManager.LoadTexture("walk_g0000.png");
             ScriptPath = "";
         }
-
-        public MapObject(MapObjectIO mapObject)
-        {
-            CameraGroup = 1;
-            CollisionShape = new asd.RectangleShape();
-            Color = new asd.Color(255, 255, 255, 200);
-            DrawingPriority = 2;
-            ScriptPath = mapObject.ScriptPath;
-            Position = mapObject.Position;
-        }
-
 
         [Button("消去")]
         public void OnClickRemove()
@@ -139,14 +130,25 @@ namespace SatCore.MapEditor
             return copy;
         }
 
-        public static explicit operator MapObjectIO(MapObject mapObject)
+        public MapObjectIO ToIO()
         {
             var result = new MapObjectIO()
             {
-                ScriptPath = mapObject.ScriptPath,
-                Position = mapObject.Position,
+                ScriptPath = ScriptPath,
+                Position = Position,
             };
             return result;
+        }
+
+        public static MapObject CreateMapObject(MapObjectIO mapObjectIO)
+        {
+            var mapObject = new MapObject();
+            mapObject.CameraGroup = 1;
+            mapObject.Color = new asd.Color(255, 255, 255, 200);
+            mapObject.DrawingPriority = 2;
+            mapObject.ScriptPath = mapObjectIO.ScriptPath;
+            mapObject.Position = mapObjectIO.Position;
+            return mapObject;
         }
     }
 }

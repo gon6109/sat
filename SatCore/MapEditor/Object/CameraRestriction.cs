@@ -1,53 +1,39 @@
-﻿using System;
+﻿using SatCore.Attribute;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using PhysicAltseed;
-using SatCore.Attribute;
 
-namespace SatCore.MapEditor
+namespace SatCore.MapEditor.Object
 {
     /// <summary>
-    /// 障害物(四角形)
+    /// カメラ移動制限
     /// </summary>
-    public class CollisionBox : asd.GeometryObject2D, INotifyPropertyChanged, IMovable, ICopyPasteObject
+    public class CameraRestriction : asd.GeometryObject2D, INotifyPropertyChanged, IMovable, ICopyPasteObject
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        PhysicalWorld refWorld;
-
-        public new PhysicalRectangleShape Shape
+        public new asd.RectangleShape Shape
         {
             get
             {
                 base.Shape = base.Shape;
-                return (PhysicalRectangleShape)base.Shape;
+                return (asd.RectangleShape)base.Shape;
             }
             set => base.Shape = value;
         }
 
-        public CollisionBox(SatIO.CollisionBoxIO boxIO, PhysicalWorld world)
+        public CameraRestriction()
         {
             CameraGroup = 1;
-            refWorld = world;
-            Shape = new PhysicalRectangleShape(PhysicalShapeType.Static, world);
-            Shape.DrawingArea = new asd.RectF(boxIO.Position, boxIO.Size);
-            Color = new asd.Color(0, 0, 255, 100);
-            DrawingPriority = 4;
-        }
-
-        public CollisionBox(PhysicalWorld world)
-        {
-            CameraGroup = 1;
-            refWorld = world;
-            Shape = new PhysicalRectangleShape(PhysicalShapeType.Static, world);
-            Color = new asd.Color(0, 0, 255, 100);
+            Shape = new asd.RectangleShape();
+            Color = new asd.Color(100, 0, 100, 100);
             DrawingPriority = 4;
         }
 
@@ -104,22 +90,31 @@ namespace SatCore.MapEditor
 
         protected override void OnRemoved()
         {
-            Shape.IsActive = false;
             base.OnRemoved();
         }
 
         protected override void OnAdded()
         {
-            Shape.IsActive = true;
             base.OnAdded();
         }
 
         public ICopyPasteObject Copy()
         {
-            CollisionBox copy = new CollisionBox(refWorld);
+            CameraRestriction copy = new CameraRestriction();
             copy.RectSize = RectSize;
             copy.RectPosition = RectPosition + new asd.Vector2DF(50, 50);
             return copy;
+        }
+
+        public static CameraRestriction CreateCameraRestriction(SatIO.CameraRestrictionIO boxIO)
+        {
+            var cameraRestriction = new CameraRestriction();
+            cameraRestriction.CameraGroup = 1;
+            cameraRestriction.Shape = new asd.RectangleShape();
+            cameraRestriction.Shape.DrawingArea = new asd.RectF(boxIO.Position, boxIO.Size);
+            cameraRestriction.Color = new asd.Color(100, 0, 100, 100);
+            cameraRestriction.DrawingPriority = 4;
+            return cameraRestriction;
         }
     }
 }

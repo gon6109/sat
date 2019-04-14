@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SatCore.MapEditor.MapEvent
+namespace SatCore.MapEditor.Object.MapEvent
 {
     /// <summary>
     /// キャラクターグラフィック
@@ -18,17 +18,17 @@ namespace SatCore.MapEditor.MapEvent
         public string Path { get; set; }
         public string Name { get; set; }
         public string BaseImagePath { get; set; }
-        
+
         public ObservableCollection<DiffImage> DiffImages { get; set; }
 
         public CharacterImage()
         {
-            DiffImages = new  ObservableCollection<DiffImage>();
+            DiffImages = new ObservableCollection<DiffImage>();
             Path = "";
             BaseImagePath = "";
         }
 
-        public static async Task<CharacterImage> LoadCharacterImage(string path)
+        public static async Task<CharacterImage> LoadCharacterImageAsync(string path)
         {
             var characterImage = (CharacterImage)await CharacterImageIO.LoadCharacterImageAsync(path);
             characterImage.Path = path;
@@ -54,7 +54,7 @@ namespace SatCore.MapEditor.MapEvent
                 {
                     Name = characterImage.Name,
                     BaseImagePath = characterImage.BaseImagePath,
-                    DiffImages = new  ObservableCollection<DiffImage>( characterImage.DiffImagePaths.Select(obj => new DiffImage()
+                    DiffImages = new ObservableCollection<DiffImage>(characterImage.DiffImagePaths.Select(obj => new DiffImage()
                     {
                         Name = obj.Key,
                         Path = obj.Value
@@ -69,10 +69,10 @@ namespace SatCore.MapEditor.MapEvent
         }
 
         public class DiffImage : IListInput
-        { 
-            
+        {
+
             public string Path { get; set; }
-                
+
             public string Name { get; set; }
 
             public DiffImage()

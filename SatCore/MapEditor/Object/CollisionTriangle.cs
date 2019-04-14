@@ -20,8 +20,6 @@ namespace SatCore.MapEditor
         protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        PhysicalWorld refWorld;
-
         public new PhysicalTriangleShape Shape
         {
             get
@@ -32,21 +30,9 @@ namespace SatCore.MapEditor
             set => base.Shape = value;
         }
 
-        public CollisionTriangle(SatIO.CollisionTriangleIO triangleIO, PhysicalWorld world)
+        public CollisionTriangle()
         {
             CameraGroup = 1;
-            refWorld = world;
-            Shape = new PhysicalTriangleShape(PhysicalShapeType.Static, world);
-            for (int i = 0; i < 3; i++) Shape.SetPointByIndex(triangleIO.vertexes[i], i);
-            Color = new asd.Color(0, 0, 255, 100);
-            DrawingPriority = 4;
-        }
-
-        public CollisionTriangle(PhysicalWorld world)
-        {
-            CameraGroup = 1;
-            refWorld = world;
-            Shape = new PhysicalTriangleShape(PhysicalShapeType.Static, world);
             for (int i = 0; i < 3; i++) Shape.SetPointByIndex(new asd.Vector2DF(), i);
             Color = new asd.Color(0, 0, 255, 100);
             DrawingPriority = 4;
@@ -101,6 +87,8 @@ namespace SatCore.MapEditor
         protected override void OnAdded()
         {
             Shape.IsActive = true;
+            if (Layer is MapLayer map)
+                Shape = new PhysicalTriangleShape(PhysicalShapeType.Static, map.PhysicalWorld);
             base.OnAdded();
         }
 
@@ -152,16 +140,35 @@ namespace SatCore.MapEditor
 
         public ICopyPasteObject Copy()
         {
-            CollisionTriangle copy = new CollisionTriangle(refWorld);
+            CollisionTriangle copy = new CollisionTriangle();
             copy.Vertex1 = new asd.Vector2DF(50, 50) + Vertex1;
             copy.Vertex2 = new asd.Vector2DF(50, 50) + Vertex2;
             copy.Vertex3 = new asd.Vector2DF(50, 50) + Vertex3;
             return copy;
         }
 
+        public SatIO.CollisionTriangleIO ToIO()
+        {
+            SatIO.CollisionTriangleIO collisionTriangleIO = new SatIO.CollisionTriangleIO()
+            {
+                vertexes = new SatIO.VectorIO[] { Vertex1, Vertex2, Vertex3 }
+            };
+            return collisionTriangleIO;
+        }
+
         public struct Triangle
         {
             public asd.Vector2DF vec1, vec2, vec3;
+        }
+
+        public static CollisionTriangle CreateCollisionTriangle(SatIO.CollisionTriangleIO triangleIO)
+        {
+            var collisionTriangle = new CollisionTriangle();
+            collisionTriangle.CameraGroup = 1;
+            for (int i = 0; i < 3; i++) collisionTriangle.Shape.SetPointByIndex(triangleIO.vertexes[i], i);
+            collisionTriangle.Color = new asd.Color(0, 0, 255, 100);
+            collisionTriangle.DrawingPriority = 4;
+            return collisionTriangle;
         }
     }
 }

@@ -55,17 +55,6 @@ namespace SatCore.MapEditor
             CenterPosition = Texture.Size.To2DF() / 2;
         }
 
-        public SavePoint(SavePointIO savePointIO)
-        {
-            CameraGroup = 1;
-            rect = new asd.RectangleShape();
-            base.Position = savePointIO.Position;
-            ID = savePointIO.ID;
-            DrawingPriority = 2;
-            Texture = TextureManager.LoadTexture("save_point.png");
-            CenterPosition = Texture.Size.To2DF() / 2;
-        }
-
         asd.Vector2DF pos;
 
         public void StartMove()
@@ -82,6 +71,29 @@ namespace SatCore.MapEditor
         {
             SavePoint savePoint = new SavePoint();
             savePoint.Position = Position + new asd.Vector2DF(50, 50);
+            return savePoint;
+        }
+
+        public SavePointIO ToIO()
+        {
+            var savePointIO = new SavePointIO()
+            {
+                ID = ID,
+                Position = Position
+            };
+            return savePointIO;
+        }
+
+        public static SavePoint CreateSavePoint(SavePointIO savePointIO)
+        {
+            var savePoint = new SavePoint();
+            savePoint.CameraGroup = 1;
+            savePoint.rect = new asd.RectangleShape();
+            savePoint.Position = savePointIO.Position;
+            savePoint.ID = savePointIO.ID;
+            savePoint.DrawingPriority = 2;
+            savePoint.Texture = TextureManager.LoadTexture("save_point.png");
+            savePoint.CenterPosition = savePoint.Texture.Size.To2DF() / 2;
             return savePoint;
         }
     }

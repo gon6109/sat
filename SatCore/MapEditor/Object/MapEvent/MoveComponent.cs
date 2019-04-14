@@ -1,5 +1,6 @@
 ﻿using BaseComponent;
 using SatCore.Attribute;
+using SatCore.MapEditor.Object.MapEvent;
 using SatIO.MapEventIO;
 using System;
 using System.Collections;
@@ -11,7 +12,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SatCore.MapEditor.MapEvent
+namespace SatCore.MapEditor.Object.MapEvent
 {
     /// <summary>
     /// キャラ動作系

@@ -64,13 +64,6 @@ namespace SatCore.MapEditor
 
         }
 
-        public EventObject(EventObjectIO mapObject)
-        {
-            ScriptPath = mapObject.ScriptPath;
-            Position = mapObject.Position;
-            ID = mapObject.ID;
-        }
-
         [Button("消去")]
         public void OnClickRemove()
         {
@@ -87,15 +80,24 @@ namespace SatCore.MapEditor
             return copy;
         }
 
-        public static explicit operator EventObjectIO(EventObject mapObject)
+        public EventObjectIO ToIO()
         {
             var result = new EventObjectIO()
             {
-                ScriptPath = mapObject.ScriptPath,
-                Position = mapObject.Position,
-                ID = mapObject.ID,
+                ScriptPath = ScriptPath,
+                Position = Position,
+                ID = ID,
             };
             return result;
+        }
+
+        public static EventObject CreateEventObject(EventObjectIO mapObject)
+        {
+            var eventObject = new EventObject();
+            eventObject.ScriptPath = mapObject.ScriptPath;
+            eventObject.Position = mapObject.Position;
+            eventObject.ID = mapObject.ID;
+            return eventObject;
         }
     }
 }

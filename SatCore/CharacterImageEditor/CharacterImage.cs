@@ -1,6 +1,7 @@
 ﻿using asd;
 using BaseComponent;
 using SatCore.Attribute;
+using SatCore.MapEditor.Object.MapEvent;
 using SatIO.MapEventIO;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace SatCore.CharacterImageEditor
     /// <summary>
     /// 編集できるキャラクタグラフィック
     /// </summary>
-    public class EditableCharacterImage : MapEditor.MapEvent.CharacterImage, INotifyPropertyChanged
+    public class EditableCharacterImage : CharacterImage, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

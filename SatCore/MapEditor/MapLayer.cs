@@ -12,15 +12,14 @@ using BaseComponent;
 using SatPlayer.Game.Object;
 using SatPlayer.Game;
 using SatCore.Attribute;
+using SatCore.MapEditor.Object;
 
 namespace SatCore.MapEditor
 {
-    public delegate void EventDelegate();
-
     /// <summary>
     /// マップのメインレイヤー
     /// </summary>
-    public class MainMapLayer2D : asd.Layer2D, INotifyPropertyChanged
+    public class MapLayer : asd.Layer2D, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -30,34 +29,31 @@ namespace SatCore.MapEditor
         /// <summary>
         /// 選択オブジェクトが変更されたとき
         /// </summary>
-        public EventDelegate OnChangeSelectedObject { get; set; }
+        public event Action OnChangeSelectedObject = delegate { };
 
         /// <summary>
         /// ドアが作成されたとき
         /// </summary>
-        public EventDelegate OnCreateDoor { get; set; }
-
+        public event Action OnCreateDoor = delegate { };
         /// <summary>
         /// マップオブジェクトが作成されたとき
         /// </summary>
-        public EventDelegate OnCreateMapObject { get; set; }
+        public event Action OnCreateMapObject = delegate { };
 
         /// <summary>
         /// エディターパネルにフォーカスさせる
         /// </summary>
-        public Action FocusToEditorPanel { get; set; }
-        void DefaultFunc() { }
+        public event Action FocusToEditorPanel = delegate { };
 
         /// <summary>
         /// ファイルを開くダイアログをUI側に要求する
         /// </summary>
-        public Func<string> RequireOpenFileDialog { get; set; }
-        string DefalutStringFunc() { return ""; }
+        public event Func<string> RequireOpenFileDialog = delegate { return null; };
 
         /// <summary>
         /// メインのカメラ
         /// </summary>
-        public asd.CameraObject2D ScrollCamera { get; private set; }
+        public asd.CameraObject2D ScrollCamera { get; }
         public float Zoom { get; set; }
 
         [VectorInput("マップサイズ")]
@@ -72,14 +68,14 @@ namespace SatCore.MapEditor
         asd.Vector2DF preMousePosition;
         object dragObject;
 
-        List<CollisionBox> CollisionBoxes { get => Objects.OfType<CollisionBox>().ToList(); }
-        List<CollisionTriangle> CollisionTriangles { get => Objects.OfType<CollisionTriangle>().ToList(); }
-        List<Door> Doors { get => Objects.OfType<Door>().ToList(); }
-        List<MapObject> MapObjects { get => Objects.Where(obj => obj is MapObject && !(obj is EventObject)).Cast<MapObject>().ToList(); }
-        List<EventObject> EventObjects { get => Objects.OfType<EventObject>().ToList(); }
-        List<MapEvent.MapEvent> MapEvents { get => Objects.OfType<MapEvent.MapEvent>().ToList(); }
-        List<CameraRestriction> CameraRestrictions { get => Objects.OfType<CameraRestriction>().ToList(); }
-        List<SavePoint> SavePoints { get => Objects.OfType<SavePoint>().ToList(); }
+        IEnumerable<CollisionBox> CollisionBoxes => Objects.OfType<CollisionBox>();
+        IEnumerable<CollisionTriangle> CollisionTriangles => Objects.OfType<CollisionTriangle>();
+        IEnumerable<Door> Doors => Objects.OfType<Door>();
+        IEnumerable<MapObject> MapObjects => Objects.Where(obj => obj is MapObject && !(obj is EventObject)).Cast<MapObject>();
+        IEnumerable<EventObject> EventObjects => Objects.OfType<EventObject>();
+        IEnumerable<Object.MapEvent.MapEvent> MapEvents => Objects.OfType<Object.MapEvent.MapEvent>();
+        IEnumerable<CameraRestriction> CameraRestrictions => Objects.OfType<CameraRestriction>();
+        IEnumerable<SavePoint> SavePoints => Objects.OfType<SavePoint>();
 
         ToolType currentToolType;
         /// <summary>
@@ -105,7 +101,7 @@ namespace SatCore.MapEditor
                     return;
                 }
 
-                if (SelectedObject is MapEvent.MapEvent && value != ToolType.Select) ((MapEvent.MapEvent)SelectedObject).OnUnselected();
+                if (SelectedObject is Object.MapEvent.MapEvent && value != ToolType.Select) ((Object.MapEvent.MapEvent)SelectedObject).OnUnselected();
 
                 foreach (var item in dotObjects)
                 {
@@ -139,6 +135,11 @@ namespace SatCore.MapEditor
         }
 
         /// <summary>
+        /// 物理
+        /// </summary>
+        public PhysicalWorld PhysicalWorld { get; }
+
+        /// <summary>
         /// 頂点つまみオブジェクトコレクション
         /// </summary>
         List<asd.GeometryObject2D> dotObjects;
@@ -148,17 +149,10 @@ namespace SatCore.MapEditor
         /// </summary>
         asd.GeometryObject2D polygonObject;
 
-        PhysicalWorld physicalWorld;
-
         List<EventObject> eventObjects;
 
-        public MainMapLayer2D()
+        public MapLayer()
         {
-            OnChangeSelectedObject = DefaultFunc;
-            OnCreateDoor = DefaultFunc;
-            OnCreateMapObject = DefaultFunc;
-            FocusToEditorPanel = DefaultFunc;
-            RequireOpenFileDialog = DefalutStringFunc;
             ScrollCamera = new asd.CameraObject2D();
             ScrollCamera.CameraGroup = 1;
             cursorShape = new asd.CircleShape();
@@ -167,7 +161,7 @@ namespace SatCore.MapEditor
             dotObjects = new List<asd.GeometryObject2D>();
             polygonObject = new asd.GeometryObject2D();
             polygonObject.CameraGroup = 1;
-            physicalWorld = new PhysicalWorld(new asd.RectF(-200, -200, 20400, 5400), new asd.Vector2DF(0, 2000));
+            PhysicalWorld = new PhysicalWorld(new asd.RectF(-200, -200, 20400, 5400), new asd.Vector2DF(0, 2000));
             Zoom = 1.0f;
         }
 
@@ -183,7 +177,7 @@ namespace SatCore.MapEditor
             {
                 foreach (var item in mapData.MapObjects)
                 {
-                    var temp = new MapObject(item);
+                    var temp = MapObject.CreateMapObject(item);
                     AddObject(temp);
                 }
             }
@@ -193,7 +187,7 @@ namespace SatCore.MapEditor
             {
                 foreach (var item in mapData.EventObjects)
                 {
-                    var temp = new EventObject(item);
+                    var temp = EventObject.CreateEventObject(item);
                     if (!eventObjects.Any(obj => obj.ID == temp.ID))
                     {
                         AddObject(temp);
@@ -206,8 +200,10 @@ namespace SatCore.MapEditor
             {
                 foreach (var item in mapData.MapEvents)
                 {
-                    var temp = new MapEvent.MapEvent(item, RequireOpenFileDialog, SearchActor, physicalWorld);
-                    AddObject(temp);
+                    var mapEvent = Object.MapEvent.MapEvent.CreateMapEvent(item);
+                    mapEvent.RequireOpenFileDialog += RequireOpenFileDialog;
+                    mapEvent.SearchActor += SearchActor;
+                    AddObject(mapEvent);
                 }
             }
 
@@ -217,7 +213,7 @@ namespace SatCore.MapEditor
                 {
                     try
                     {
-                        var temp = (Door)item;
+                        var temp = Door.CreateDoor(item);
                         AddObject(temp);
                     }
                     catch (Exception e)
@@ -231,7 +227,7 @@ namespace SatCore.MapEditor
             {
                 foreach (var item in mapData.CollisionBoxes)
                 {
-                    var temp = new CollisionBox(item, physicalWorld);
+                    var temp = CollisionBox.CreateCollsiionBox(item);
                     AddObject(temp);
                 }
             }
@@ -240,7 +236,7 @@ namespace SatCore.MapEditor
             {
                 foreach (var item in mapData.CollisionTriangles)
                 {
-                    var temp = new CollisionTriangle(item, physicalWorld);
+                    var temp = CollisionTriangle.CreateCollisionTriangle(item);
                     AddObject(temp);
                 }
             }
@@ -249,7 +245,7 @@ namespace SatCore.MapEditor
             {
                 foreach (var item in mapData.CameraRestrictions)
                 {
-                    var temp = new CameraRestriction(item);
+                    var temp = CameraRestriction.CreateCameraRestriction(item);
                     AddObject(temp);
                 }
             }
@@ -258,23 +254,25 @@ namespace SatCore.MapEditor
             {
                 foreach (var item in mapData.SavePoints)
                 {
-                    var temp = new SavePoint(item);
+                    var temp = SavePoint.CreateSavePoint(item);
                     AddObject(temp);
                 }
             }
         }
 
-        IActor SearchActor(SatIO.MapEventIO.MapEventIO.ActorIO actorIO)
+        IActor SearchActor(MapEventIO.ActorIO actorIO)
         {
             if (actorIO.IsUseName)
             {
-                return new Player(PlayersListDialog.GetPlayersScriptPath().First(obj => obj.Key == actorIO.Name).Value);
+                var task = Player.CreatePlayerAsync(PlayersListDialog.GetPlayersScriptPath().First(obj => obj.Key == actorIO.Name).Value);
+                while (!task.IsCompleted) ;
+                return task.Result; 
             }
             else
             {
                 try
                 {
-                    if (EventObjects.Count != 0 || eventObjects.Count == 0) return EventObjects.First(obj => obj.ID == actorIO.ID);
+                    if (EventObjects.Count() != 0 || eventObjects.Count == 0) return EventObjects.First(obj => obj.ID == actorIO.ID);
                     else return eventObjects.First(obj => obj.ID == actorIO.ID);
                 }
                 catch (Exception e)
@@ -311,22 +309,22 @@ namespace SatCore.MapEditor
 
             foreach (var item in MapObjects)
             {
-                mapData.MapObjects.Add((MapObjectIO)item);
+                mapData.MapObjects.Add(item.ToIO());
             }
 
             foreach (var item in EventObjects)
             {
-                mapData.EventObjects.Add((EventObjectIO)item);
+                mapData.EventObjects.Add(item.ToIO());
             }
 
             foreach (var item in MapEvents)
             {
-                mapData.MapEvents.Add((MapEventIO)item);
+                mapData.MapEvents.Add(item.ToIO());
             }
 
             foreach (var item in Doors)
             {
-                mapData.Doors.Add((DoorIO)item);
+                mapData.Doors.Add(item.ToIO());
             }
 
             foreach (var item in CameraRestrictions)
@@ -364,7 +362,7 @@ namespace SatCore.MapEditor
                     return SelectType.Object;
                 case Door door:
                     return SelectType.Door;
-                case MapEvent.MapEvent mapEvent:
+                case Object.MapEvent.MapEvent mapEvent:
                     return SelectType.Event;
                 case CameraRestriction cameraRestriction:
                     return SelectType.CameraRestriction;
@@ -466,7 +464,7 @@ namespace SatCore.MapEditor
             else if (polygonObject.IsAlive && Mouse.LeftButton == asd.ButtonState.Release)
             {
                 UndoRedoManager.Enable = false;
-                CollisionBox collision = new CollisionBox(physicalWorld);
+                CollisionBox collision = new CollisionBox();
                 collision.RectPosition = ((asd.RectangleShape)polygonObject.Shape).DrawingArea.Size.X > 0
                     ? ((asd.RectangleShape)polygonObject.Shape).DrawingArea.Position : ((asd.RectangleShape)polygonObject.Shape).DrawingArea.Vertexes[2];
                 collision.RectSize = ((asd.RectangleShape)polygonObject.Shape).DrawingArea.Size.X > 0
@@ -497,7 +495,7 @@ namespace SatCore.MapEditor
                 if (dotObjects.Count == 3)
                 {
                     UndoRedoManager.Enable = false;
-                    CollisionTriangle collision = new CollisionTriangle(physicalWorld);
+                    CollisionTriangle collision = new CollisionTriangle();
                     for (int i = 0; i < 3; i++)
                     {
                         collision.SetVertexesByIndex(((asd.CircleShape)dotObjects[i].Shape).Position, i);
@@ -518,7 +516,7 @@ namespace SatCore.MapEditor
             {
                 UndoRedoManager.Enable = false;
                 Door door;
-                door = new Door("Script/door_kasuga.csx");
+                door = new Door();
                 door.Position = GetMouseRelativePosition();
                 door.ID = GetCanUseDoorID();
                 door.MoveToPosition = new asd.Vector2DF();
@@ -553,9 +551,9 @@ namespace SatCore.MapEditor
                 MapObject mapObject;
                 mapObject = new MapObject();
                 mapObject.Position = GetMouseRelativePosition();
-                if (Scene is MapEditor && ((MapEditor)Scene).SelectedTemplate as MapObjectTemplate != null)
+                if (Scene is MapEditorScene && ((MapEditorScene)Scene).SelectedTemplate as MapObjectTemplate != null)
                 {
-                    var template = ((MapEditor)Scene).SelectedTemplate as MapObjectTemplate;
+                    var template = ((MapEditorScene)Scene).SelectedTemplate as MapObjectTemplate;
                     mapObject.ScriptPath = template.ScriptPath;
                 }
                 AddObject(mapObject);
@@ -574,9 +572,9 @@ namespace SatCore.MapEditor
                 EventObject mapObject;
                 mapObject = new EventObject();
                 mapObject.Position = GetMouseRelativePosition();
-                if (Scene is MapEditor && ((MapEditor)Scene).SelectedTemplate as MapObjectTemplate != null)
+                if (Scene is MapEditorScene && ((MapEditorScene)Scene).SelectedTemplate as MapObjectTemplate != null)
                 {
-                    var template = ((MapEditor)Scene).SelectedTemplate as MapObjectTemplate;
+                    var template = ((MapEditorScene)Scene).SelectedTemplate as MapObjectTemplate;
                     mapObject.ScriptPath = template.ScriptPath;
                 }
                 mapObject.ID = GetCanUseEventObjectID();
@@ -624,7 +622,9 @@ namespace SatCore.MapEditor
             else if (polygonObject.IsAlive && Mouse.LeftButton == asd.ButtonState.Release)
             {
                 UndoRedoManager.Enable = false;
-                MapEvent.MapEvent mapEvent = new MapEvent.MapEvent(RequireOpenFileDialog, SearchActor, physicalWorld);
+                Object.MapEvent.MapEvent mapEvent = new Object.MapEvent.MapEvent();
+                mapEvent.RequireOpenFileDialog += RequireOpenFileDialog;
+                mapEvent.SearchActor += SearchActor;
                 mapEvent.ID = GetCanUseEventID();
                 mapEvent.Position = ((asd.RectangleShape)polygonObject.Shape).DrawingArea.Size.X > 0
                     ? ((asd.RectangleShape)polygonObject.Shape).DrawingArea.Position : ((asd.RectangleShape)polygonObject.Shape).DrawingArea.Vertexes[2];
@@ -681,8 +681,8 @@ namespace SatCore.MapEditor
             {
                 if (eventObject.CollisionShape.GetIsCollidedWith(cursorShape) && Mouse.LeftButton == asd.ButtonState.Push)
                 {
-                    if (((MapEvent.MapEvent)SelectedObject).Actors.Any(obj => !obj.IsUseName && obj.ID == eventObject.ID)) return;
-                    ((MapEvent.MapEvent)SelectedObject).AddEventObjectActor(eventObject, eventObject.ID, eventObject.Position);
+                    if (((Object.MapEvent.MapEvent)SelectedObject).Actors.Any(obj => !obj.IsUseName && obj.ID == eventObject.ID)) return;
+                    ((Object.MapEvent.MapEvent)SelectedObject).AddEventObjectActor(eventObject, eventObject.ID, eventObject.Position);
 
                     CurrentToolType = ToolType.Select;
                 }
@@ -780,8 +780,8 @@ namespace SatCore.MapEditor
                         if (((EventObject)SelectedObject).CollisionShape.GetIsCollidedWith(cursorShape)) return;
                         break;
                     case SelectType.Event:
-                        if (((MapEvent.MapEvent)SelectedObject).Shape.GetIsCollidedWith(cursorShape)) return;
-                        ((MapEvent.MapEvent)SelectedObject).OnUnselected();
+                        if (((Object.MapEvent.MapEvent)SelectedObject).Shape.GetIsCollidedWith(cursorShape)) return;
+                        ((Object.MapEvent.MapEvent)SelectedObject).OnUnselected();
                         break;
                     case SelectType.CameraRestriction:
                         if (((CameraRestriction)SelectedObject).Shape.GetIsCollidedWith(cursorShape)) return;
@@ -911,7 +911,7 @@ namespace SatCore.MapEditor
                         var temp = new asd.GeometryObject2D();
                         temp.Shape = new asd.CircleShape()
                         {
-                            Position = ((MapEvent.MapEvent)SelectedObject).Shape.DrawingArea.Vertexes[i],
+                            Position = ((Object.MapEvent.MapEvent)SelectedObject).Shape.DrawingArea.Vertexes[i],
                             OuterDiameter = 8,
                         };
                         temp.CameraGroup = 1;
@@ -920,11 +920,11 @@ namespace SatCore.MapEditor
                         AddObject(temp);
                     }
                     polygonObject = new asd.GeometryObject2D();
-                    polygonObject.Shape = ((MapEvent.MapEvent)SelectedObject).Shape;
+                    polygonObject.Shape = ((Object.MapEvent.MapEvent)SelectedObject).Shape;
                     polygonObject.CameraGroup = 1;
                     polygonObject.Color = new asd.Color(255, 0, 0, 50);
                     AddObject(polygonObject);
-                    ((MapEvent.MapEvent)SelectedObject).OnSelected();
+                    ((Object.MapEvent.MapEvent)SelectedObject).OnSelected();
                     break;
                 case SelectType.CameraRestriction:
                     for (int i = 0; i < 4; i++)
@@ -975,11 +975,11 @@ namespace SatCore.MapEditor
                 case SelectType.EventObject:
                     return OperationSelectedMapObject();
                 case SelectType.Event:
-                    if (!((MapEvent.MapEvent)SelectedObject).GetIsActive()) return OperationSelectedMapEvent();
+                    if (!((Object.MapEvent.MapEvent)SelectedObject).GetIsActive()) return OperationSelectedMapEvent();
                     else
                     {
                         FocusToEditorPanel();
-                        physicalWorld.Update();
+                        PhysicalWorld.Update();
                         OperationSelectedMapEvent();
                         return true;
                     }
@@ -1095,13 +1095,13 @@ namespace SatCore.MapEditor
         {
             for (int i = 0; i < 4; i++)
             {
-                ((asd.CircleShape)dotObjects[i].Shape).Position = ((MapEvent.MapEvent)SelectedObject).Shape.DrawingArea.Vertexes[i];
+                ((asd.CircleShape)dotObjects[i].Shape).Position = ((Object.MapEvent.MapEvent)SelectedObject).Shape.DrawingArea.Vertexes[i];
                 dotObjects[i].Shape = dotObjects[i].Shape;
             }
 
             for (int i = 0; i < 4; i++)
             {
-                var result = DragObject((MapEvent.MapEvent)SelectedObject, dotObjects[i].Shape, () =>
+                var result = DragObject((Object.MapEvent.MapEvent)SelectedObject, dotObjects[i].Shape, () =>
                 {
                     ((asd.CircleShape)dotObjects[i].Shape).Position = GetMouseRelativePosition();
                     if (i % 2 != 0)
@@ -1119,10 +1119,10 @@ namespace SatCore.MapEditor
                             = new asd.Vector2DF(GetMouseRelativePosition().X, ((asd.CircleShape)dotObjects[(i + 3) % 4].Shape).Position.Y);
                     }
 
-                        ((MapEvent.MapEvent)SelectedObject).Position = new asd.Vector2DF(
+                        ((Object.MapEvent.MapEvent)SelectedObject).Position = new asd.Vector2DF(
                             Math.Min(((asd.CircleShape)dotObjects[0].Shape).Position.X, ((asd.CircleShape)dotObjects[1].Shape).Position.X),
                             Math.Min(((asd.CircleShape)dotObjects[1].Shape).Position.Y, ((asd.CircleShape)dotObjects[2].Shape).Position.Y));
-                    ((MapEvent.MapEvent)SelectedObject).Size = new asd.Vector2DF(
+                    ((Object.MapEvent.MapEvent)SelectedObject).Size = new asd.Vector2DF(
                         Math.Abs(((asd.CircleShape)dotObjects[0].Shape).Position.X - ((asd.CircleShape)dotObjects[1].Shape).Position.X),
                         Math.Abs(((asd.CircleShape)dotObjects[1].Shape).Position.Y - ((asd.CircleShape)dotObjects[2].Shape).Position.Y));
                     polygonObject.Shape = polygonObject.Shape;
@@ -1130,12 +1130,12 @@ namespace SatCore.MapEditor
                 if (result) return true;
             }
 
-            return DragObject((MapEvent.MapEvent)SelectedObject, polygonObject.Shape, () =>
+            return DragObject((Object.MapEvent.MapEvent)SelectedObject, polygonObject.Shape, () =>
             {
-                ((MapEvent.MapEvent)SelectedObject).Position += GetMouseMoveVector();
+                ((Object.MapEvent.MapEvent)SelectedObject).Position += GetMouseMoveVector();
                 for (int i = 0; i < 4; i++)
                 {
-                    ((asd.CircleShape)dotObjects[i].Shape).Position = ((MapEvent.MapEvent)SelectedObject).Shape.DrawingArea.Vertexes[i];
+                    ((asd.CircleShape)dotObjects[i].Shape).Position = ((Object.MapEvent.MapEvent)SelectedObject).Shape.DrawingArea.Vertexes[i];
                     dotObjects[i].Shape = dotObjects[i].Shape;
                 }
                 polygonObject.Shape = polygonObject.Shape;

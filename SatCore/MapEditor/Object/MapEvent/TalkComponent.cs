@@ -1,5 +1,6 @@
 ﻿using BaseComponent;
 using SatCore.Attribute;
+using SatCore.MapEditor.Object.MapEvent;
 using SatIO.MapEventIO;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SatCore.MapEditor.MapEvent
+namespace SatCore.MapEditor.Object.MapEvent
 {
     /// <summary>
     /// テキスト表示系
@@ -120,7 +121,7 @@ namespace SatCore.MapEditor.MapEvent
         {
             TalkComponentIO talkComponentIO = new TalkComponentIO()
             {
-                TalkElements = talkeComponent.TalkElements.Select<TalkComponent.BaseTalkElement, TalkComponentIO.BaseTalkElementIO>(obj =>
+                TalkElements = talkeComponent.TalkElements.Select<BaseTalkElement, TalkComponentIO.BaseTalkElementIO>(obj =>
                      {
                          ShowCharacterElement showCharacterElement = obj as ShowCharacterElement;
                          if (showCharacterElement != null)
@@ -165,7 +166,7 @@ namespace SatCore.MapEditor.MapEvent
             public event PropertyChangedEventHandler PropertyChanged;
 
             protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
             public string Name => "Talk Element";
             public CharacterImage CharacterImage
@@ -252,7 +253,7 @@ namespace SatCore.MapEditor.MapEvent
             private string _text;
 
             public new string Name => (CharacterImage != null ? CharacterImage.Name : "") + " Speach \""
-                + (Text != null ? (Text.Length > 8 ? Text.Substring(0, 8) : Text) : "") + "\"";
+                + (Text != null ? Text.Length > 8 ? Text.Substring(0, 8) : Text : "") + "\"";
 
             [TextAreaInput("表示テキスト")]
             public string Text
