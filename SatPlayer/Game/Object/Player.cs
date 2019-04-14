@@ -181,7 +181,7 @@ namespace SatPlayer.Game.Object
 
             if (Layer is MapLayer layer)
             {
-                IsCollidedWithGround = layer.CollisionShapes.Any(obj => obj.GetIsCollidedWith(GroundCollision));
+                IsCollidedWithGround = layer.Obstacles.Any(obj => obj.GetIsCollidedWith(GroundCollision));
             }
 
             if (IsEvent)

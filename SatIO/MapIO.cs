@@ -38,5 +38,14 @@ namespace SatIO
             SavePoints = new List<SavePointIO>();
             Size = new VectorIO();
         }
+
+        /// <summary>
+        /// マップの要素の総数を得る
+        /// </summary>
+        /// <returns>マップの要素の総数</returns>
+        public int GetMapElementCount()
+        {
+            return CollisionBoxes.Count + CollisionTriangles.Count + Doors.Count + MapObjects.Count + MapEvents.Count + BackGrounds.Count + SavePoints.Count;
+        }
     }
 }

@@ -61,7 +61,7 @@ namespace SatCore.ScriptEditor
                 var groundShape = new PhysicAltseed.PhysicalRectangleShape(PhysicAltseed.PhysicalShapeType.Static, PhysicalWorld);
                 groundShape.DrawingArea = item;
                 MainLayer.AddObject(new asd.GeometryObject2D() { Shape = groundShape, Color = new asd.Color(255, 255, 255) });
-                MainLayer.CollisionShapes.Add(groundShape);
+                MainLayer.Obstacles.Add(groundShape);
             }
 
             if (ScriptObject.IsSingle && ScriptObject is asd.Object2D obj) MainLayer.AddObject(obj);

@@ -14,7 +14,7 @@ using SatPlayer.Game.Object;
 namespace SatPlayer.Game
 {
     public delegate void ChangeMapEvent(string path, List<Player> initPlayers, asd.Vector2DF playerPosition, int doorID = -1, int savePointID = -1);
-    
+
     /// <summary>
     /// ゲームシーン
     /// </summary>
@@ -67,8 +67,15 @@ namespace SatPlayer.Game
             IsPreviewMode = isPreviewMode;
         }
 
-        public async Task CreateMapAsync()
+        /// <summary>
+        /// マップをロードする
+        /// </summary>
+        /// <param name="info">ロード情報</param>
+        /// <returns>タスク</returns>
+        public async Task LoadMapAsync((int taskCount, int progress) info)
         {
+            info.progress = 0;
+
             AddLayer(Map);
             MessageLayer2D.Reset();
             AddLayer(MessageLayer2D.Instance);
@@ -77,7 +84,9 @@ namespace SatPlayer.Game
             mapIO = await BaseIO.LoadAsync<MapIO>(MapPath);
             MapName = mapIO.MapName;
 
-            await Map.LoadMapData(mapIO, InitDoorID, InitSavePointID);
+            info.taskCount = mapIO.GetMapElementCount();
+
+            await Map.LoadMapData(mapIO, InitDoorID, InitSavePointID, info);
 
             foreach (var item in CanUsePlayers)
             {

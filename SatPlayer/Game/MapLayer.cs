@@ -16,36 +16,66 @@ namespace SatPlayer.Game
     /// </summary>
     public class MapLayer : ScalingLayer2D, IDamageManeger
     {
+        /// <summary>
+        /// プレイヤー用カメラ
+        /// </summary>
         public ScrollCamera PlayerCamera { get; private set; }
 
+        /// <summary>
+        /// 物理エンジン用ワールド
+        /// </summary>
         public PhysicalWorld PhysicalWorld { get; protected set; }
 
+        /// <summary>
+        /// 操作中のプレイヤー
+        /// </summary>
         public Player Player { get; protected set; }
 
-        public List<PhysicalShape> CollisionShapes { get; private set; }
+        /// <summary>
+        /// 障害物
+        /// </summary>
+        public List<PhysicalShape> Obstacles { get; private set; }
 
-        public List<EventObject> EventObjects => Objects.Where(obj => obj is EventObject).Cast<EventObject>().ToList();
+        /// <summary>
+        /// イベント用オブジェクト
+        /// </summary>
+        public IEnumerable<EventObject> EventObjects => Objects.OfType<EventObject>();
 
-        public List<MapObject> MapObjects => Objects.Where(obj => obj is MapObject && !(obj is EventObject)).Cast<MapObject>().ToList();
+        /// <summary>
+        /// マップオブジェクト(EventObject以外)
+        /// </summary>
+        public IEnumerable<MapObject> MapObjects => Objects.Where(obj => obj is MapObject && !(obj is EventObject)).OfType<MapObject>();
 
-        public List<Door> Doors => Objects.Where(obj => obj is Door).Cast<Door>().ToList();
+        /// <summary>
+        /// ドア
+        /// </summary>
+        public IEnumerable<Door> Doors => Objects.OfType<Door>();
 
-        public List<SavePoint> SavePoints => Objects.Where(obj => obj is SavePoint).Cast<SavePoint>().ToList();
+        /// <summary>
+        /// セーブポイント
+        /// </summary>
+        public IEnumerable<SavePoint> SavePoints => Objects.OfType<SavePoint>();
 
-        public List<Object.MapEvent.MapEvent> MapEvents => Objects.Where(obj => obj is Object.MapEvent.MapEvent).Cast<Object.MapEvent.MapEvent>().ToList();
+        /// <summary>
+        /// 強制イベント
+        /// </summary>
+        public IEnumerable<Object.MapEvent.MapEvent> MapEvents => Objects.OfType<Object.MapEvent.MapEvent>();
 
+        /// <summary>
+        /// ダメージ発生領域
+        /// </summary>
         public List<DamageRect> Damages { get; private set; }
 
         public MapLayer(Player refPlayer)
         {
             Player = refPlayer;
-            CollisionShapes = new List<PhysicalShape>();
+            Obstacles = new List<PhysicalShape>();
             Damages = new List<DamageRect>();
         }
 
         public MapLayer()
         {
-            CollisionShapes = new List<PhysicalShape>();
+            Obstacles = new List<PhysicalShape>();
             Damages = new List<DamageRect>();
         }
 
@@ -55,13 +85,15 @@ namespace SatPlayer.Game
         /// <param name="mapIO">マップデータ</param>
         /// <param name="initDoorID">初期ドアID</param>
         /// <param name="initSavePointID">初期セーブポイント</param>
+        /// <param name="info">ロード情報</param>
         /// <returns></returns>
-        public async Task<bool> LoadMapData(SatIO.MapIO mapIO, int initDoorID, int initSavePointID)
+        public async Task LoadMapData(SatIO.MapIO mapIO, int initDoorID, int initSavePointID, (int taskCount, int progress) info)
         {
             foreach (var item in mapIO.BackGrounds)
             {
                 var backGround = await BackGround.CreateBackGroudAsync(item);
                 AddObject(backGround);
+                info.taskCount++;
             }
 
             PhysicalWorld = new PhysicalWorld(new asd.RectF(new asd.Vector2DF(-200, -200), mapIO.Size + new asd.Vector2DF(200, 200) * 2), new asd.Vector2DF(0, 2000));
@@ -84,7 +116,8 @@ namespace SatPlayer.Game
                 temp.Restitution = 0;
                 temp.Friction = 0;
                 temp.DrawingArea = new asd.RectF(item.Position, item.Size);
-                CollisionShapes.Add(temp);
+                Obstacles.Add(temp);
+                info.taskCount++;
 #if DEBUG
                 asd.GeometryObject2D geometryObject = new asd.GeometryObject2D();
                 geometryObject.CameraGroup = 1;
@@ -107,7 +140,8 @@ namespace SatPlayer.Game
                     temp.SetPointByIndex(vertex, i);
                     i++;
                 }
-                CollisionShapes.Add(temp);
+                Obstacles.Add(temp);
+                info.taskCount++;
 
 #if DEBUG
                 asd.GeometryObject2D geometryObject = new asd.GeometryObject2D();
@@ -125,6 +159,7 @@ namespace SatPlayer.Game
                 var door = await Door.CreateDoorAsync(item);
                 AddObject(door);
                 tempDoors.Add(door);
+                info.taskCount++;
             }
 
             foreach (var item in mapIO.MapObjects)
@@ -138,6 +173,7 @@ namespace SatPlayer.Game
                 {
                     ErrorIO.AddError(e);
                 }
+                info.taskCount++;
             }
 
             List<IActor> actors = new List<IActor>(GameScene.Players);
@@ -153,6 +189,7 @@ namespace SatPlayer.Game
                 {
                     ErrorIO.AddError(e);
                 }
+                info.taskCount++;
             }
 
             if (Scene is GameScene gameScene)
@@ -179,6 +216,7 @@ namespace SatPlayer.Game
                     {
                         ErrorIO.AddError(e);
                     }
+                    info.taskCount++;
                 }
             }
 
@@ -188,6 +226,7 @@ namespace SatPlayer.Game
                 SavePoint savePoint = new SavePoint(item);
                 AddObject(savePoint);
                 tempSavePoints.Add(savePoint);
+                info.taskCount++;
             }
 
             if (initSavePointID != -1 && tempSavePoints.Find(savePoint => savePoint.ID == initSavePointID) != null)
@@ -195,7 +234,7 @@ namespace SatPlayer.Game
             else if (initDoorID != -1 && tempDoors.Find(door => door.ID == initDoorID) != null)
                 Player.Position = tempDoors.Find(door => door.ID == initDoorID).Position;
 
-            return true;
+            return;
         }
 
         protected override void OnAdded()
@@ -264,7 +303,7 @@ namespace SatPlayer.Game
                     }
                     else
                     {
-                        var door = Doors.Find((obj) => obj.ID == item.MoveToID);
+                        var door = Doors.FirstOrDefault((obj) => obj.ID == item.MoveToID);
                         if (door != null)
                         {
                             door.AcceptCome();
@@ -301,12 +340,12 @@ namespace SatPlayer.Game
             }).Select(obj => obj.Tag).Distinct().ToList();
 
             //Player=>Obstacle
-            if (Player?.Collision is Collision playerCollision2) playerCollision2.IsCollidedWithObstacle = CollisionShapes.Any(obj => Player.CollisionShape.GetIsCollidedWith(obj));
+            if (Player?.Collision is Collision playerCollision2) playerCollision2.IsCollidedWithObstacle = Obstacles.Any(obj => Player.CollisionShape.GetIsCollidedWith(obj));
 
             //MapObject,EventObject=>Obstacle
             foreach (var item in Objects.OfType<MapObject>())
             {
-                if (item.Collision is Collision mapObjectCollision) mapObjectCollision.IsCollidedWithObstacle = CollisionShapes.Any(obj => obj.GetIsCollidedWith(item.GetCoreShape()));
+                if (item.Collision is Collision mapObjectCollision) mapObjectCollision.IsCollidedWithObstacle = Obstacles.Any(obj => obj.GetIsCollidedWith(item.GetCoreShape()));
             }
 
             //Sensor=>All
@@ -314,7 +353,7 @@ namespace SatPlayer.Game
             {
                 if (item.Collision is Collision collision)
                 {
-                    collision.IsCollidedWithObstacle = CollisionShapes.Any(obj => item.GetIsCollidedWith(obj));
+                    collision.IsCollidedWithObstacle = Obstacles.Any(obj => item.GetIsCollidedWith(obj));
                     if (Player != null) collision.IsCollidedWithPlayer = item.GetIsCollidedWith((PhysicalShape)Player.CollisionShape);
                     collision.ColligingMapObjectTags = Objects.OfType<MapObject>().Where(obj =>
                         item.GetIsCollidedWith(obj.GetCoreShape())).Select(obj => obj.Tag).Distinct().ToList();
