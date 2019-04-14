@@ -133,8 +133,6 @@ namespace SatPlayer.Game
 
             foreach (var item in CanUsePlayers)
             {
-                item.CollisionShape = new PhysicalRectangleShape(PhysicalShapeType.Dynamic, Map.PhysicalWorld);
-                item.CollisionShape.GroupIndex = -1;
                 Map.AddObject(item);
             }
 

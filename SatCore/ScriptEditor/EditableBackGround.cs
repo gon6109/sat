@@ -35,7 +35,7 @@ namespace SatCore.ScriptEditor
             }
         }
 
-        public EditableBackGround(MainMapLayer2D layer) : base(layer)
+        public EditableBackGround() : base()
         {
 
         }
@@ -80,11 +80,11 @@ namespace SatCore.ScriptEditor
 
         public new  object Clone()
         {
-            EditableBackGround clone = new EditableBackGround(Layer as MainMapLayer2D);
-            clone.Clone(this);
+            EditableBackGround clone = new EditableBackGround();
+            clone.Copy(this);
             clone.State = State;
             clone.Zoom = Zoom;
-            clone.Update = Update;
+            clone.Update += Update;
             clone.UpdatePriority = UpdatePriority;
             return clone;
         }

@@ -27,7 +27,7 @@ namespace SatPlayer.Game.Object
         /// <summary>
         /// OnUpdade時に呼び出されるイベント
         /// </summary>
-        public event Action<IBackGround> Update = delegate { };
+        public Action<IBackGround> Update { get; set; } = delegate { };
 
         /// <summary>
         /// スクリプト用Position

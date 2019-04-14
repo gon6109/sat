@@ -28,7 +28,7 @@ namespace SatScript.BackGround
         /// <summary>
         /// OnUpdate時に呼び出される関数のデリゲート
         /// </summary>
-        event Action<IBackGround> Update;
+        Action<IBackGround> Update { get; set; }
 
         /// <summary>
         /// アニメーションパートを追加する

@@ -77,16 +77,16 @@ namespace SatCore.ScriptEditor
             switch (Script)
             {
                 case ScriptType.MapObject:
-                    ScriptObject = new EditableMapObject(PhysicalWorld);
+                    ScriptObject = new EditableMapObject();
                     break;
                 case ScriptType.EventObject:
-                    ScriptObject = new EditableEventObject(PhysicalWorld);
+                    ScriptObject = new EditableEventObject();
                     break;
                 case ScriptType.Player:
-                    ScriptObject = new EditablePlayer(PhysicalWorld);
+                    ScriptObject = new EditablePlayer();
                     break;
                 case ScriptType.BackGround:
-                    ScriptObject = new EditableBackGround(MainLayer);
+                    ScriptObject = new EditableBackGround();
                     break;
                 default:
                     throw new NotImplementedException(Script.ToString());

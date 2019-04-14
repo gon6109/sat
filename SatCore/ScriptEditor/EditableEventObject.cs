@@ -91,9 +91,8 @@ namespace SatCore.ScriptEditor
 
         public string ScriptOptionName => "EventObject";
 
-        public EditableEventObject(PhysicalWorld world)
+        public EditableEventObject()
         {
-            refWorld = world;
         }
 
         protected override void OnUpdate()
@@ -113,15 +112,14 @@ namespace SatCore.ScriptEditor
 
         public new object Clone()
         {
-            EditableEventObject clone = new EditableEventObject(refWorld);
+            EditableEventObject clone = new EditableEventObject();
             clone.sensors = new Dictionary<string, Sensor>(sensors);
             clone.childMapObjectData = new Dictionary<string, MapObject>(childMapObjectData);
             clone.Effects = new Dictionary<string, Effect>(Effects);
-            clone.refWorld = refWorld;
             clone.Update = Update;
             clone.State = State;
             clone.Tag = Tag;
-            clone.Clone(this);
+            clone.Copy(this);
             clone.MapObjectType = MapObjectType;
             try
             {

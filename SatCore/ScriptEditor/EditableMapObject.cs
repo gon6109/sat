@@ -31,9 +31,8 @@ namespace SatCore.ScriptEditor
 
         public bool IsSuccessBuild { get; set; }
 
-        public EditableMapObject(PhysicalWorld world)
+        public EditableMapObject()
         {
-            refWorld = world;
         }
 
         [Script("スクリプト", "MapObject")]

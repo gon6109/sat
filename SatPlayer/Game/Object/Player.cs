@@ -132,7 +132,7 @@ namespace SatPlayer.Game.Object
         /// <summary>
         /// OnUpdate時に呼び出されイベント
         /// </summary>
-        public event Action<IPlayer> Update = delegate { };
+        public Action<IPlayer> Update { get; set; } = delegate { };
 
         PhysicalShape IActor.CollisionShape => CollisionShape;
 
@@ -160,6 +160,10 @@ namespace SatPlayer.Game.Object
 
         protected override void OnAdded()
         {
+            if (Layer is MapLayer map)
+                CollisionShape = new PhysicalRectangleShape(PhysicalShapeType.Dynamic, map.PhysicalWorld);
+
+            CollisionShape.GroupIndex = -1;
             CenterPosition = Texture?.Size.To2DF() / 2.0f ?? new asd.Vector2DF();
 
             CollisionShape.DrawingArea = new asd.RectF(Position - CenterPosition + new asd.Vector2DF(5, 0), Texture?.Size.To2DF() ?? new asd.Vector2DF() - new asd.Vector2DF(10, 0));

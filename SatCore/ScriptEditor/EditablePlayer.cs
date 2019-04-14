@@ -19,9 +19,8 @@ namespace SatCore.ScriptEditor
         private bool isEdited;
         private string _code;
 
-        public EditablePlayer(PhysicalWorld physicalWorld)
+        public EditablePlayer()
         {
-            CollisionShape = new PhysicalRectangleShape(PhysicalShapeType.Dynamic, physicalWorld);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -78,7 +77,9 @@ namespace SatCore.ScriptEditor
 
         void Reset()
         {
-            Init();
+            Update = delegate { };
+            AnimationPart.Clear();
+            Effects.Clear();
         }
     }
 }
