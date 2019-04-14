@@ -27,9 +27,9 @@ namespace SatCore.MapEditor.MapEvent
             BaseImagePath = "";
         }
 
-        public static CharacterImage LoadCharacterImage(string path)
+        public static async Task<CharacterImage> LoadCharacterImage(string path)
         {
-            var characterImage = (CharacterImage)CharacterImageIO.LoadCharacterImageAsync(path);
+            var characterImage = (CharacterImage)await CharacterImageIO.LoadCharacterImageAsync(path);
             characterImage.Path = path;
             return characterImage;
         }

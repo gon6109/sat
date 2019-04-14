@@ -88,7 +88,9 @@ namespace SatCore.CharacterImageEditor
             diffObject = new asd.TextureObject2D();
             AddDrawnChild(diffObject, asd.ChildManagementMode.RegistrationToLayer | asd.ChildManagementMode.Disposal, asd.ChildTransformingMode.All, asd.ChildDrawingMode.Nothing);
 
-            var characterImage = SatIO.MapEventIO.CharacterImageIO.LoadCharacterImageAsync(path);
+            var task = SatIO.MapEventIO.CharacterImageIO.LoadCharacterImageAsync(path);
+            while (!task.IsCompleted) ;
+            var characterImage = task.Result;
             Name = characterImage.Name;
             BaseImagePath = characterImage.BaseImagePath;
             DiffImages = new UndoRedoCollection<DiffImage>(characterImage.DiffImagePaths.Select(obj =>
