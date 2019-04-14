@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using PhysicAltseed;
+using SatCore.Attribute;
 using SatPlayer;
 using SatPlayer.Game;
 using SatPlayer.Game.Object;

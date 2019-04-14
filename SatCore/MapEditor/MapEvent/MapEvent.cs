@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SatPlayer.Game.Object;
 using SatPlayer.Game;
+using SatCore.Attribute;
 
 namespace SatCore.MapEditor.MapEvent
 {

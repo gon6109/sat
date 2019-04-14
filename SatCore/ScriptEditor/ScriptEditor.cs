@@ -1,4 +1,5 @@
 ﻿using BaseComponent;
+using SatCore.Attribute;
 using SatPlayer.Game.Object;
 using System;
 using System.Collections.Generic;

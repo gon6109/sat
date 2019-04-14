@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SatCore
+namespace SatCore.Attribute
 {
     /// <summary>
     /// ファイル入力
     /// </summary>
-    [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
     public sealed class FileInputAttribute : IOAttribute
     {
         public FileInputAttribute(string itemName, string filter = "All File|*.*", bool isAutoConvertRelativePath = true)

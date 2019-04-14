@@ -6,6 +6,7 @@ using SatIO;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using BaseComponent;
+using SatCore.Attribute;
 
 namespace SatCore.MapEditor
 {

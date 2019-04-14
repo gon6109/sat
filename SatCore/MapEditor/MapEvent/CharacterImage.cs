@@ -1,4 +1,5 @@
 ﻿using BaseComponent;
+using SatCore.Attribute;
 using SatIO.MapEventIO;
 using System;
 using System.Collections.Generic;

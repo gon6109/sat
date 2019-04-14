@@ -11,6 +11,8 @@ using SatIO;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using PhysicAltseed;
+using SatCore.Attribute;
+
 namespace SatCore.MapEditor
 {
     /// <summary>

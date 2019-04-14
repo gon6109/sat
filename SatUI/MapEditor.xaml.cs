@@ -32,7 +32,7 @@ namespace SatUI
         public Dictionary<Inputs, asd.ButtonState> InputData { get; set; }
 
         string playerExePath = "";
-        [SatCore.DirectoryInput("本体へのパス", false)]
+        [SatCore.Attribute.DirectoryInput("本体へのパス", false)]
         public string PlayerExePath
         {
             get => playerExePath;

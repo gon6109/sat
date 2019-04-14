@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SatCore
+namespace SatCore.Attribute
 {
     /// <summary>
     /// ディレクトリ入力
     /// </summary>
-    [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
     public sealed class DirectoryInputAttribute : IOAttribute
     {
         public DirectoryInputAttribute(string itemName, bool isAutoConvertRelativePath = true)

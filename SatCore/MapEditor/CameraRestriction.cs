@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SatCore.Attribute;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;

@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using BaseComponent;
 using SatPlayer.Game.Object;
 using SatPlayer.Game;
+using SatCore.Attribute;
 
 namespace SatCore.MapEditor
 {

@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using BaseComponent;
 using SatPlayer;
 using Microsoft.CodeAnalysis.Scripting;
+using SatCore.Attribute;
 
 namespace SatCore.MapEditor
 {

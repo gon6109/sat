@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SatCore
+namespace SatCore.Attribute
 {
     /// <summary>
     /// 座標入力
     /// </summary>
-    [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
     public sealed class VectorInputAttribute : IOAttribute
     {
         public VectorInputAttribute(string itemName)
