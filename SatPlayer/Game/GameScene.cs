@@ -234,5 +234,13 @@ namespace SatPlayer.Game
         {
             OnEnd();
         }
+
+        /// <summary>
+        /// ゲームオーバー
+        /// </summary>
+        public void GameOver()
+        {
+            OnGameOver();
+        }
     }
 }

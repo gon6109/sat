@@ -14,12 +14,12 @@ namespace SatScript.Player
         /// 使用されているキャラクター名
         /// </summary>
         public static IEnumerable<string> Players
-           => (asd.Engine.CurrentScene as SatPlayer.GameScene)?
+           => (asd.Engine.CurrentScene as SatPlayer.Game.GameScene)?
            .CanUsePlayers
            .Select(obj => obj.Name);
 
         public static Player CurrentPlayer
-            => ToScript((asd.Engine.CurrentScene as SatPlayer.GameScene)?
+            => ToScript((asd.Engine.CurrentScene as SatPlayer.Game.GameScene)?
             .Layers.OfType<MapLayer>()
             .FirstOrDefault()?
             .Player);
