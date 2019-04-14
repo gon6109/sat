@@ -7,6 +7,8 @@ using BaseComponent;
 using System.Collections.Concurrent;
 using SatPlayer.Game.Object;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using SatPlayer.Game;
 
 namespace SatPlayer
 {
@@ -78,28 +80,18 @@ namespace SatPlayer
 
         public asd.RectangleShape CollisionShape { get; }
 
-        bool isLeave;
-        bool isCome;
+        /// <summary>
+        /// 退場時イベント
+        /// </summary>
+        public event Action<Door> OnLeave = delegate { };
 
         ScriptRunner<bool> keyScriptRunner;
 
-        public bool AcceptLeave()
-        {
-            if (State == "open" && isLeave)
-            {
-                isLeave = false;
-                RefPlayer.IsDrawn = false;
-                return true;
-            }
-            return false;
-        }
+        IEnumerator<object> coroutine;
 
-        public void AcceptCome()
+        public void Come()
         {
-            State = "open";
-            State = "opening";
-            IsOneLoop = true;
-            isCome = true;
+            coroutine = ComeImp();
         }
 
         public Door()
@@ -109,51 +101,82 @@ namespace SatPlayer
             MoveToID = 0;
             ID = 0;
             IsUseMoveToID = true;
-            isLeave = false;
-            isCome = false;
             MoveToMap = "hoge";
             DrawingPriority = 1;
         }
 
         protected override void OnUpdate()
         {
-
-            if (RefPlayer.CollisionShape.GetIsCollidedWith(CollisionShape) && Input.GetInputState(Inputs.A) == 1 && !isCome
-                && RefPlayer.IsCollidedWithGround && MessageLayer2D.Count == 0)
+            if (!coroutine?.MoveNext() ?? true)
             {
-                bool temp = true;
-                if (KeyScriptPath != "")
+                if (Layer is MapLayer map)
                 {
-                    var thread = keyScriptRunner(this);
-                    thread.Wait();
-                    temp = thread.Result;
-                }
-                if (temp)
-                {
-                    State = "open";
-                    State = "opening";
-                    IsOneLoop = true;
-                    isLeave = true;
-                    RefPlayer.IsUpdated = false;
+                    if (map.Player.CollisionShape.GetIsCollidedWith(CollisionShape) && 
+                        Input.GetInputState(Inputs.A) == 1 && 
+                        map.Player.IsCollidedWithGround )
+                    {
+                        bool temp = true;
+                        if (KeyScriptPath != "")
+                        {
+                            var thread = keyScriptRunner(this);
+                            thread.Wait();
+                            temp = thread.Result;
+                        }
+                        if (temp)
+                            coroutine = Leave();
+                    }
                 }
             }
 
-            if (State == "open" && isLeave)
-            {
-                RefPlayer.IsDrawn = false;
-            }
+            base.OnUpdate();
+        }
 
-            if (State == "open" && isCome)
+        IEnumerator<object> Leave()
+        {
+            if (Layer is MapLayer map)
             {
-                RefPlayer.IsDrawn = true;
-                RefPlayer.IsUpdated = true;
-                RefPlayer.IsDrawn = true;
-                isCome = false;
+                State = "open";
+                State = "opening";
+                IsOneLoop = true;
+                map.Player.IsUpdated = false;    
+
+                while (State == "opening")
+                {
+                    yield return null;
+                }
+
+                map.Player.IsDrawn = false;
+                OnLeave(this);
+            }
+        }
+
+        IEnumerator<object> ComeImp()
+        {
+            if (Layer is MapLayer map)
+            {
+                map.Player.IsDrawn = false;
+                map.Player.IsUpdated = false;
+
+                State = "open";
+                State = "opening";
+                IsOneLoop = true;
+
+                while (State == "opening")
+                {
+                    yield return null;
+                }
+
+                map.Player.IsDrawn = true;
+                map.Player.IsUpdated = true;
                 State = "close";
                 State = "closing";
                 IsOneLoop = true;
+
+                while (State == "closing")
+                {
+                    yield return null;
+                }
             }
-            base.OnUpdate();
         }
 
         public static async Task<Door> CreateDoorAsync(DoorIO doorIO)

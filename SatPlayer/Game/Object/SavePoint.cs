@@ -130,7 +130,7 @@ namespace SatPlayer.Game.Object
 
                 while (!askEnd.IsEnd) yield return 0;
 
-                if (askEnd.IsYes) (Layer.Scene as GameScene)?.OnEnd();
+                if (askEnd.IsYes) (Layer.Scene as GameScene)?.End();
 
                 for (int i = 0; i < 15; i++)
                 {
@@ -166,7 +166,7 @@ namespace SatPlayer.Game.Object
 
         protected override void OnUpdate()
         {
-            if (enumerator != null && enumerator.MoveNext()) return;
+            if (enumerator?.MoveNext() ?? false) return;
             var mainLayer = Layer as MapLayer;
             if (mainLayer != null && Input.GetInputState(Inputs.A) == 1 && (mainLayer.Player.Position - Position).Length < 40) OpenSaveMenu();
             base.OnUpdate();

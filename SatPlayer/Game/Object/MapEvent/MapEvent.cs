@@ -149,10 +149,10 @@ namespace SatPlayer.Game.Object.MapEvent
             if (ToMapPath != null && asd.Engine.File.Exists(ToMapPath))
             {
                 var scene = asd.Engine.CurrentScene as GameScene;
-                scene?.OnChangeMapEvent
+                scene?.ChangeMap
                     (
                     ToMapPath,
-                    Game.Players.FindAll(obj => PlayerNames.Any(name => name.Name == obj.Name)).ToList(),
+                    GameScene.Players.FindAll(obj => PlayerNames.Any(name => name.Name == obj.Name)).ToList(),
                     MoveToPosition,
                     IsUseDoorID ? DoorID : -1
                     );

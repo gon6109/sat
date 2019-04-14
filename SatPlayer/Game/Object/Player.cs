@@ -14,14 +14,14 @@ using System.Threading.Tasks;
 namespace SatPlayer.Game.Object
 {
     /// <summary>
-    /// ƒvƒŒƒCƒ„[
+    /// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼
     /// </summary>
     public class Player : MultiAnimationObject2D, IEffectManeger, IPlayer, IDamageControler, IActor
     {
         public static int MaxHP = 100;
 
         /// <summary>
-        /// Œ»İÀ•W
+        /// ç¾åœ¨åº§æ¨™
         /// </summary>
         public new asd.Vector2DF Position
         {
@@ -37,12 +37,12 @@ namespace SatPlayer.Game.Object
         }
 
         /// <summary>
-        /// Œ»İÀ•W
+        /// ç¾åœ¨åº§æ¨™
         /// </summary>
         Vector IPlayer.Position { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         /// <summary>
-        /// ƒAƒjƒ[ƒVƒ‡ƒ“ó‘Ô
+        /// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³çŠ¶æ…‹
         /// </summary>
         public new string State
         {
@@ -55,7 +55,7 @@ namespace SatPlayer.Game.Object
         }
 
         /// <summary>
-        /// ƒvƒŒƒCƒ„[ƒOƒ‹[ƒv
+        /// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚°ãƒ«ãƒ¼ãƒ—
         /// </summary>
         public int PlayerGroup { get; set; }
 
@@ -64,12 +64,12 @@ namespace SatPlayer.Game.Object
         public Dictionary<string, Effect> Effects { get; private set; }
 
         /// <summary>
-        /// ’n–Ê‚ÆÚ‚µ‚Ä‚¢‚é‚©
+        /// åœ°é¢ã¨æ¥ã—ã¦ã„ã‚‹ã‹
         /// </summary>
         public bool IsCollidedWithGround { get; private set; }
 
         /// <summary>
-        /// ƒCƒxƒ“ƒg‚©
+        /// ã‚¤ãƒ™ãƒ³ãƒˆæ™‚ã‹
         /// </summary>
         public bool IsEvent { get; set; }
 
@@ -83,14 +83,14 @@ namespace SatPlayer.Game.Object
             {
                 if (hP > value)
                 {
-                    //TODO: ƒ_ƒ[ƒW
+                    //TODO: ãƒ€ãƒ¡ãƒ¼ã‚¸
                 }
                 hP = value;
             }
         }
 
         /// <summary>
-        /// ƒ_ƒ[ƒW‚ğó‚¯‚é‚©
+        /// ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ã‚‹ã‹
         /// </summary>
         public bool IsReceiveDamage { get; set; }
 
@@ -112,12 +112,12 @@ namespace SatPlayer.Game.Object
         public bool IsUseName => true;
 
         /// <summary>
-        /// Õ“Ëî•ñ
+        /// è¡çªæƒ…å ±
         /// </summary>
         public ICollision Collision { get; set; }
 
         /// <summary>
-        /// ‘¬“x
+        /// é€Ÿåº¦
         /// </summary>
         public Vector Velocity
         {
@@ -130,7 +130,7 @@ namespace SatPlayer.Game.Object
         }
 
         /// <summary>
-        /// OnUpdate‚ÉŒÄ‚Ño‚³‚êƒCƒxƒ“ƒg
+        /// OnUpdateæ™‚ã«å‘¼ã³å‡ºã•ã‚Œã‚¤ãƒ™ãƒ³ãƒˆ
         /// </summary>
         public event Action<IPlayer> Update = delegate { };
 
@@ -209,13 +209,13 @@ namespace SatPlayer.Game.Object
         }
 
         /// <summary>
-        /// ƒGƒtƒFƒNƒg‚ğƒ[ƒh‚·‚é
+        /// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
         /// </summary>
-        /// <param name="animationGroup">ƒtƒ@ƒCƒ‹–¼</param>
-        /// <param name="extension">Šg’£q</param>
-        /// <param name="sheets">–‡”</param>
-        /// <param name="name">ƒGƒtƒFƒNƒg–¼</param>
-        /// <param name="interval">1ƒRƒ}“–‚½‚è‚ÌƒtƒŒ[ƒ€”</param>
+        /// <param name="animationGroup">ãƒ•ã‚¡ã‚¤ãƒ«å</param>
+        /// <param name="extension">æ‹¡å¼µå­</param>
+        /// <param name="sheets">æšæ•°</param>
+        /// <param name="name">ã‚¨ãƒ•ã‚§ã‚¯ãƒˆå</param>
+        /// <param name="interval">1ã‚³ãƒå½“ãŸã‚Šã®ãƒ•ãƒ¬ãƒ¼ãƒ æ•°</param>
         public void LoadEffect(string animationGroup, string extension, int sheets, string name, int interval)
         {
             Effect effect = new Effect();
@@ -224,10 +224,10 @@ namespace SatPlayer.Game.Object
         }
 
         /// <summary>
-        /// ƒGƒtƒFƒNƒg‚ğ”z’u‚·‚é
+        /// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’é…ç½®ã™ã‚‹
         /// </summary>
-        /// <param name="name">ƒGƒtƒFƒNƒg–¼</param>
-        /// <param name="position">À•W</param>
+        /// <param name="name">ã‚¨ãƒ•ã‚§ã‚¯ãƒˆå</param>
+        /// <param name="position">åº§æ¨™</param>
         public void SetEffect(string name, asd.Vector2DF position)
         {
             if (!Effects.ContainsKey(name)) return;
@@ -237,15 +237,15 @@ namespace SatPlayer.Game.Object
         }
 
         /// <summary>
-        /// ƒGƒtƒFƒNƒg‚ğ”z’u‚·‚é
+        /// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’é…ç½®ã™ã‚‹
         /// </summary>
-        /// <param name="name">ƒGƒtƒFƒNƒg–¼</param>
-        /// <param name="position">À•W</param>
+        /// <param name="name">ã‚¨ãƒ•ã‚§ã‚¯ãƒˆå</param>
+        /// <param name="position">åº§æ¨™</param>
         public void SetEffect(string name, Vector positon)
             => SetEffect(name, positon.ToAsdVector());
 
         /// <summary>
-        /// “ü—Íó‘Ô‚ğ“¾‚é
+        /// å…¥åŠ›çŠ¶æ…‹ã‚’å¾—ã‚‹
         /// </summary>
         /// <param name="inputs"></param>
         /// <returns></returns>

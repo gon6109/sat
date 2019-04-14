@@ -66,9 +66,9 @@ namespace SatPlayer.Game
         /// </summary>
         public List<DamageRect> Damages { get; private set; }
 
-        public MapLayer(Player refPlayer)
+        public MapLayer(Player player)
         {
-            Player = refPlayer;
+            Player = player;
             Obstacles = new List<PhysicalShape>();
             Damages = new List<DamageRect>();
         }
@@ -89,6 +89,7 @@ namespace SatPlayer.Game
         /// <returns></returns>
         public async Task LoadMapData(SatIO.MapIO mapIO, int initDoorID, int initSavePointID, (int taskCount, int progress) info)
         {
+            //背景
             foreach (var item in mapIO.BackGrounds)
             {
                 var backGround = await BackGround.CreateBackGroudAsync(item);
@@ -96,8 +97,10 @@ namespace SatPlayer.Game
                 info.taskCount++;
             }
 
+            //物理世界構築
             PhysicalWorld = new PhysicalWorld(new asd.RectF(new asd.Vector2DF(-200, -200), mapIO.Size + new asd.Vector2DF(200, 200) * 2), new asd.Vector2DF(0, 2000));
 
+            //カメラ設定
             {
                 PlayerCamera = new ScrollCamera(mapIO.CameraRestrictions);
                 PlayerCamera.HomingObject = Player;
@@ -109,6 +112,7 @@ namespace SatPlayer.Game
                 Camera.IsUpdated = false;
             }
 
+            //障害物
             foreach (var item in mapIO.CollisionBoxes)
             {
                 PhysicalRectangleShape temp = new PhysicalRectangleShape(PhysicalShapeType.Static, PhysicalWorld);
@@ -153,15 +157,18 @@ namespace SatPlayer.Game
 #endif
             }
 
+            //ドア
             var tempDoors = new List<Door>();
             foreach (var item in mapIO.Doors)
             {
                 var door = await Door.CreateDoorAsync(item);
+                door.OnLeave += OnLeave;
                 AddObject(door);
                 tempDoors.Add(door);
                 info.taskCount++;
             }
 
+            //マップオブジェクト
             foreach (var item in mapIO.MapObjects)
             {
                 try
@@ -176,6 +183,7 @@ namespace SatPlayer.Game
                 info.taskCount++;
             }
 
+            //イベントオブジェクト
             List<IActor> actors = new List<IActor>(GameScene.Players);
             foreach (var item in mapIO.EventObjects)
             {
@@ -192,6 +200,7 @@ namespace SatPlayer.Game
                 info.taskCount++;
             }
 
+            //イベント
             if (Scene is GameScene gameScene)
             {
                 foreach (var item in mapIO.MapEvents)
@@ -220,6 +229,7 @@ namespace SatPlayer.Game
                 }
             }
 
+            //セーブポイント
             List<SavePoint> tempSavePoints = new List<SavePoint>();
             foreach (var item in mapIO.SavePoints)
             {
@@ -229,10 +239,15 @@ namespace SatPlayer.Game
                 info.taskCount++;
             }
 
-            if (initSavePointID != -1 && tempSavePoints.Find(savePoint => savePoint.ID == initSavePointID) != null)
-                Player.Position = tempSavePoints.Find(savePoint => savePoint.ID == initSavePointID).Position;
-            else if (initDoorID != -1 && tempDoors.Find(door => door.ID == initDoorID) != null)
-                Player.Position = tempDoors.Find(door => door.ID == initDoorID).Position;
+            //プレイヤー初期配置
+            if (initSavePointID != -1 && tempSavePoints.FirstOrDefault(savePoint => savePoint.ID == initSavePointID) != null)
+                Player.Position = tempSavePoints.FirstOrDefault(savePoint => savePoint.ID == initSavePointID).Position;
+            else if (initDoorID != -1 && tempDoors.FirstOrDefault(door => door.ID == initDoorID) != null)
+            {
+                Door door = tempDoors.FirstOrDefault(obj => obj.ID == initDoorID);
+                Player.Position = door.Position;
+                door.Come();
+            }
 
             return;
         }
@@ -259,6 +274,33 @@ namespace SatPlayer.Game
         {
             base.OnUpdating();
 
+            UpdateOtherPlayers();
+
+            if (!SavePoints.Any(obj => obj.IsActive)) 
+                PhysicalWorld?.Update();
+
+            UpdateCollision();
+        }
+
+        protected override void OnUpdated()
+        {
+            //イベント開始判定
+            if (!MapEvents.Any(obj => obj.IsUpdated))
+            {
+                foreach (var item in MapEvents)
+                {
+                    if (Player.CollisionShape.GetIsCollidedWith(item.Shape)) 
+                        item.IsUpdated = true;
+                }
+            }
+
+            UpdateDamage();
+
+            base.OnUpdated();
+        }
+
+        void UpdateOtherPlayers()
+        {
             Dictionary<Inputs, bool> key = new Dictionary<Inputs, bool>();
             foreach (Inputs item in Enum.GetValues(typeof(Inputs)))
             {
@@ -273,49 +315,6 @@ namespace SatPlayer.Game
                     item.MoveCommands.Enqueue(key);
                 }
             }
-            if (!SavePoints.Any(obj => obj.IsActive)) PhysicalWorld?.Update();
-            UpdateCollision();
-        }
-
-        protected override void OnUpdated()
-        {
-            if (!MapEvents.Any(obj => obj.IsUpdated == true))
-            {
-                foreach (var item in MapEvents)
-                {
-                    if (Player.CollisionShape.GetIsCollidedWith(item.Shape)) item.IsUpdated = true;
-                }
-            }
-
-            foreach (var item in Doors)
-            {
-                if (item.AcceptLeave())
-                {
-                    if (item.MoveToMap != null && asd.Engine.File.Exists(item.MoveToMap))
-                    {
-                        var scene = asd.Engine.CurrentScene as GameScene;
-                        scene?.OnChangeMapEvent
-                            (item.MoveToMap,
-                            scene.CanUsePlayers,
-                            item.IsUseMoveToID ? new asd.Vector2DF() : item.MoveToPosition,
-                            item.IsUseMoveToID ? item.MoveToID : -1);
-                        IsUpdated = false;
-                    }
-                    else
-                    {
-                        var door = Doors.FirstOrDefault((obj) => obj.ID == item.MoveToID);
-                        if (door != null)
-                        {
-                            door.AcceptCome();
-                            Player.Position = item.IsUseMoveToID ? door.Position : item.MoveToPosition;
-                        }
-                    }
-                }
-            }
-
-            UpdateDamage();
-
-            base.OnUpdated();
         }
 
         protected void UpdateCollision()
@@ -419,6 +418,29 @@ namespace SatPlayer.Game
             foreach (var item in removeRect)
             {
                 Damages.Remove(item);
+            }
+        }
+
+        void OnLeave(Door door)
+        {
+            if (door.MoveToMap != null && asd.Engine.File.Exists(door.MoveToMap))
+            {
+                var scene = asd.Engine.CurrentScene as GameScene;
+                scene?.ChangeMap
+                    (door.MoveToMap,
+                    scene.CanUsePlayers,
+                    door.IsUseMoveToID ? new asd.Vector2DF() : door.MoveToPosition,
+                    door.IsUseMoveToID ? door.MoveToID : -1);
+                IsUpdated = false;
+            }
+            else
+            {
+                var openDoor = Doors.FirstOrDefault((obj) => obj.ID == door.MoveToID);
+                if (openDoor != null)
+                {
+                    openDoor.Come();
+                    Player.Position = door.IsUseMoveToID ? openDoor.Position : door.MoveToPosition;
+                }
             }
         }
     }

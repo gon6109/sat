@@ -73,19 +73,17 @@ namespace SatPlayer.Game.Object
                 switch (value)
                 {
                     case MapObjectType.Active:
-                        collision = new PhysicalRectangleShape(PhysicalShapeType.Dynamic, refWorld);
                         DrawingPriority = 2;
                         IsReceiveDamage = true;
                         break;
                     case MapObjectType.Passive:
-                        collision = new asd.RectangleShape();
                         DrawingPriority = 1;
                         IsReceiveDamage = false;
                         break;
                     default:
-                        collision = new asd.RectangleShape();
                         break;
                 }
+                SetCollisionShape();
             }
         }
 
@@ -218,13 +216,14 @@ namespace SatPlayer.Game.Object
 
         protected override void OnAdded()
         {
+            SetCollisionShape();
             base.OnAdded();
         }
 
         protected override void OnDispose()
         {
             Update = (obj) => { };
-            if (MapObjectType == MapObjectType.Active) CollisionShape.Dispose();
+            CollisionShape?.Dispose();
             base.OnDispose();
         }
 
@@ -256,7 +255,12 @@ namespace SatPlayer.Game.Object
         /// <param name="scriptPath">スクリプトパス</param>
         public void SetChild(string name, string scriptPath)
         {
-            MapObject temp = new MapObject(subQueue, mainQueue, scriptPath, refWorld);
+            var task = MapObject.CreateMapObjectAsync(new MapObjectIO()
+            {
+                ScriptPath = scriptPath
+            });
+            task.Wait();
+            MapObject temp = task.Result;
             childMapObjectData.Add(name, temp);
         }
 
@@ -354,8 +358,37 @@ namespace SatPlayer.Game.Object
         public void SetForce(Vector direct, Vector position)
             => CollisionShape?.SetForce(direct.ToAsdVector(), position.ToAsdVector());
 
+        /// <summary>
+        /// 衝撃を加える
+        /// </summary>
+        /// <param name="direct">力の向き・強さ</param>
+        /// <param name="position">力を加える芭蕉の相対座標</param>
         public void SetImpulse(Vector direct, Vector position)
             => CollisionShape?.SetImpulse(direct.ToAsdVector(), position.ToAsdVector());
+
+        /// <summary>
+        /// コリジョンを設定する
+        /// </summary>
+        void SetCollisionShape()
+        {
+            if (Layer is MapLayer map) 
+            {
+                if (collision != null)
+                    collision.Dispose();
+                switch (MapObjectType)
+                {
+                    case MapObjectType.Active:
+                        collision = new PhysicalRectangleShape(PhysicalShapeType.Dynamic, map.PhysicalWorld);
+                        break;
+                    case MapObjectType.Passive:
+                        collision = new asd.RectangleShape();
+                        break;
+                    default:
+                        collision = new asd.RectangleShape();
+                        break;
+                }
+            }
+        }
 
         public static async Task<MapObject> CreateMapObjectAsync(MapObjectIO mapObjectIO)
         {

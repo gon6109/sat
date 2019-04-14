@@ -20,23 +20,66 @@ namespace SatPlayer.Game
     /// </summary>
     public class GameScene : asd.Scene
     {
+        /// <summary>
+        /// 登録されたプレイヤー
+        /// </summary>
         public static List<Player> Players { get; } = new List<Player>();
+
+        /// <summary>
+        /// 終了済みイベント
+        /// </summary>
+        /// <returns></returns>
         public static List<KeyValuePair<string, int>> EndEvents { get; } = new List<KeyValuePair<string, int>>();
 
-        public event ChangeMapEvent OnChangeMapEvent = delegate { };
+        /// <summary>
+        /// マップ遷移時イベント
+        /// </summary>
+        public event ChangeMapEvent OnChangeMap = delegate { };
+
+        /// <summary>
+        /// ゲームオーバー時イベント
+        /// </summary>
         public event Action OnGameOver = delegate { };
+
+        /// <summary>
+        /// 終了時イベント
+        /// </summary>
         public event Action OnEnd = delegate { };
 
+        /// <summary>
+        /// プレビューモードか
+        /// </summary>
         public bool IsPreviewMode { get; }
 
+        /// <summary>
+        /// マップ名
+        /// </summary>
         public string MapName { get; private set; }
-
+        
+        /// <summary>
+        /// マップレイヤー
+        /// </summary>
         MapLayer Map { get; }
 
+        /// <summary>
+        /// マップで使用できるプレイヤー
+        /// </summary>
         public List<Player> CanUsePlayers { get; set; }
 
+        /// <summary>
+        /// マップファイルのパス
+        /// </summary>
+        /// <value></value>
         public string MapPath { get; }
+
+        /// <summary>
+        /// 初期ドアID
+        /// </summary>
         int InitDoorID { get; }
+
+        /// <summary>
+        /// 初期セーブポイント
+        /// </summary>
         int InitSavePointID { get; }
 
         /// <summary>
@@ -114,32 +157,19 @@ namespace SatPlayer.Game
             asd.Engine.Sound.StopAll();
             OnGameOver = delegate { };
             OnEnd = delegate { };
-            OnChangeMapEvent = (iPath, iInitPlayers, iPlayerPosition, iDoorID, isavePointID) => { };
+            OnChangeMap = delegate { };
             base.OnStopUpdating();
         }
-
-        bool isMessageClose = false;
 
         protected override void OnUpdating()
         {
             base.OnUpdating();
-            if (MessageLayer2D.Count != 0)
-            {
-                Map.Player.CollisionShape.IsActive = false;
-                Map.Player.IsUpdated = false;
-                isMessageClose = true;
-            }
-            else if (isMessageClose)
-            {
-                isMessageClose = false;
-                Map.Player.CollisionShape.IsActive = true;
-                Map.Player.IsUpdated = true;
-            }
         }
 
         protected override void OnUpdated()
         {
-            if (IsPreviewMode && Input.GetInputState(Inputs.Esc) > 0) OnGameOver();
+            //プレビュー時エスケープで終了
+            if (IsPreviewMode && Input.GetInputState(Inputs.Esc) > 0) OnEnd();
 
             base.OnUpdated();
         }
@@ -147,7 +177,7 @@ namespace SatPlayer.Game
         protected override void OnUnregistered()
         {
             OnGameOver = delegate { };
-            OnChangeMapEvent = delegate { };
+            OnChangeMap = delegate { };
             OnEnd = delegate { };
             foreach (var item in CanUsePlayers)
             {
@@ -182,6 +212,27 @@ namespace SatPlayer.Game
                 Player player = await Player.CreatePlayerAsync(item);
                 Players.Add(player);
             }
+        }
+
+        /// <summary>
+        /// マップを遷移する
+        /// </summary>
+        /// <param name="path">遷移先マップファイルのパス</param>
+        /// <param name="initPlayers">使用可能プレイヤー</param>
+        /// <param name="playerPosition">プレイヤー初期座標</param>
+        /// <param name="doorID">初期ドアID</param>
+        /// <param name="savePointID">初期セーブポイント</param>
+        public void ChangeMap(string path, List<Player> initPlayers, asd.Vector2DF playerPosition, int doorID = -1, int savePointID = -1)
+        {
+            OnChangeMap(path, initPlayers, playerPosition, doorID, savePointID);
+        }
+
+        /// <summary>
+        /// 終了する
+        /// </summary>
+        public void End()
+        {
+            OnEnd();
         }
     }
 }

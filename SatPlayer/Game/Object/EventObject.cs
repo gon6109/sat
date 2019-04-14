@@ -125,7 +125,6 @@ namespace SatPlayer.Game.Object
             clone.sensors = new Dictionary<string, Sensor>(sensors);
             clone.childMapObjectData = new Dictionary<string, MapObject>(childMapObjectData);
             clone.Effects = new Dictionary<string, Effect>(Effects);
-            clone.refWorld = refWorld;
             clone.Update = Update;
             clone.State = State;
             clone.Tag = Tag;
