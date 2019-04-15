@@ -84,11 +84,11 @@ namespace SatUI
         {
             var newFile = new SatCore.MapEditor.MapEditorScene();
             newFile.Map.OnChangeSelectedObject += OnChangeSelectedObject;
-            newFile.Map.OnCreateDoor = OnCreateDoor;
-            newFile.Map.OnCreateMapObject = OnCreateMapObject;
-            newFile.Map.FocusToEditorPanel = () => EditorPanel.Focus();
-            newFile.Map.RequireOpenFileDialog = OpenCharacterImageFileDialog;
-            newFile.OnCopyObjectChanged = OnCopyObjectChanged;
+            newFile.Map.OnCreateDoor += OnCreateDoor;
+            newFile.Map.OnCreateMapObject += OnCreateMapObject;
+            newFile.Map.FocusToEditorPanel += () => EditorPanel.Focus();
+            newFile.Map.RequireOpenFileDialog += OpenCharacterImageFileDialog;
+            newFile.OnCopyObjectChanged += OnCopyObjectChanged;
             asd.Engine.ChangeScene(newFile);
             Reset(PropertyPanel.ResetMode.General);
 
@@ -183,11 +183,11 @@ namespace SatUI
             {
                 var loadFile = new SatCore.MapEditor.MapEditorScene();
                 loadFile.Map.OnChangeSelectedObject += OnChangeSelectedObject;
-                loadFile.Map.OnCreateDoor = OnCreateDoor;
-                loadFile.Map.OnCreateMapObject = OnCreateMapObject;
-                loadFile.Map.FocusToEditorPanel = () => EditorPanel.Focus();
-                loadFile.Map.RequireOpenFileDialog = OpenCharacterImageFileDialog;
-                loadFile.OnCopyObjectChanged = OnCopyObjectChanged;
+                loadFile.Map.OnCreateDoor += OnCreateDoor;
+                loadFile.Map.OnCreateMapObject += OnCreateMapObject;
+                loadFile.Map.FocusToEditorPanel += () => EditorPanel.Focus();
+                loadFile.Map.RequireOpenFileDialog += OpenCharacterImageFileDialog;
+                loadFile.OnCopyObjectChanged += OnCopyObjectChanged;
                 loadFile.LoadMapData(fileName);
                 asd.Engine.ChangeScene(loadFile);
                 Property mapProperty = new Property("Map", new object[] { loadFile.Map, loadFile });

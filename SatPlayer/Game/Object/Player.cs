@@ -132,7 +132,7 @@ namespace SatPlayer.Game.Object
         /// <summary>
         /// OnUpdate時に呼び出されイベント
         /// </summary>
-        public Action<IPlayer> Update { get; set; } = delegate { };
+        public virtual event Action<IPlayer> Update = delegate { };
 
         PhysicalShape IActor.CollisionShape => CollisionShape;
 

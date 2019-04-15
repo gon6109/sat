@@ -26,9 +26,9 @@ namespace SatScript.BackGround
         Color Color { get; set; }
 
         /// <summary>
-        /// OnUpdate時に呼び出される関数のデリゲート
+        /// OnUpdate時に呼び出されるイベント
         /// </summary>
-        Action<IBackGround> Update { get; set; }
+        event Action<IBackGround> Update;
 
         /// <summary>
         /// アニメーションパートを追加する

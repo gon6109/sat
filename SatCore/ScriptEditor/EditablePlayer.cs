@@ -48,6 +48,11 @@ namespace SatCore.ScriptEditor
 
         public string ScriptOptionName => "Player";
 
+        /// <summary>
+        /// OnUpdate時に呼び出されイベント
+        /// </summary>
+        public override event Action<SatScript.Player.IPlayer> Update = delegate { };
+
         [Button("ビルド")]
         public void Run()
         {

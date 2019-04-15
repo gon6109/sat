@@ -55,7 +55,7 @@ namespace SatPlayer.Game.Object
 
         public bool IsUseName => false;
 
-        public new Action<IEventObject> Update { get; set; } = obj => { };
+        public virtual event Action<IEventObject> Update = delegate { };
 
         PhysicalShape IActor.CollisionShape => CollisionShape;
 

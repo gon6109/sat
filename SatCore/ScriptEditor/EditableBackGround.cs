@@ -48,6 +48,11 @@ namespace SatCore.ScriptEditor
 
         public string ScriptOptionName => "BackGround";
 
+        /// <summary>
+        /// OnUpdade時に呼び出されるイベント
+        /// </summary>
+        public override event Action<SatScript.BackGround.IBackGround> Update = delegate { };
+
         [Button("ビルド")]
         public void Run()
         {
@@ -76,17 +81,6 @@ namespace SatCore.ScriptEditor
         {
             AnimationPart.Clear();
             Update = (obj) => { };
-        }
-
-        public new  object Clone()
-        {
-            EditableBackGround clone = new EditableBackGround();
-            clone.Copy(this);
-            clone.State = State;
-            clone.Zoom = Zoom;
-            clone.Update += Update;
-            clone.UpdatePriority = UpdatePriority;
-            return clone;
         }
 
         protected override void OnAdded()

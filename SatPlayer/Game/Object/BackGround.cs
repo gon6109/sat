@@ -15,7 +15,7 @@ namespace SatPlayer.Game.Object
     /// <summary>
     /// 背景
     /// </summary>
-    public class BackGround : MultiAnimationObject2D, IBackGround
+    public class BackGround : MultiAnimationObject2D, IBackGround, ICloneable
     {
         /// <summary>
         /// 表示用カメラ
@@ -27,7 +27,7 @@ namespace SatPlayer.Game.Object
         /// <summary>
         /// OnUpdade時に呼び出されるイベント
         /// </summary>
-        public Action<IBackGround> Update { get; set; } = delegate { };
+        public virtual event Action<IBackGround> Update = delegate { };
 
         /// <summary>
         /// スクリプト用Position
@@ -68,6 +68,17 @@ namespace SatPlayer.Game.Object
             }
             Update(this);
             base.OnUpdate();
+        }
+
+        public new object Clone()
+        {
+            var clone = new BackGround();
+            clone.Copy(this);
+            clone.State = State;
+            clone.Zoom = Zoom;
+            clone.Update += Update;
+            clone.UpdatePriority = UpdatePriority;
+            return clone;
         }
 
         /// <summary>

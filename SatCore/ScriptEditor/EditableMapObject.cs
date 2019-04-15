@@ -53,6 +53,11 @@ namespace SatCore.ScriptEditor
 
         public string ScriptOptionName => "MapObject";
 
+        /// <summary>
+        /// OnUpdate時に呼び出されるイベント
+        /// </summary>
+        public override event Action<SatScript.MapObject.IMapObject> Update = delegate { };
+
         [Button("Run")]
         public void Run()
         {
@@ -82,7 +87,7 @@ namespace SatCore.ScriptEditor
             sensors = new Dictionary<string, Sensor>();
             Effects = new Dictionary<string, Effect>();
             childMapObjectData = new Dictionary<string, MapObject>();
-            Update = (obj) => { };
+            Update = delegate { };
         }
     }
 }

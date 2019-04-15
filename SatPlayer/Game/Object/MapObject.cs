@@ -99,7 +99,7 @@ namespace SatPlayer.Game.Object
         /// <summary>
         /// OnUpdate時に呼び出されるイベント
         /// </summary>
-        public event Action<IMapObject> Update = delegate { };
+        public virtual event Action<IMapObject> Update = delegate { };
 
         /// <summary>
         /// HP

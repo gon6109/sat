@@ -91,6 +91,8 @@ namespace SatCore.ScriptEditor
 
         public string ScriptOptionName => "EventObject";
 
+        public override event Action<SatScript.MapObject.IEventObject> Update = delegate { };
+
         public EditableEventObject()
         {
         }
