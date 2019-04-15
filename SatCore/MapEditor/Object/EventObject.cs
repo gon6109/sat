@@ -11,13 +11,14 @@ using BaseComponent;
 using SatPlayer;
 using Microsoft.CodeAnalysis.Scripting;
 using SatCore.Attribute;
+using System.IO;
 
 namespace SatCore.MapEditor
 {
     /// <summary>
     /// Event対応キャラクター
     /// </summary>
-    public class EventObject : SatPlayer.Game.Object.EventObject, ICopyPasteObject
+    public class EventObject : SatPlayer.Game.Object.EventObject, ICopyPasteObject, IMovable
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -47,21 +48,41 @@ namespace SatCore.MapEditor
                 try
                 {
                     using (var stream = IO.GetStream(_scriptPath))
-                         script = ScriptOption.ScriptOptions["EventObject"]?.CreateScript<object>(stream.ToString());
+                        script = ScriptOption.ScriptOptions["EventObject"]?.CreateScript<object>(Encoding.UTF8.GetString(stream.ToArray()));
                     script.Compile();
-                    State = AnimationPart.First().Key;
+                    var task = script.RunAsync(this);
+                    task.Wait();
+                    State = AnimationPart.FirstOrDefault().Key;
                 }
                 catch (Exception e)
                 {
                     ErrorIO.AddError(e);
                 }
+                if (Texture == null)
+                    Texture = TextureManager.LoadTexture("");
+                CenterPosition = Texture.Size.To2DF() / 2;
+                if (CollisionShape is PhysicalRectangleShape shape)
+                    shape.DrawingArea = new asd.RectF(Position - CenterPosition, Texture.Size.To2DF());
                 OnPropertyChanged();
             }
         }
 
-        public EventObject() : base()
+        public EventObject()
         {
 
+        }
+
+        protected override void OnAdded()
+        {
+            if (Texture == null)
+                Texture = TextureManager.LoadTexture("");
+            if (Layer is MapLayer map)
+            {
+                collision = new PhysicalRectangleShape(PhysicalShapeType.Dynamic, map.PhysicalWorld);
+                if (CollisionShape is PhysicalRectangleShape shape)
+                    shape.DrawingArea = new asd.RectF(Position - CenterPosition, Texture.Size.To2DF());
+            }
+            base.OnAdded();
         }
 
         [Button("消去")]
@@ -78,6 +99,18 @@ namespace SatCore.MapEditor
             copy.ScriptPath = ScriptPath;
             copy.Position = Position + new asd.Vector2DF(50, 50);
             return copy;
+        }
+
+        asd.Vector2DF pos;
+
+        public void StartMove()
+        {
+            pos = Position;
+        }
+
+        public void EndMove()
+        {
+            UndoRedoManager.ChangeProperty(this, Position, pos, "Position");
         }
 
         public EventObjectIO ToIO()

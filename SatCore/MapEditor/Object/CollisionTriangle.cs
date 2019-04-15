@@ -24,7 +24,8 @@ namespace SatCore.MapEditor
         {
             get
             {
-                base.Shape = base.Shape;
+                if (base.Shape != null)
+                    base.Shape = base.Shape;
                 return (PhysicalTriangleShape)base.Shape;
             }
             set => base.Shape = value;
@@ -33,7 +34,6 @@ namespace SatCore.MapEditor
         public CollisionTriangle()
         {
             CameraGroup = 1;
-            for (int i = 0; i < 3; i++) Shape.SetPointByIndex(new asd.Vector2DF(), i);
             Color = new asd.Color(0, 0, 255, 100);
             DrawingPriority = 4;
         }
@@ -41,10 +41,12 @@ namespace SatCore.MapEditor
         [VectorInput("頂点1")]
         public asd.Vector2DF Vertex1
         {
-            get => Shape.GetPointByIndex(0);
+            get => _vertex[0];
             set
             {
-                Shape.SetPointByIndex(value, 0);
+                _vertex[0] = value;
+                if (Shape != null)
+                    Shape.SetPointByIndex(value, 0);
                 OnPropertyChanged();
             }
         }
@@ -52,10 +54,12 @@ namespace SatCore.MapEditor
         [VectorInput("頂点2")]
         public asd.Vector2DF Vertex2
         {
-            get => Shape.GetPointByIndex(1);
+            get => _vertex[1];
             set
             {
-                Shape.SetPointByIndex(value, 1);
+                _vertex[1] = value;
+                if (Shape != null)
+                    Shape.SetPointByIndex(value, 1);
                 OnPropertyChanged();
             }
         }
@@ -63,13 +67,17 @@ namespace SatCore.MapEditor
         [VectorInput("頂点3")]
         public asd.Vector2DF Vertex3
         {
-            get => Shape.GetPointByIndex(2);
+            get => _vertex[2];
             set
             {
-                Shape.SetPointByIndex(value, 2);
+                _vertex[2] = value;
+                if (Shape != null)
+                    Shape.SetPointByIndex(value, 2);
                 OnPropertyChanged();
             }
         }
+
+        asd.Vector2DF[] _vertex = new asd.Vector2DF[3];
 
         [Button("消去")]
         public void OnClickRemove()
@@ -86,9 +94,12 @@ namespace SatCore.MapEditor
 
         protected override void OnAdded()
         {
-            Shape.IsActive = true;
             if (Layer is MapLayer map)
+            {
                 Shape = new PhysicalTriangleShape(PhysicalShapeType.Static, map.PhysicalWorld);
+                Shape.IsActive = true;
+                for (int i = 0; i < 3; i++) Shape.SetPointByIndex(_vertex[i], i);
+            }
             base.OnAdded();
         }
 
@@ -165,7 +176,7 @@ namespace SatCore.MapEditor
         {
             var collisionTriangle = new CollisionTriangle();
             collisionTriangle.CameraGroup = 1;
-            for (int i = 0; i < 3; i++) collisionTriangle.Shape.SetPointByIndex(triangleIO.vertexes[i], i);
+            for (int i = 0; i < 3; i++) collisionTriangle._vertex[i] = triangleIO.vertexes[i];
             collisionTriangle.Color = new asd.Color(0, 0, 255, 100);
             collisionTriangle.DrawingPriority = 4;
             return collisionTriangle;

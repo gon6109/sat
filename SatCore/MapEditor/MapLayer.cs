@@ -71,7 +71,7 @@ namespace SatCore.MapEditor
         IEnumerable<CollisionBox> CollisionBoxes => Objects.OfType<CollisionBox>();
         IEnumerable<CollisionTriangle> CollisionTriangles => Objects.OfType<CollisionTriangle>();
         IEnumerable<Door> Doors => Objects.OfType<Door>();
-        IEnumerable<MapObject> MapObjects => Objects.Where(obj => obj is MapObject && !(obj is EventObject)).Cast<MapObject>();
+        IEnumerable<MapObject> MapObjects => Objects.OfType<MapObject>();
         IEnumerable<EventObject> EventObjects => Objects.OfType<EventObject>();
         IEnumerable<Object.MapEvent.MapEvent> MapEvents => Objects.OfType<Object.MapEvent.MapEvent>();
         IEnumerable<CameraRestriction> CameraRestrictions => Objects.OfType<CameraRestriction>();
@@ -900,7 +900,7 @@ namespace SatCore.MapEditor
                     break;
                 case SelectType.EventObject:
                     polygonObject = new asd.GeometryObject2D();
-                    polygonObject.Shape = ((MapObject)SelectedObject).CollisionShape;
+                    polygonObject.Shape = ((EventObject)SelectedObject).CollisionShape;
                     polygonObject.CameraGroup = 1;
                     polygonObject.Color = new asd.Color(255, 0, 0, 50);
                     AddObject(polygonObject);
@@ -973,7 +973,7 @@ namespace SatCore.MapEditor
                 case SelectType.Object:
                     return OperationSelectedMapObject();
                 case SelectType.EventObject:
-                    return OperationSelectedMapObject();
+                    return OperationSelectedEventObject();
                 case SelectType.Event:
                     if (!((Object.MapEvent.MapEvent)SelectedObject).GetIsActive()) return OperationSelectedMapEvent();
                     else
@@ -1089,6 +1089,14 @@ namespace SatCore.MapEditor
                  {
                      ((MapObject)SelectedObject).Position += GetMouseMoveVector();
                  });
+        }
+
+        bool OperationSelectedEventObject()
+        {
+            return DragObject((EventObject)SelectedObject, ((EventObject)SelectedObject).CollisionShape, () =>
+            {
+                ((EventObject)SelectedObject).Position += GetMouseMoveVector();
+            });
         }
 
         private bool OperationSelectedMapEvent()

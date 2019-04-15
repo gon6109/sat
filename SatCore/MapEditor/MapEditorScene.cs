@@ -143,7 +143,7 @@ namespace SatCore.MapEditor
         [Group("マップヴューア")]
         public MapViewer Viewer { get; set; }
 
-        public MapEditorScene(string path = null)
+        public MapEditorScene()
         {
             Map = new MapLayer();
 
@@ -178,7 +178,6 @@ namespace SatCore.MapEditor
             Viewer = new MapViewer(this);
 
             AddLayer(Map);
-            Path = path;
         } 
 
         /// <summary>

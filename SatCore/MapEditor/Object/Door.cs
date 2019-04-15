@@ -74,6 +74,13 @@ namespace SatCore.MapEditor
             get => _resourcePath;
             set
             {
+                if (!asd.Engine.File.Exists(value))
+                {
+                    Texture = TextureManager.LoadTexture(value);
+                    CollisionShape.DrawingArea = new asd.RectF(new asd.Vector2DF(), Texture.Size.To2DF());
+                    CenterPosition = Texture.Size.To2DF() / 2.0f;
+                    return;
+                }
                 UndoRedoManager.ChangeProperty(this, value);
                 _resourcePath = value;
                 AnimationPart.Clear();

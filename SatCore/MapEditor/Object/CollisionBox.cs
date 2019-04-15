@@ -24,7 +24,8 @@ namespace SatCore.MapEditor
         {
             get
             {
-                base.Shape = base.Shape;
+                if (base.Shape != null)
+                    base.Shape = base.Shape;
                 return (PhysicalRectangleShape)base.Shape;
             }
             set => base.Shape = value;
@@ -33,10 +34,12 @@ namespace SatCore.MapEditor
         [VectorInput("左上座標")]
         public asd.Vector2DF RectPosition
         {
-            get => Shape.DrawingArea.Position;
+            get => _rectPosition;
             set
             {
-                Shape.DrawingArea = new asd.RectF(value, Shape.DrawingArea.Size);
+                _rectPosition = value;
+                if (Shape != null)
+                    Shape.DrawingArea = new asd.RectF(value, Shape.DrawingArea.Size);
                 OnPropertyChanged();
             }
         }
@@ -44,10 +47,12 @@ namespace SatCore.MapEditor
         [VectorInput("サイズ")]
         public asd.Vector2DF RectSize
         {
-            get => Shape.DrawingArea.Size;
+            get => _rectSize;
             set
             {
-                Shape.DrawingArea = new asd.RectF(Shape.DrawingArea.Position, value);
+                _rectSize = value;
+                if (Shape != null)
+                    Shape.DrawingArea = new asd.RectF(Shape.DrawingArea.Position, value);
                 OnPropertyChanged();
             }
         }
@@ -69,6 +74,8 @@ namespace SatCore.MapEditor
             DrawingPriority = 4;
         }
 
+        asd.Vector2DF _rectPosition;
+        asd.Vector2DF _rectSize;
         asd.RectF rect;
 
         public void StartMove()
@@ -96,9 +103,12 @@ namespace SatCore.MapEditor
 
         protected override void OnAdded()
         {
-            Shape.IsActive = true;
             if (Layer is MapLayer map)
+            {
                 Shape = new PhysicalRectangleShape(PhysicalShapeType.Static, map.PhysicalWorld);
+                Shape.DrawingArea = new asd.RectF(RectPosition, RectSize);
+                Shape.IsActive = true;
+            }
             base.OnAdded();
         }
 
@@ -114,7 +124,7 @@ namespace SatCore.MapEditor
         {
             SatIO.CollisionBoxIO collisionBoxIO = new SatIO.CollisionBoxIO()
             {
-                Position = Position,
+                Position = RectPosition,
                 Size = RectSize
             };
             return collisionBoxIO;
@@ -124,7 +134,8 @@ namespace SatCore.MapEditor
         {
             var collisionBox = new CollisionBox();
             collisionBox.CameraGroup = 1;
-            collisionBox.Shape.DrawingArea = new asd.RectF(boxIO.Position, boxIO.Size);
+            collisionBox._rectPosition = boxIO.Position;
+            collisionBox._rectSize = boxIO.Size;
             collisionBox.Color = new asd.Color(0, 0, 255, 100);
             collisionBox.DrawingPriority = 4;
             return collisionBox;
