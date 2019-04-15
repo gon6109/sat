@@ -253,6 +253,7 @@ namespace SatPlayer.Game.Object
             {
                 base.Position = shape.CenterPosition + shape.DrawingArea.Position;
                 if (Math.Abs(shape.Angle) > 1.0f && !IsAllowRotation) shape.AngularVelocity = -shape.Angle * 30.0f;
+                if (IsAllowRotation) Angle = shape.Angle;
             }
 
             try
@@ -316,6 +317,7 @@ namespace SatPlayer.Game.Object
             clone.Tag = Tag;
             clone.Copy(this);
             clone.MapObjectType = MapObjectType;
+            clone.IsAllowRotation = IsAllowRotation;
             try
             {
                 clone.collision.DrawingArea = new asd.RectF(new asd.Vector2DF(), clone.AnimationPart.First().Value.Textures.First().Size.To2DF());

@@ -108,6 +108,7 @@ namespace SatCore.ScriptEditor
                 }
                 MoveCommands.Enqueue(moveCommand);
             }
+            Update(this);
 
             base.OnUpdate();
         }
@@ -123,6 +124,7 @@ namespace SatCore.ScriptEditor
             clone.Tag = Tag;
             clone.Copy(this);
             clone.MapObjectType = MapObjectType;
+            clone.IsAllowRotation = IsAllowRotation;
             try
             {
                 clone.collision.DrawingArea = new asd.RectF(new asd.Vector2DF(), clone.AnimationPart.First().Value.Textures.First().Size.To2DF());
