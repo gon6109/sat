@@ -177,19 +177,19 @@ namespace SatPlayer.Game.Object.MapEvent
             foreach (MapObject item in Layer.Objects.Where(obj => obj is MapObject))
             {
                 item.IsUpdated = true;
-                if (item.CollisionShape != null) item.CollisionShape.IsActive = true;
+                if (item.CollisionShape is PhysicalRectangleShape shape)
+                    shape.IsActive = true;
                 item.Color = new asd.Color(255, 255, 255, 255);
             }
             foreach (var item in Actors)
             {
-                if (item.ActorObject is EventObject)
-                {
-                    ((EventObject)item.ActorObject).CollisionShape.GroupIndex = 0;
-                }
-                if (item.ActorObject is Player)
+                if (item.ActorObject is EventObject eventObject)
+                    eventObject.CollisionGroup = 0;
+
+                if (item.ActorObject is Player player)
                 {
                     List<IActor> actors = new List<IActor>();
-                    ((Player)item.ActorObject).CollisionShape.GroupIndex = -1;
+                    player.CollisionShape.GroupIndex = -1;
                 }
                 item.ActorObject.IsEvent = false;
             }
@@ -204,15 +204,17 @@ namespace SatPlayer.Game.Object.MapEvent
             foreach (MapObject item in Layer.Objects.Where(obj => obj is MapObject))
             {
                 item.IsUpdated = false;
-                if (item.CollisionShape != null) item.CollisionShape.IsActive = false;
+                if (item.CollisionShape is PhysicalRectangleShape shape)
+                    shape.IsActive = true;
             }
             foreach (var item in Actors)
             {
                 if (item.ActorObject is EventObject eventObject)
                 {
                     eventObject.IsUpdated = true;
-                    eventObject.CollisionShape.IsActive = true;
-                    eventObject.CollisionShape.GroupIndex = -1;
+                    if (eventObject.CollisionShape is PhysicalRectangleShape shape)
+                        shape.IsActive = true;
+                    eventObject.CollisionGroup = -1;
                     eventObject.Position = item.InitPosition;
                 }
                 item.ActorObject.IsEvent = true;
@@ -230,7 +232,8 @@ namespace SatPlayer.Game.Object.MapEvent
                 }
                 foreach (var item in Actors)
                 {
-                    if (item.ActorObject is EventObject) ((EventObject)item.ActorObject).Color = new asd.Color(255, 255, 255, 255);
+                    if (item.ActorObject is EventObject eventObject)
+                        eventObject.Color = new asd.Color(255, 255, 255, 255);
                     if (item.ActorObject is Player)
                     {
                         var command = new Dictionary<Inputs, bool>();

@@ -172,7 +172,7 @@
     <Compile Include="ScriptEditor\EditableMapObject.cs" />
     <Compile Include="ScriptEditor\EditablePlayer.cs" />
     <Compile Include="ScriptEditor\IScriptObject.cs" />
-    <Compile Include="ScriptEditor\MainMapLayer2D.cs" />
+    <Compile Include="ScriptEditor\MapLayer.cs" />
     <Compile Include="ScriptEditor\ScriptEditor.cs" />
     <Compile Include="Mouse.cs" />
     <Compile Include="Attribute\NumberInputAttribute.cs" />

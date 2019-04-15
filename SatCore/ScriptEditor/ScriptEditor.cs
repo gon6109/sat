@@ -18,7 +18,7 @@ namespace SatCore.ScriptEditor
         public IScriptObject ScriptObject { get; private set; }
 
         PhysicAltseed.PhysicalWorld PhysicalWorld { get; set; }
-        MainMapLayer2D MainLayer { get; set; }
+        MapLayer MainLayer { get; set; }
 
         public ScriptType Script { get; }
 
@@ -40,7 +40,7 @@ namespace SatCore.ScriptEditor
             Path = path;
             Script = scriptType;
 
-            MainLayer = new MainMapLayer2D();
+            MainLayer = new MapLayer();
             PhysicalWorld = MainLayer.PhysicalWorld;
 
             CreateObject();

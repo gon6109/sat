@@ -333,7 +333,7 @@ namespace SatPlayer.Game
             //Player<=>MapObject,EventObject
             if (Player?.Collision is Collision playerCollision) playerCollision.ColligingMapObjectTags = Objects.OfType<MapObject>().Where(obj =>
             {
-                bool result = Player.CollisionShape.GetIsCollidedWith(obj.GetCoreShape());
+                bool result = Player.CollisionShape.GetIsCollidedWith(obj.CollisionShape);
                 if (obj.Collision is Collision collision) collision.IsCollidedWithPlayer = result;
                 return result;
             }).Select(obj => obj.Tag).Distinct().ToList();
@@ -344,7 +344,7 @@ namespace SatPlayer.Game
             //MapObject,EventObject=>Obstacle
             foreach (var item in Objects.OfType<MapObject>())
             {
-                if (item.Collision is Collision mapObjectCollision) mapObjectCollision.IsCollidedWithObstacle = Obstacles.Any(obj => obj.GetIsCollidedWith(item.GetCoreShape()));
+                if (item.Collision is Collision mapObjectCollision) mapObjectCollision.IsCollidedWithObstacle = Obstacles.Any(obj => obj.GetIsCollidedWith(item.CollisionShape));
             }
 
             //Sensor=>All
@@ -355,7 +355,7 @@ namespace SatPlayer.Game
                     collision.IsCollidedWithObstacle = Obstacles.Any(obj => item.GetIsCollidedWith(obj));
                     if (Player != null) collision.IsCollidedWithPlayer = item.GetIsCollidedWith((PhysicalShape)Player.CollisionShape);
                     collision.ColligingMapObjectTags = Objects.OfType<MapObject>().Where(obj =>
-                        item.GetIsCollidedWith(obj.GetCoreShape())).Select(obj => obj.Tag).Distinct().ToList();
+                        item.GetIsCollidedWith(obj.CollisionShape)).Select(obj => obj.Tag).Distinct().ToList();
                 }
             }
 
@@ -365,7 +365,7 @@ namespace SatPlayer.Game
                 if (item.Collision is Collision collision)
                 {
                     collision.ColligingMapObjectTags = Objects.OfType<MapObject>().Where(obj =>
-                        obj != item && item.GetCoreShape().GetIsCollidedWith(obj.GetCoreShape())).Select(obj => obj.Tag).Distinct().ToList();
+                        obj != item && item.CollisionShape.GetIsCollidedWith(obj.CollisionShape)).Select(obj => obj.Tag).Distinct().ToList();
                 }
             }
         }

@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace SatCore.ScriptEditor
 {
-    public class MainMapLayer2D : SatPlayer.Game.MapLayer
+    public class MapLayer : SatPlayer.Game.MapLayer
     {
         public bool IsPreparePlayer { get; set; }
 
-        public MainMapLayer2D()
+        public MapLayer()
         {
             PhysicalWorld = new PhysicAltseed.PhysicalWorld(new asd.RectF(new asd.Vector2DF(), OriginDisplaySize), new asd.Vector2DF(0, 2000));
         }

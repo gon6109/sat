@@ -57,7 +57,7 @@ namespace SatPlayer.Game.Object
 
         public virtual event Action<IEventObject> Update = delegate { };
 
-        PhysicalShape IActor.CollisionShape => CollisionShape;
+        PhysicalShape IActor.CollisionShape => CollisionShape as PhysicalRectangleShape;
 
         Color IEventObject.Color { get => Color.ToScriptColor(); set => Color = value.ToAsdColor(); }
 
@@ -139,12 +139,9 @@ namespace SatPlayer.Game.Object
                 ErrorIO.AddError(e);
             }
             clone.CenterPosition = clone.collision.DrawingArea.Size / 2;
-            if (MapObjectType == MapObjectType.Active)
-            {
-                clone.CollisionShape.GroupIndex = CollisionShape.GroupIndex;
-                clone.CollisionShape.MaskBits = CollisionShape.MaskBits;
-                clone.CollisionShape.CategoryBits = CollisionShape.CategoryBits;
-            }
+            clone.CollisionGroup = CollisionGroup;
+            clone.CollisionMask = CollisionMask;
+            clone.CollisionCategory = CollisionCategory;
             clone.IsEvent = IsEvent;
             return clone;
         }

@@ -34,8 +34,13 @@ namespace SatPlayer.Game.Object
             set
             {
                 base.Position = value;
-                if (MapObjectType == MapObjectType.Active) CollisionShape.DrawingArea = new asd.RectF(value - CollisionShape.CenterPosition, CollisionShape.DrawingArea.Size);
-                else collision.DrawingArea = new asd.RectF(value - collision.DrawingArea.Size / 2, collision.DrawingArea.Size);
+                if (collision != null)
+                {
+                    if (collision is PhysicalRectangleShape physicalRectangleShape)
+                        physicalRectangleShape.DrawingArea = new asd.RectF(Position - physicalRectangleShape.DrawingArea.Size / 2, physicalRectangleShape.DrawingArea.Size);
+                    else
+                        collision.DrawingArea = new asd.RectF(value - collision.DrawingArea.Size / 2, collision.DrawingArea.Size);
+                }
             }
         }
 
@@ -88,8 +93,7 @@ namespace SatPlayer.Game.Object
         }
 
         protected asd.RectangleShape collision;
-        public asd.RectangleShape GetCoreShape() => collision;
-        public PhysicalRectangleShape CollisionShape => collision as PhysicalRectangleShape;
+        public asd.RectangleShape CollisionShape => collision;
 
         /// <summary>
         /// エフェクト一覧
@@ -144,11 +148,17 @@ namespace SatPlayer.Game.Object
         /// </summary>
         public Vector Velocity
         {
-            get => CollisionShape?.Velocity.ToScriptVector() ?? new Vector();
+            get
+            {
+                if (collision is PhysicalRectangleShape shape)
+                    return shape.Velocity.ToScriptVector();
+                else
+                    return default;
+            }
             set
             {
-                if (CollisionShape != null)
-                    CollisionShape.Velocity = value.ToAsdVector();
+                if (collision is PhysicalRectangleShape shape)
+                    shape.Velocity = value.ToAsdVector();
             }
         }
 
@@ -166,28 +176,34 @@ namespace SatPlayer.Game.Object
 
         public short CollisionGroup
         {
-            get => CollisionShape?.GroupIndex ?? 0;
+            get => _collisionGroup;
             set
             {
-                if (CollisionShape != null) CollisionShape.GroupIndex = value;
+                _collisionGroup = value;
+                if (collision is PhysicalRectangleShape shape)
+                    shape.GroupIndex = value;
             }
         }
 
         public ushort CollisionCategory
         {
-            get => CollisionShape?.CategoryBits ?? 0;
+            get => _collisionCategory;
             set
             {
-                if (CollisionShape != null) CollisionShape.CategoryBits = value;
+                _collisionCategory = value;
+                if (collision is PhysicalRectangleShape shape)
+                    shape.CategoryBits = value;
             }
         }
 
         public ushort CollisionMask
         {
-            get => CollisionShape?.MaskBits ?? 0;
+            get => _collisionMask;
             set
             {
-                if (CollisionShape != null) CollisionShape.MaskBits = value;
+                _collisionMask = value;
+                if (collision is PhysicalRectangleShape shape)
+                    shape.MaskBits = value;
             }
         }
 
@@ -195,6 +211,9 @@ namespace SatPlayer.Game.Object
         protected Dictionary<string, MapObject> childMapObjectData;
         private int hP;
         private MapObjectType _mapObjectType;
+        private short _collisionGroup;
+        private ushort _collisionCategory;
+        private ushort _collisionMask;
 
         public MapObject()
         {
@@ -223,16 +242,17 @@ namespace SatPlayer.Game.Object
         protected override void OnDispose()
         {
             Update = (obj) => { };
-            CollisionShape?.Dispose();
+            if (collision is PhysicalRectangleShape shape)
+                shape.Dispose();
             base.OnDispose();
         }
 
         protected override void OnUpdate()
         {
-            if (MapObjectType == MapObjectType.Active)
+            if (collision is PhysicalRectangleShape shape)
             {
-                base.Position = CollisionShape.CenterPosition + CollisionShape.DrawingArea.Position;
-                if (Math.Abs(CollisionShape.Angle) > 1.0f && !IsAllowRotation) CollisionShape.AngularVelocity = -CollisionShape.Angle * 30.0f;
+                base.Position = shape.CenterPosition + shape.DrawingArea.Position;
+                if (Math.Abs(shape.Angle) > 1.0f && !IsAllowRotation) shape.AngularVelocity = -shape.Angle * 30.0f;
             }
 
             try
@@ -305,12 +325,9 @@ namespace SatPlayer.Game.Object
                 ErrorIO.AddError(e);
             }
             clone.CenterPosition = clone.collision.DrawingArea.Size / 2;
-            if (MapObjectType == MapObjectType.Active)
-            {
-                clone.CollisionShape.GroupIndex = CollisionShape.GroupIndex;
-                clone.CollisionShape.MaskBits = CollisionShape.MaskBits;
-                clone.CollisionShape.CategoryBits = CollisionShape.CategoryBits;
-            }
+            clone.CollisionGroup = CollisionGroup;
+            clone.CollisionMask = CollisionMask;
+            clone.CollisionCategory = CollisionCategory;
             return clone;
         }
 
@@ -356,7 +373,10 @@ namespace SatPlayer.Game.Object
         /// <param name="direct">力の向き・強さ</param>
         /// <param name="position">力を加える場所の相対座標</param>
         public void SetForce(Vector direct, Vector position)
-            => CollisionShape?.SetForce(direct.ToAsdVector(), position.ToAsdVector());
+        {
+            if (collision is PhysicalRectangleShape shape)
+                shape.SetForce(direct.ToAsdVector(), position.ToAsdVector());
+        }
 
         /// <summary>
         /// 衝撃を加える
@@ -364,14 +384,17 @@ namespace SatPlayer.Game.Object
         /// <param name="direct">力の向き・強さ</param>
         /// <param name="position">力を加える芭蕉の相対座標</param>
         public void SetImpulse(Vector direct, Vector position)
-            => CollisionShape?.SetImpulse(direct.ToAsdVector(), position.ToAsdVector());
+        {
+            if (collision is PhysicalRectangleShape shape)
+                shape.SetImpulse(direct.ToAsdVector(), position.ToAsdVector());
+        }
 
         /// <summary>
         /// コリジョンを設定する
         /// </summary>
         void SetCollisionShape()
         {
-            if (Layer is MapLayer map) 
+            if (Layer is MapLayer map)
             {
                 if (collision != null)
                     collision.Dispose();
@@ -379,6 +402,11 @@ namespace SatPlayer.Game.Object
                 {
                     case MapObjectType.Active:
                         collision = new PhysicalRectangleShape(PhysicalShapeType.Dynamic, map.PhysicalWorld);
+                        if (collision is PhysicalRectangleShape physicalRectangleShape)
+                        {
+                            physicalRectangleShape.DrawingArea = new asd.RectF(Position - physicalRectangleShape.DrawingArea.Size / 2, AnimationPart.FirstOrDefault().Value?.Textures.FirstOrDefault()?.Size.To2DF() ?? default);
+                            CenterPosition = physicalRectangleShape.DrawingArea.Size / 2;
+                        }
                         break;
                     case MapObjectType.Passive:
                         collision = new asd.RectangleShape();
@@ -410,18 +438,7 @@ namespace SatPlayer.Game.Object
                     ErrorIO.AddError(e);
                 }
             }
-
-            try
-            {
-                mapObject.collision.DrawingArea = new asd.RectF(new asd.Vector2DF(), mapObject.AnimationPart.First().Value.Textures.First().Size.To2DF());
-            }
-            catch (Exception e)
-            {
-                ErrorIO.AddError(e);
-            }
-            mapObject.CenterPosition = mapObject.collision.DrawingArea.Size / 2;
-            mapObject.Position = mapObject.Position;
-
+            mapObject.Position = mapObjectIO.Position;
             return mapObject;
         }
 

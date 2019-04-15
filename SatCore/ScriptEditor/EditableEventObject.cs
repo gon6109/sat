@@ -74,7 +74,7 @@ namespace SatCore.ScriptEditor
                 if (!isChanging)
                 {
                     isChanging = true;
-                    var eventObjects = asd.Engine.CurrentScene.Layers.OfType<MainMapLayer2D>()?
+                    var eventObjects = asd.Engine.CurrentScene.Layers.OfType<MapLayer>()?
                         .FirstOrDefault()?.Objects.OfType<EditableEventObject>();
                     foreach (var item in eventObjects)
                     {
@@ -132,12 +132,9 @@ namespace SatCore.ScriptEditor
                 ErrorIO.AddError(e);
             }
             clone.CenterPosition = clone.collision.DrawingArea.Size / 2;
-            if (MapObjectType == SatScript.MapObject.MapObjectType.Active)
-            {
-                clone.CollisionShape.GroupIndex = CollisionShape.GroupIndex;
-                clone.CollisionShape.MaskBits = CollisionShape.MaskBits;
-                clone.CollisionShape.CategoryBits = CollisionShape.CategoryBits;
-            }
+            clone.CollisionGroup = CollisionGroup;
+            clone.CollisionMask = CollisionMask;
+            clone.CollisionCategory = CollisionCategory;
             clone.IsEvent = IsEvent;
             return clone;
         }

@@ -58,6 +58,12 @@ namespace SatCore.ScriptEditor
         /// </summary>
         public override event Action<SatScript.MapObject.IMapObject> Update = delegate { };
 
+        protected override void OnUpdate()
+        {
+            Update(this);
+            base.OnUpdate();
+        }
+
         [Button("Run")]
         public void Run()
         {
@@ -88,6 +94,32 @@ namespace SatCore.ScriptEditor
             Effects = new Dictionary<string, Effect>();
             childMapObjectData = new Dictionary<string, MapObject>();
             Update = delegate { };
+        }
+
+        public new object Clone()
+        {
+            var clone = new EditableMapObject();
+            clone.sensors = new Dictionary<string, Sensor>(sensors);
+            clone.childMapObjectData = new Dictionary<string, MapObject>(childMapObjectData);
+            clone.Effects = new Dictionary<string, Effect>(Effects);
+            clone.Update = Update;
+            clone.State = State;
+            clone.Tag = Tag;
+            clone.Copy(this);
+            clone.MapObjectType = MapObjectType;
+            try
+            {
+                clone.collision.DrawingArea = new asd.RectF(new asd.Vector2DF(), clone.AnimationPart.First().Value.Textures.First().Size.To2DF());
+            }
+            catch (Exception e)
+            {
+                ErrorIO.AddError(e);
+            }
+            clone.CenterPosition = clone.collision.DrawingArea.Size / 2;
+            clone.CollisionGroup = CollisionGroup;
+            clone.CollisionMask = CollisionMask;
+            clone.CollisionCategory = CollisionCategory;
+            return clone;
         }
     }
 }
