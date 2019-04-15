@@ -77,18 +77,32 @@ namespace SatCore.ScriptEditor
             isEdited = false;
         }
 
+        public new object Clone()
+        {
+            var clone = new EditableBackGround();
+            clone.Copy(this);
+            clone.State = State;
+            clone.Zoom = Zoom;
+            clone.Update = Update;
+            clone.UpdatePriority = UpdatePriority;
+            return clone;
+        }
+
         void Reset()
         {
             AnimationPart.Clear();
-            Update = (obj) => { };
+            Update = delegate { };
         }
 
         protected override void OnAdded()
         {
+            base.OnAdded();
+            Camera.IsDrawn = false;
         }
 
         protected override void OnUpdate()
         {
+            Update(this);
             base.OnUpdate();
         }
 

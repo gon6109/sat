@@ -61,7 +61,8 @@ namespace SatPlayer.Game.Object
 
         protected override void OnUpdate()
         {
-            if (Layer is MapLayer mapLayer)
+            if (Layer is MapLayer mapLayer &&
+                mapLayer.PlayerCamera != null)
             {
                 Camera.Dst = mapLayer.PlayerCamera.Dst;
                 Camera.Src = new asd.RectI((mapLayer.PlayerCamera.Src.Position.To2DF() * Zoom).To2DI(), mapLayer.PlayerCamera.Src.Size);
@@ -76,7 +77,7 @@ namespace SatPlayer.Game.Object
             clone.Copy(this);
             clone.State = State;
             clone.Zoom = Zoom;
-            clone.Update += Update;
+            clone.Update = Update;
             clone.UpdatePriority = UpdatePriority;
             return clone;
         }
