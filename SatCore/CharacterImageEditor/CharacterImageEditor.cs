@@ -29,7 +29,9 @@ namespace SatCore.CharacterImageEditor
             Path = path;
             MainLayer = new asd.Layer2D();
 
-            Character = path == "" ? new EditableCharacterImage() :  new EditableCharacterImage(path);
+            Character = new EditableCharacterImage();
+            if (path != "")
+                _ = Character.LoadCharacterImageIOAsync(path);
             MainLayer.AddObject(Character);
 
             MainCamera = new asd.CameraObject2D();

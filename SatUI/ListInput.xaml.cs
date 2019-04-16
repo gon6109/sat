@@ -98,7 +98,7 @@ namespace SatUI
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-            BindingSource.GetType().GetMethod(AdditionButtonEventMethodName).Invoke(BindingSource, new object[] { });
+            BindingSource.GetType().GetMethod(AdditionButtonEventMethodName, new Type[0]).Invoke(BindingSource, new object[] { });
         }
 
         /// <summary>

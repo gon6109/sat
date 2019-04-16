@@ -108,9 +108,9 @@ namespace SatCore.MapEditor.Object.MapEvent
             MoveComponentIO moveComponentIO = new MoveComponentIO()
             {
                 Frame = moveComponent.Frame,
-                Commands = moveComponent.Commands.ToDictionary(
+                Commands = new SatIO.SerializableDictionary<MapEventIO.ActorIO, MoveComponentIO.CharacterMoveCommandIO>(moveComponent.Commands.ToDictionary(
                     obj => (MapEventIO.ActorIO)obj.Key,
-                    obj => new MoveComponentIO.CharacterMoveCommandIO() { MoveCommandElements = obj.Value.MoveCommandElements }),
+                    obj => new MoveComponentIO.CharacterMoveCommandIO() { MoveCommandElements = obj.Value.MoveCommandElements })),
                 CameraCommand = new MoveComponentIO.CharacterMoveCommandIO() { MoveCommandElements = moveComponent.CameraCommand.MoveCommandElements },
             };
             return moveComponentIO;

@@ -10,13 +10,13 @@ namespace SatIO.MapEventIO
     [Serializable()]
     public class MoveComponentIO : MapEventComponentIO
     {
-        public Dictionary<MapEventIO.ActorIO, CharacterMoveCommandIO> Commands { get; set; }
+        public SerializableDictionary<MapEventIO.ActorIO, CharacterMoveCommandIO> Commands { get; set; }
         public CharacterMoveCommandIO CameraCommand { get; set; }
         public int Frame { get; set; }
 
         public MoveComponentIO()
         {
-            Commands = new Dictionary<MapEventIO.ActorIO, CharacterMoveCommandIO>();
+            Commands = new SerializableDictionary<MapEventIO.ActorIO, CharacterMoveCommandIO>();
             CameraCommand = new CharacterMoveCommandIO();
         }
 

@@ -42,7 +42,7 @@ namespace SatPlayer.Game.Object.MapEvent
 
         public static async Task<CharacterImage> CreateCharacterImageAsync(string path)
         {
-            var characterImageIO = await CharacterImageIO.LoadCharacterImageAsync(path);
+            var characterImageIO = await CharacterImageIO.LoadCharacterImageIOAsync(path);
             CharacterImage characterImage = new CharacterImage();
             characterImage.Texture = await TextureManager.LoadTextureAsync(characterImageIO.BaseImagePath);
             characterImage.Name = characterImageIO.Name;

@@ -30,7 +30,8 @@ namespace SatCore.MapEditor.Object.MapEvent
 
         public static async Task<CharacterImage> LoadCharacterImageAsync(string path)
         {
-            var characterImage = (CharacterImage)await CharacterImageIO.LoadCharacterImageAsync(path);
+            CharacterImageIO characterImageIO = await CharacterImageIO.LoadCharacterImageIOAsync(path);
+            CharacterImage characterImage = (CharacterImage)characterImageIO;
             characterImage.Path = path;
             return characterImage;
         }

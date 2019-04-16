@@ -86,25 +86,30 @@ namespace SatCore.MapEditor.Object.MapEvent
         [Button("プレイヤーを登録")]
         public void AddPlayerActor()
         {
-            if (PlayersListDialog.GetPlayersScriptPath().Count <= Actors.Count(obj => obj.IsUseName)) return;
-
-            PlayersListDialog playersListDialog = new PlayersListDialog();
-            if (playersListDialog.Show() != PlayersListDialogResult.OK) return;
-
             try
             {
+
+                if (PlayersListDialog.GetPlayersScriptPath().Count <= Actors.Count(obj => obj.IsUseName)) return;
+
+                PlayersListDialog playersListDialog = new PlayersListDialog();
+                if (playersListDialog.Show() != PlayersListDialogResult.OK) return;
+
                 var task = Player.CreatePlayerAsync(playersListDialog.FileName);
                 while (!task.IsCompleted) ;
                 var actor = new Actor(task.Result);
+
                 actor.InitPosition = Position + new asd.Vector2DF(Size.X, 0) - actor.Texture.Size.To2DF();
                 actor.Position = actor.InitPosition;
+
                 if (Layer is MapLayer map)
                     for (int i = 0; i < 60; i++)
                     {
                         map.PhysicalWorld.Update();
                     }
+
                 actor.InitPosition = actor.Position;
                 Actors.Add(actor);
+
                 actor.SetTexture(Layer, actor.InitPosition, new asd.Color(255, 255, 255));
                 var playerName = new PlayerName()
                 {
@@ -118,14 +123,15 @@ namespace SatCore.MapEditor.Object.MapEvent
             }
         }
 
-        [ListInput("キャラグラフィックデータ", additionButtonEventMethodName: "AddCharacterImage")]
+        [ListInput("キャラグラフィックデータ", additionButtonEventMethodName: "AddCharacterImageAsync")]
         public UndoRedoCollection<CharacterImage> CharacterImages { get; set; }
 
         public async Task AddCharacterImageAsync()
         {
             var file = RequireOpenFileDialog();
             if (file == "" || !asd.Engine.File.Exists(file)) return;
-            CharacterImages.Add(await CharacterImage.LoadCharacterImageAsync(file));
+            CharacterImage item = await CharacterImage.LoadCharacterImageAsync(file);
+            CharacterImages.Add(item);
         }
 
         public event Func<string> RequireOpenFileDialog = delegate { return null; };

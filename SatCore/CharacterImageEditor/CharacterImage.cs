@@ -90,19 +90,22 @@ namespace SatCore.CharacterImageEditor
             diffObject = new asd.TextureObject2D();
             AddDrawnChild(diffObject, asd.ChildManagementMode.RegistrationToLayer | asd.ChildManagementMode.Disposal, asd.ChildTransformingMode.All, asd.ChildDrawingMode.Nothing);
 
-            var task = SatIO.MapEventIO.CharacterImageIO.LoadCharacterImageAsync(path);
-            while (!task.IsCompleted) ;
-            var characterImage = task.Result;
+           
+        }
+
+        public async Task LoadCharacterImageIOAsync(string path)
+        {
+            var characterImage = await CharacterImageIO.LoadCharacterImageIOAsync(path);
             Name = characterImage.Name;
             BaseImagePath = characterImage.BaseImagePath;
             DiffImages = new UndoRedoCollection<DiffImage>(characterImage.DiffImagePaths.Select(obj =>
-               {
-                   return new DiffImage()
-                   {
-                       Path = obj.Value,
-                       Name = obj.Key,
-                   };
-               }));
+            {
+                return new DiffImage()
+                {
+                    Path = obj.Value,
+                    Name = obj.Key,
+                };
+            }));
         }
 
         public static explicit operator CharacterImageIO(EditableCharacterImage characterImage)

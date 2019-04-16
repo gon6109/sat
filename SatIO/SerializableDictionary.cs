@@ -15,6 +15,17 @@ namespace SatIO
     /// <typeparam name="TValue"></typeparam>
     public class SerializableDictionary<Tkey, TValue> : Dictionary<Tkey, TValue>, IXmlSerializable
     {
+        public SerializableDictionary(Dictionary<Tkey, TValue> dictionary)
+        {
+            foreach (var item in dictionary)
+            {
+                Add(item.Key, item.Value);
+            }
+        }
+        public SerializableDictionary()
+        {
+        }
+
         public System.Xml.Schema.XmlSchema GetSchema()
         {
             return null;
