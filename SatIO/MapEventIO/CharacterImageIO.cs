@@ -12,9 +12,9 @@ namespace SatIO.MapEventIO
     [Serializable()]
     public class CharacterImageIO
     {
-        public string Name { get; set; }
-        public string BaseImagePath { get; set; }
-        public Dictionary<string, string> DiffImagePaths { get; set; }
+        public string Name;
+        public string BaseImagePath;
+        public Dictionary<string, string> DiffImagePaths;
 
         public CharacterImageIO()
         {

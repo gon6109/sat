@@ -4,15 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace SatIO.MapEventIO
 {
     [Serializable()]
     public class MoveComponentIO : MapEventComponentIO
     {
-        public SerializableDictionary<MapEventIO.ActorIO, CharacterMoveCommandIO> Commands { get; set; }
-        public CharacterMoveCommandIO CameraCommand { get; set; }
-        public int Frame { get; set; }
+        public SerializableDictionary<MapEventIO.ActorIO, CharacterMoveCommandIO> Commands;
+        public CharacterMoveCommandIO CameraCommand;
+        public int Frame;
 
         public MoveComponentIO()
         {
@@ -23,11 +24,11 @@ namespace SatIO.MapEventIO
         [Serializable()]
         public class CharacterMoveCommandIO
         {
-            public List<Dictionary<Inputs, bool>> MoveCommandElements { get; set; }
+            public List<SerializableDictionary<Inputs, bool>> MoveCommandElements;
 
             public CharacterMoveCommandIO()
             {
-                MoveCommandElements = new List<Dictionary<Inputs, bool>>();
+                MoveCommandElements = new List<SerializableDictionary<Inputs, bool>>();
             }
         }
     }

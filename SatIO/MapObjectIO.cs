@@ -7,16 +7,16 @@ namespace SatIO
     [Serializable()]
     public class MapObjectIO
     {
-        public VectorIO Position { get; set; }
+        public VectorIO Position;
 
         /// <summary>
         /// 画像へのパス
         /// </summary>
-        public string TexturePath { get; set; }
+        public string TexturePath;
 
         /// <summary>
         /// スクリプトへのパス
         /// </summary>
-        public string ScriptPath { get; set; }
+        public string ScriptPath;
     }
 }

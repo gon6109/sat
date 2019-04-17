@@ -9,7 +9,7 @@ namespace SatIO
     [Serializable()]
     public class EventObjectIO : MapObjectIO
     {
-        public string MotionPath { get; set; }
-        public int ID { get; set; }
+        public string MotionPath;
+        public int ID;
     }
 }

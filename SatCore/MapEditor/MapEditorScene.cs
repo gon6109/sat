@@ -257,7 +257,7 @@ namespace SatCore.MapEditor
                         BackGrounds.Add(BackGround.CreateBackGroud(item));
                     }
                 }
-                Map.LoadMapData(mapdata);
+                _ = Map.LoadMapDataAsync(mapdata);
                 BGMPath = mapdata.BGMPath;
             }
             catch (Exception e)

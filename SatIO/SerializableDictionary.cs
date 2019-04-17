@@ -34,10 +34,9 @@ namespace SatIO
         public void ReadXml(XmlReader reader)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(KeyValue));
-
-            reader.Read();
             if (reader.IsEmptyElement)
                 return;
+            reader.Read();
 
             while (reader.NodeType != XmlNodeType.EndElement)
             {
@@ -57,6 +56,7 @@ namespace SatIO
             }
         }
 
+        [Serializable]
         public class KeyValue
         {
             public KeyValue(Tkey key, TValue value)
@@ -65,12 +65,10 @@ namespace SatIO
                 Value = value;
             }
 
-            public KeyValue()
-            {
-            }
+            public KeyValue() { }
 
-            public Tkey Key { get; set; }
-            public TValue Value { get; set; }
+            public Tkey Key;
+            public TValue Value;
         }
     }
 }

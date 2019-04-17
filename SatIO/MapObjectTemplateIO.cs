@@ -12,7 +12,7 @@ namespace SatIO
     [Serializable()]
     public class MapObjectTemplateIO : BaseIO
     {
-        public SerializableDictionary<string, EventObjectIO> Templates { get; set; }
+        public SerializableDictionary<string, EventObjectIO> Templates;
 
         public MapObjectTemplateIO()
         {

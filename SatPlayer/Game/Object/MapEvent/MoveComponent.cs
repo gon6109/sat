@@ -41,10 +41,10 @@ namespace SatPlayer.Game.Object.MapEvent
             foreach (var item in moveComponentIO.Commands)
             {
                 component.Commands[actors.Where(obj => obj.ActorObject.IsUseName ? obj.ActorObject.Name == item.Key.Name : obj.ActorObject.ID == item.Key.ID).First()]
-                    = new CharacterMoveCommand() { MoveCommandElements = item.Value.MoveCommandElements };
+                    = new CharacterMoveCommand() { MoveCommandElements = item.Value.MoveCommandElements.Select(obj => new Dictionary<Inputs, bool>(obj)).ToList() };
             }
             if (moveComponentIO.CameraCommand != null)
-                component.CameraCommand = new CharacterMoveCommand() { MoveCommandElements = moveComponentIO.CameraCommand.MoveCommandElements };
+                component.CameraCommand = new CharacterMoveCommand() { MoveCommandElements = moveComponentIO.CameraCommand.MoveCommandElements.Select(obj => new Dictionary<Inputs, bool>(obj)).ToList() };
 
             return component;
         }

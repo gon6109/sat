@@ -3,26 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace SatIO.MapEventIO
 {
     [Serializable()]
     public class MapEventIO
     {
-        public List<MapEventComponentIO> Components { get; set; }
-        public List<ActorIO> Actors { get; set; }
-        public CameraIO Camera { get; set; }
-        public List<string> CharacterImagePaths { get; set; }
+        [XmlArrayItem(typeof(MoveComponentIO))]
+        [XmlArrayItem(typeof(TalkComponentIO))]
+        public List<MapEventComponentIO> Components;
+        public List<ActorIO> Actors;
+        public CameraIO Camera;
+        public List<string> CharacterImagePaths;
         
-        public VectorIO Position { get; set; }
-        public VectorIO Size { get; set; }
+        public VectorIO Position;
+        public VectorIO Size;
         
-        public string ToMapPath { get; set; }
-        public List<string> PlayerNames { get; set; }
-        public VectorIO MoveToPosition { get; set; }
-        public int DoorID { get; set; }
-        public bool IsUseDoorID { get; set; }
-        public int ID { get; set; }
+        public string ToMapPath;
+        public List<string> PlayerNames;
+        public VectorIO MoveToPosition;
+        public int DoorID;
+        public bool IsUseDoorID;
+        public int ID;
 
         public MapEventIO()
         {
@@ -35,10 +38,10 @@ namespace SatIO.MapEventIO
         [Serializable()]
         public class ActorIO
         {
-            public int ID { get; set; }
-            public string Name { get; set; }
-            public bool IsUseName { get; set; }
-            public VectorIO InitPosition { get; set; }
+            public int ID;
+            public string Name;
+            public bool IsUseName;
+            public VectorIO InitPosition;
 
             public ActorIO()
             {
@@ -49,7 +52,7 @@ namespace SatIO.MapEventIO
         [Serializable()]
         public class CameraIO
         {
-            public VectorIO InitPosition { get; set; }
+            public VectorIO InitPosition;
         }
     }
 }

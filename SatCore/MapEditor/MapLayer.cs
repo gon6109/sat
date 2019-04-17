@@ -13,6 +13,7 @@ using SatPlayer.Game.Object;
 using SatPlayer.Game;
 using SatCore.Attribute;
 using SatCore.MapEditor.Object;
+using System.Threading.Tasks;
 
 namespace SatCore.MapEditor
 {
@@ -169,7 +170,7 @@ namespace SatCore.MapEditor
         /// マップデータを読み込む
         /// </summary>
         /// <param name="mapData">マップデータ</param>
-        public void LoadMapData(MapIO mapData)
+        public async Task LoadMapDataAsync(MapIO mapData)
         {
             WorldSize = mapData.Size;
 
@@ -200,7 +201,7 @@ namespace SatCore.MapEditor
             {
                 foreach (var item in mapData.MapEvents)
                 {
-                    var mapEvent = Object.MapEvent.MapEvent.CreateMapEvent(item);
+                    var mapEvent = await Object.MapEvent.MapEvent.CreateMapEventAsync(item);
                     mapEvent.RequireOpenFileDialog += RequireOpenFileDialog;
                     mapEvent.SearchActor += SearchActor;
                     AddObject(mapEvent);

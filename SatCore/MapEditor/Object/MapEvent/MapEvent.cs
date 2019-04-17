@@ -351,7 +351,7 @@ namespace SatCore.MapEditor.Object.MapEvent
             if (actor.ToObject2D() is Player player) player.Dispose();
         }
 
-        public static MapEvent CreateMapEvent(MapEventIO mapEventIO)
+        public static async Task<MapEvent> CreateMapEventAsync(MapEventIO mapEventIO)
         {
             var mapEvent = new MapEvent();
             mapEvent.Position = mapEventIO.Position;
@@ -385,9 +385,7 @@ namespace SatCore.MapEditor.Object.MapEvent
             }
             foreach (var item in mapEventIO.CharacterImagePaths)
             {
-                var task = CharacterImage.LoadCharacterImageAsync(item);
-                while (!task.IsCompleted) ;
-                mapEvent.CharacterImages.Add(task.Result);
+                mapEvent.CharacterImages.Add(await CharacterImage.LoadCharacterImageAsync(item));
             }
             foreach (var item in mapEventIO.Components)
             {

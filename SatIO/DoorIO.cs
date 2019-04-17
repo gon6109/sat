@@ -10,38 +10,38 @@ namespace SatIO
         /// <summary>
         /// IDを設定・取得
         /// </summary>
-        public int ID { get; set; }
+        public int ID;
 
-        public VectorIO Position { get; set; }
+        public VectorIO Position;
 
         /// <summary>
         /// リソースへのパス
         /// </summary>
-        public string ResourcePath { get; set; }
+        public string ResourcePath;
 
         /// <summary>
         /// 遷移先のマップ名
         /// </summary>
-        public string MoveToMap { get; set; }
+        public string MoveToMap;
 
         /// <summary>
         /// 遷移先の指定にDoor IDを使用するか
         /// </summary>
-        public bool IsUseMoveToID { get; set; }
+        public bool IsUseMoveToID;
 
         /// <summary>
         /// 遷移先のDoor ID
         /// </summary>
-        public int MoveToID { get; set; }
+        public int MoveToID;
 
         /// <summary>
         /// 解放条件スクリプト
         /// </summary>
-        public string KeyScriptPath { get; set; }
+        public string KeyScriptPath;
 
         /// <summary>
         /// 遷移先の座標
         /// </summary>
-        public VectorIO MoveToPosition { get; set; }
+        public VectorIO MoveToPosition;
     }
 }

@@ -90,7 +90,7 @@ namespace SatCore.MapEditor.Object.MapEvent
                 try
                 {
                     component.Commands[actors.Where(obj => obj.IsUseName ? obj.Name == item.Key.Name : obj.ID == item.Key.ID).First()]
-                        = new CharacterMoveCommand() { MoveCommandElements = item.Value.MoveCommandElements };
+                        = new CharacterMoveCommand() { MoveCommandElements = item.Value.MoveCommandElements.Select(obj => new Dictionary<Inputs, bool>(obj)).ToList() };
                 }
                 catch (Exception e)
                 {
@@ -98,7 +98,7 @@ namespace SatCore.MapEditor.Object.MapEvent
                 }
             }
             if (moveComponentIO.CameraCommand != null)
-                component.CameraCommand = new CharacterMoveCommand() { MoveCommandElements = moveComponentIO.CameraCommand.MoveCommandElements };
+                component.CameraCommand = new CharacterMoveCommand() { MoveCommandElements = moveComponentIO.CameraCommand.MoveCommandElements.Select(obj => new Dictionary<Inputs, bool>(obj)).ToList() };
 
             return component;
         }
@@ -110,8 +110,8 @@ namespace SatCore.MapEditor.Object.MapEvent
                 Frame = moveComponent.Frame,
                 Commands = new SatIO.SerializableDictionary<MapEventIO.ActorIO, MoveComponentIO.CharacterMoveCommandIO>(moveComponent.Commands.ToDictionary(
                     obj => (MapEventIO.ActorIO)obj.Key,
-                    obj => new MoveComponentIO.CharacterMoveCommandIO() { MoveCommandElements = obj.Value.MoveCommandElements })),
-                CameraCommand = new MoveComponentIO.CharacterMoveCommandIO() { MoveCommandElements = moveComponent.CameraCommand.MoveCommandElements },
+                    obj => new MoveComponentIO.CharacterMoveCommandIO() { MoveCommandElements = obj.Value.MoveCommandElements.Select(obj2 => new SatIO.SerializableDictionary<Inputs, bool>(obj2)).ToList() })),
+                CameraCommand = new MoveComponentIO.CharacterMoveCommandIO() { MoveCommandElements = moveComponent.CameraCommand.MoveCommandElements.Select(obj => new SatIO.SerializableDictionary<Inputs, bool>(obj)).ToList() },
             };
             return moveComponentIO;
         }

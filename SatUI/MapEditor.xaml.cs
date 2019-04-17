@@ -544,11 +544,6 @@ namespace SatUI
             gridSplitter.IsEnabled = false;
             codeColumn.Width = new GridLength(0);
             propertyPanel.ResetProperty(mode);
-            if (mode == PropertyPanel.ResetMode.General) Memory.Release(() =>
-            {
-                DoEvents();
-                propertyPanel.Focus();
-            });
         }
 
         public void DoEvents()

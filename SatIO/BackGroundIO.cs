@@ -9,8 +9,8 @@ namespace SatIO
     [Serializable]
     public class BackGroundIO
     {
-        public string TexturePath { get; set; }
-        public VectorIO Position { get; set; }
-        public float Zoom { get; set; }
+        public string TexturePath;
+        public VectorIO Position;
+        public float Zoom;
     }
 }
