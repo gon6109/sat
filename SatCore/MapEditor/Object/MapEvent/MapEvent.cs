@@ -84,7 +84,7 @@ namespace SatCore.MapEditor.Object.MapEvent
         }
 
         [Button("プレイヤーを登録")]
-        public void AddPlayerActor()
+        public async Task AddPlayerActorAsync()
         {
             try
             {
@@ -94,9 +94,7 @@ namespace SatCore.MapEditor.Object.MapEvent
                 PlayersListDialog playersListDialog = new PlayersListDialog();
                 if (playersListDialog.Show() != PlayersListDialogResult.OK) return;
 
-                var task = Player.CreatePlayerAsync(playersListDialog.FileName);
-                while (!task.IsCompleted) ;
-                var actor = new Actor(task.Result);
+                var actor = new Actor(await Player.CreatePlayerAsync(playersListDialog.FileName));
 
                 actor.InitPosition = Position + new asd.Vector2DF(Size.X, 0) - actor.Texture.Size.To2DF();
                 actor.Position = actor.InitPosition;
@@ -136,7 +134,7 @@ namespace SatCore.MapEditor.Object.MapEvent
 
         public event Func<string> RequireOpenFileDialog = delegate { return null; };
 
-        public event Func<MapEventIO.ActorIO, IActor> SearchActor = delegate { return null; };
+        public event Func<MapEventIO.ActorIO, Task<IActor>> SearchActor = delegate { return null; };
 
         [ListInput("シナリオ", "SelectedComponent")]
         public UndoRedoCollection<MapEventComponent> EventComponents { get; set; }
@@ -374,7 +372,7 @@ namespace SatCore.MapEditor.Object.MapEvent
             {
                 try
                 {
-                    var actor = new Actor(mapEvent.SearchActor(item));
+                    var actor = new Actor(await mapEvent.SearchActor(item));
                     actor.InitPosition = item.InitPosition;
                     mapEvent.Actors.Add(actor);
                 }

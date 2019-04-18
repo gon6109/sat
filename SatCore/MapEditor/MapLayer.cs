@@ -203,7 +203,7 @@ namespace SatCore.MapEditor
                 {
                     var mapEvent = await Object.MapEvent.MapEvent.CreateMapEventAsync(item);
                     mapEvent.RequireOpenFileDialog += RequireOpenFileDialog;
-                    mapEvent.SearchActor += SearchActor;
+                    mapEvent.SearchActor += SearchActorAsync;
                     AddObject(mapEvent);
                 }
             }
@@ -261,13 +261,11 @@ namespace SatCore.MapEditor
             }
         }
 
-        IActor SearchActor(MapEventIO.ActorIO actorIO)
+        async Task<IActor> SearchActorAsync(MapEventIO.ActorIO actorIO)
         {
             if (actorIO.IsUseName)
             {
-                var task = Player.CreatePlayerAsync(PlayersListDialog.GetPlayersScriptPath().First(obj => obj.Key == actorIO.Name).Value);
-                while (!task.IsCompleted) ;
-                return task.Result; 
+                return await Player.CreatePlayerAsync(PlayersListDialog.GetPlayersScriptPath().First(obj => obj.Key == actorIO.Name).Value);
             }
             else
             {
@@ -625,7 +623,7 @@ namespace SatCore.MapEditor
                 UndoRedoManager.Enable = false;
                 Object.MapEvent.MapEvent mapEvent = new Object.MapEvent.MapEvent();
                 mapEvent.RequireOpenFileDialog += RequireOpenFileDialog;
-                mapEvent.SearchActor += SearchActor;
+                mapEvent.SearchActor += SearchActorAsync;
                 mapEvent.ID = GetCanUseEventID();
                 mapEvent.Position = ((asd.RectangleShape)polygonObject.Shape).DrawingArea.Size.X > 0
                     ? ((asd.RectangleShape)polygonObject.Shape).DrawingArea.Position : ((asd.RectangleShape)polygonObject.Shape).DrawingArea.Vertexes[2];
