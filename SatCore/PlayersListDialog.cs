@@ -30,7 +30,7 @@ namespace SatCore
         {
             try
             {
-                var paths = Directory.GetFiles(root + "Player/", "*.pd");
+                var paths = Directory.GetFiles(root + "Player/", "*.pc");
 
                 List<string> playersList = new List<string>(paths.Select(obj => Path.GetRelativePath(obj, root)));
                 using (FileStream listFile = new FileStream(root + "Player/PlayersList.dat", FileMode.Create))
@@ -48,30 +48,16 @@ namespace SatCore
         /// <summary>
         /// プレイヤー情報を得る
         /// </summary>
-        /// <returns>キーがプレイヤー名、バリューがパスの辞書</returns>
-        public static Dictionary<string, string> GetPlayersScriptPath()
+        /// <returns>プレイヤーのパス一覧を得る</returns>
+        public static IEnumerable<string> GetPlayersScriptPaths()
         {
             try
             {
-                Dictionary<string, string> result = new Dictionary<string, string>();
-
                 using (var stream = IO.GetStream(ListSourceFile))
                 {
                     XmlSerializer serializser = new XmlSerializer(typeof(List<string>));
-                    var paths = ((List<string>)serializser.Deserialize(stream));
-
-                    Regex regex = new Regex(@";[\s|\n]*Name[\s|\n]*=""(.*)"";");
-                    foreach (var item in paths)
-                    {
-                        using (var scriptStream = IO.GetStream(item))
-                        {
-                            var matches = regex.Matches(scriptStream.ToString());
-                            var name = matches.OfType<Match>().LastOrDefault()?.Groups[1].Value;
-                            result.Add(name ?? "", item);
-                        }
-                    }
+                    return ((List<string>)serializser.Deserialize(stream));
                 }
-                return result;
             }
             catch
             {
@@ -98,13 +84,13 @@ namespace SatCore
         {
             try
             {
-                var playerDatas = GetPlayersScriptPath();
-                PlayerNames = playerDatas.Select(obj => obj.Key).ToList();
+                var playerDatas = GetPlayersScriptPaths();
+                PlayerNames = playerDatas.ToList();
 
                 var result = ShowDialogFunc(this);
                 if (result != PlayersListDialogResult.OK) return result;
 
-                FileName = playerDatas.First(obj => obj.Key == PlayerName).Value;
+                FileName = playerDatas.First(obj => obj == PlayerName);
 
                 return result;
             }

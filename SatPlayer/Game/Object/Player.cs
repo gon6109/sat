@@ -39,7 +39,7 @@ namespace SatPlayer.Game.Object
         /// <summary>
         /// 現在座標
         /// </summary>
-        Vector IPlayer.Position { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        Vector IPlayer.Position { get => Position.ToScriptVector(); set => Position = value.ToAsdVector(); }
 
         /// <summary>
         /// アニメーション状態
@@ -59,7 +59,7 @@ namespace SatPlayer.Game.Object
         /// </summary>
         public int PlayerGroup { get; set; }
 
-        public PhysicalRectangleShape CollisionShape { set; get; }
+        public PhysicalRectangleShape CollisionShape { protected set; get; }
 
         public Dictionary<string, Effect> Effects { get; private set; }
 
@@ -109,7 +109,7 @@ namespace SatPlayer.Game.Object
 
         public string Name { get; set; }
 
-        public bool IsUseName => true;
+        public string Path { get; private set; }
 
         /// <summary>
         /// 衝突情報
@@ -175,6 +175,18 @@ namespace SatPlayer.Game.Object
 
             GroundCollision.DrawingArea = new asd.RectF(CollisionShape.DrawingArea.X + 3, CollisionShape.DrawingArea.Vertexes[2].Y, CollisionShape.DrawingArea.Width - 3, 5);
             base.OnAdded();
+        }
+
+        protected override void OnRemoved()
+        {
+            CollisionShape?.Dispose();
+            base.OnRemoved();
+        }
+
+        protected override void OnDispose()
+        {
+            CollisionShape?.Dispose();
+            base.OnDispose();
         }
 
         protected override void OnUpdate()
@@ -270,11 +282,12 @@ namespace SatPlayer.Game.Object
             {
                 var player = new Player();
                 player.PlayerGroup = playerGroup;
+                player.Path = playerDataPath;
                 var stream = await IO.GetStreamAsync(playerDataPath);
                 using (stream)
                 {
-                    var script = ScriptOption.ScriptOptions["Player"].CreateScript<object>(stream.ToString());
-                    await script.RunAsync(playerDataPath);
+                    var script = ScriptOption.ScriptOptions["Player"].CreateScript<object>(Encoding.UTF8.GetString(stream.ToArray()));
+                    await script.RunAsync(player);
                 }
                 return player;
             }

@@ -53,6 +53,17 @@ namespace SatCore.ScriptEditor
         /// </summary>
         public override event Action<SatScript.Player.IPlayer> Update = delegate { };
 
+        protected override void OnAdded()
+        {
+            if (Layer is MapLayer map)
+            {
+                CollisionShape = new PhysicalRectangleShape(PhysicalShapeType.Dynamic, map.PhysicalWorld);
+                CollisionShape.DrawingArea = new asd.RectF(Position - CenterPosition + new asd.Vector2DF(5, 0), Texture.Size.To2DF() - new asd.Vector2DF(10, 0));
+                GroundCollision.DrawingArea = new asd.RectF(CollisionShape.DrawingArea.X + 3, CollisionShape.DrawingArea.Vertexes[2].Y, CollisionShape.DrawingArea.Width - 3, 5);
+            }
+            base.OnAdded();
+        }
+
         protected override void OnUpdate()
         {
             Update(this);
@@ -71,9 +82,12 @@ namespace SatCore.ScriptEditor
                     Script<object> script = ScriptOption.ScriptOptions[ScriptOptionName]?.CreateScript<object>(Code);
                     var thread = script.RunAsync(this);
                     thread.Wait();
-                    CollisionShape.DrawingArea = new asd.RectF(Position - CenterPosition + new asd.Vector2DF(5, 0), Texture.Size.To2DF() - new asd.Vector2DF(10, 0));
-                    GroundCollision.DrawingArea = new asd.RectF(CollisionShape.DrawingArea.X + 3, CollisionShape.DrawingArea.Vertexes[2].Y, CollisionShape.DrawingArea.Width - 3, 5);
-                    Position = ScalingLayer2D.OriginDisplaySize / 2; 
+                    if (CollisionShape != null)
+                    {
+                        CollisionShape.DrawingArea = new asd.RectF(Position - CenterPosition + new asd.Vector2DF(5, 0), Texture.Size.To2DF() - new asd.Vector2DF(10, 0));
+                        GroundCollision.DrawingArea = new asd.RectF(CollisionShape.DrawingArea.X + 3, CollisionShape.DrawingArea.Vertexes[2].Y, CollisionShape.DrawingArea.Width - 3, 5);
+                    }
+                    Position = ScalingLayer2D.OriginDisplaySize / 2;
                 }
                 catch (Exception e)
                 {

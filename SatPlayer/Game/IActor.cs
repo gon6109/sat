@@ -12,8 +12,7 @@ namespace SatPlayer.Game
     /// </summary>
     public interface IActor
     {
-        bool IsUseName { get; }
-        string Name { get; }
+        string Path { get; }
         int ID { get; }
         bool IsEvent { get; set; }
         Vector2DF Position { get; set; }

@@ -39,13 +39,11 @@ namespace SatIO.MapEventIO
         public class ActorIO
         {
             public int ID;
-            public string Name;
-            public bool IsUseName;
+            public string Path;
             public VectorIO InitPosition;
 
             public ActorIO()
             {
-                Name = "";
             }
         }
 

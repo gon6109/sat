@@ -71,7 +71,7 @@ namespace SatCore.MapEditor.Object.MapEvent
         public void AddActor()
         {
             if (((MapLayer)Layer).CurrentToolType != ToolType.Select ||
-                ((MapLayer)Layer).Objects.Count(obj => obj is EventObject) <= Actors.Count(obj => !obj.IsUseName))
+                ((MapLayer)Layer).Objects.Count(obj => obj is EventObject) <= Actors.Count(obj => obj.Path == null))
                 return;
             ((MapLayer)Layer).CurrentToolType = ToolType.SelectEventObject;
         }
@@ -89,7 +89,7 @@ namespace SatCore.MapEditor.Object.MapEvent
             try
             {
 
-                if (PlayersListDialog.GetPlayersScriptPath().Count <= Actors.Count(obj => obj.IsUseName)) return;
+                if (PlayersListDialog.GetPlayersScriptPaths().Count() <= Actors.Count(obj => obj.Path != null)) return;
 
                 PlayersListDialog playersListDialog = new PlayersListDialog();
                 if (playersListDialog.Show() != PlayersListDialogResult.OK) return;
@@ -412,7 +412,6 @@ namespace SatCore.MapEditor.Object.MapEvent
             foreach (var item in Actors)
             {
                 Layer.AddObject(item.ToObject2D());
-                item.CollisionShape.IsActive = true;
                 item.SetTexture(Layer, item.InitPosition, new asd.Color(255, 255, 255));
             }
             Layer.AddObject(MainCamera);
@@ -424,7 +423,6 @@ namespace SatCore.MapEditor.Object.MapEvent
             foreach (var item in Actors)
             {
                 item.ClearTexture();
-                item.CollisionShape.IsActive = false;
                 item.Layer.RemoveObject(item.ToObject2D());
             }
             MainCamera.ClearGeometry();
@@ -487,15 +485,9 @@ namespace SatCore.MapEditor.Object.MapEvent
                 => _actorImp as asd.Object2D;
 
             public int ID => _actorImp.ID;
-            public string Name
-            {
-                get
-                {
-                    if (IsUseName) return _actorImp.Name;
-                    else return ID.ToString();
-                }
-            }
-            public bool IsUseName => _actorImp.IsUseName;
+
+            public string Path => _actorImp.Path ?? ID.ToString();
+            public string Name => Path;
 
             [VectorInput("初期座標")]
             public asd.Vector2DF InitPosition
@@ -517,7 +509,6 @@ namespace SatCore.MapEditor.Object.MapEvent
             {
                 _actorImp = originActor;
                 TextureObjects = new List<asd.TextureObject2D>();
-                CollisionShape.GroupIndex = -1;
                 GroundShape = new asd.RectangleShape();
             }
 
@@ -597,6 +588,7 @@ namespace SatCore.MapEditor.Object.MapEvent
             public asd.Vector2DF Position { get => _actorImp.Position; set => _actorImp.Position = value; }
             public asd.Layer2D Layer => _actorImp.Layer;
 
+
             public void AddRequest(Dictionary<Inputs, bool> input)
             {
                 _actorImp.MoveCommands.Enqueue(input);
@@ -606,9 +598,8 @@ namespace SatCore.MapEditor.Object.MapEvent
             {
                 var actorIO = new MapEventIO.ActorIO()
                 {
-                    Name = actor.Name,
+                    Path = actor.Path,
                     ID = actor.ID,
-                    IsUseName = actor.IsUseName,
                     InitPosition = actor.InitPosition,
                 };
                 return actorIO;

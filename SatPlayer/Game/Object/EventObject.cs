@@ -51,7 +51,9 @@ namespace SatPlayer.Game.Object
         /// </summary>
         public int ID { get; protected set; }
 
-        public string Name => "";
+        public string Name => ID.ToString();
+
+        public string Path => null;
 
         public bool IsUseName => false;
 
@@ -70,6 +72,12 @@ namespace SatPlayer.Game.Object
                 inputState[item] = 0;
             }
             GroundCollision = new asd.RectangleShape();
+        }
+
+        protected override void OnRemoved()
+        {
+            CollisionShape?.Dispose();
+            base.OnRemoved();
         }
 
         protected override void OnUpdate()

@@ -89,7 +89,7 @@ namespace SatCore.MapEditor.Object.MapEvent
             {
                 try
                 {
-                    component.Commands[actors.Where(obj => obj.IsUseName ? obj.Name == item.Key.Name : obj.ID == item.Key.ID).First()]
+                    component.Commands[actors.Where(obj => (obj.Path != null && obj.Path == item.Key.Path) ? true : obj.ID == item.Key.ID).First()]
                         = new CharacterMoveCommand() { MoveCommandElements = item.Value.MoveCommandElements.Select(obj => new Dictionary<Inputs, bool>(obj)).ToList() };
                 }
                 catch (Exception e)

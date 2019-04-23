@@ -84,7 +84,7 @@ namespace SatPlayer.Game.Object.MapEvent
                 try
                 {
                     var actor = new Actor();
-                    actor.ActorObject = allActors.First(obj => obj.IsUseName ? obj.Name == item.Name : obj.ID == item.ID);
+                    actor.ActorObject = allActors.First(obj => (obj.Path != null && obj.Path == item.Path) ? true : obj.ID == item.ID);
                     actor.InitPosition = item.InitPosition;
                     mapEvent.Actors.Add(actor);
                 }

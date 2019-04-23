@@ -40,7 +40,7 @@ namespace SatPlayer.Game.Object.MapEvent
             component.Frame = moveComponentIO.Frame;
             foreach (var item in moveComponentIO.Commands)
             {
-                component.Commands[actors.Where(obj => obj.ActorObject.IsUseName ? obj.ActorObject.Name == item.Key.Name : obj.ActorObject.ID == item.Key.ID).First()]
+                component.Commands[actors.Where(obj => (obj.ActorObject.Path == null && obj.ActorObject.Path == item.Key.Path) ? true : obj.ActorObject.ID == item.Key.ID).First()]
                     = new CharacterMoveCommand() { MoveCommandElements = item.Value.MoveCommandElements.Select(obj => new Dictionary<Inputs, bool>(obj)).ToList() };
             }
             if (moveComponentIO.CameraCommand != null)

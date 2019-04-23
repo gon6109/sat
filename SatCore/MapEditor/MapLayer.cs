@@ -263,9 +263,9 @@ namespace SatCore.MapEditor
 
         async Task<IActor> SearchActorAsync(MapEventIO.ActorIO actorIO)
         {
-            if (actorIO.IsUseName)
+            if (actorIO.Path != null)
             {
-                return await Player.CreatePlayerAsync(PlayersListDialog.GetPlayersScriptPath().First(obj => obj.Key == actorIO.Name).Value);
+                return await Player.CreatePlayerAsync(PlayersListDialog.GetPlayersScriptPaths().First(obj => obj == actorIO.Path));
             }
             else
             {
@@ -680,7 +680,7 @@ namespace SatCore.MapEditor
             {
                 if (eventObject.CollisionShape.GetIsCollidedWith(cursorShape) && Mouse.LeftButton == asd.ButtonState.Push)
                 {
-                    if (((Object.MapEvent.MapEvent)SelectedObject).Actors.Any(obj => !obj.IsUseName && obj.ID == eventObject.ID)) return;
+                    if (((Object.MapEvent.MapEvent)SelectedObject).Actors.Any(obj => obj.Path == null && obj.ID == eventObject.ID)) return;
                     ((Object.MapEvent.MapEvent)SelectedObject).AddEventObjectActor(eventObject, eventObject.ID, eventObject.Position);
 
                     CurrentToolType = ToolType.Select;
