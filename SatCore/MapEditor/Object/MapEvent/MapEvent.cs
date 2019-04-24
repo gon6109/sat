@@ -80,7 +80,7 @@ namespace SatCore.MapEditor.Object.MapEvent
         {
             var actor = new Actor(actorObject);
             Actors.Add(actor);
-            actor.SetTexture(Layer, actor.InitPosition, new asd.Color(255, 255, 255));
+            actor.SetTexture(actor.InitPosition, new asd.Color(255, 255, 255));
         }
 
         [Button("プレイヤーを登録")]
@@ -88,27 +88,32 @@ namespace SatCore.MapEditor.Object.MapEvent
         {
             try
             {
-
                 if (PlayersListDialog.GetPlayersScriptPaths().Count() <= Actors.Count(obj => obj.Path != null)) return;
 
                 PlayersListDialog playersListDialog = new PlayersListDialog();
                 if (playersListDialog.Show() != PlayersListDialogResult.OK) return;
 
-                var actor = new Actor(await Player.CreatePlayerAsync(playersListDialog.FileName));
+                var actor = new Actor(await MapEventPlayer.CreatePlayerAsync(playersListDialog.FileName));
 
                 actor.InitPosition = Position + new asd.Vector2DF(Size.X, 0) - actor.Texture.Size.To2DF();
                 actor.Position = actor.InitPosition;
+                Actors.Add(actor);
+                actor.Active = true;
+
+                asd.Engine.Update();
 
                 if (Layer is MapLayer map)
                     for (int i = 0; i < 60; i++)
                     {
                         map.PhysicalWorld.Update();
+                        actor.Update();
                     }
 
                 actor.InitPosition = actor.Position;
-                Actors.Add(actor);
 
-                actor.SetTexture(Layer, actor.InitPosition, new asd.Color(255, 255, 255));
+                actor.Active = false;
+
+                actor.SetTexture(actor.InitPosition, new asd.Color(255, 255, 255));
                 var playerName = new PlayerName()
                 {
                     Name = playersListDialog.PlayerName,
@@ -145,19 +150,22 @@ namespace SatCore.MapEditor.Object.MapEvent
             set
             {
                 _selectedComponent = value;
-                Simulation(value);
+                Simulate(value);
             }
         }
 
-        void Simulation(MapEventComponent end)
+        void Simulate(MapEventComponent end)
         {
             foreach (var item in Actors)
             {
                 item.Position = item.InitPosition;
                 item.Active = true;
+                item.IsSimulateEvent = true;
             }
             MainCamera.Position = MainCamera.InitPosition;
             MainCamera.Active = true;
+
+            asd.Engine.Update();
 
             foreach (var component in EventComponents)
             {
@@ -166,7 +174,7 @@ namespace SatCore.MapEditor.Object.MapEvent
                 foreach (var item in Actors)
                 {
                     item.ClearTexture();
-                    item.SetTexture(Layer, item.Position, new asd.Color(100, 255, 100));
+                    item.SetTexture(item.Position, new asd.Color(100, 255, 100));
                     tempPos[item] = item.Position;
                 }
                 MainCamera.ClearGeometry();
@@ -198,7 +206,7 @@ namespace SatCore.MapEditor.Object.MapEvent
 
                     foreach (var item in Actors)
                     {
-                        item.SetTexture(Layer, item.Position, new asd.Color(255, 100, 100));
+                        item.SetTexture(item.Position, new asd.Color(255, 100, 100));
                     }
                     MainCamera.SetGeometry(Layer, MainCamera.Position, new asd.Color(255, 255, 0, 100));
                 }
@@ -216,6 +224,7 @@ namespace SatCore.MapEditor.Object.MapEvent
             foreach (var item in Actors)
             {
                 item.Active = false;
+                item.IsSimulateEvent = false;
             }
             MainCamera.Active = false;
         }
@@ -343,15 +352,33 @@ namespace SatCore.MapEditor.Object.MapEvent
 
         void Actors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action != System.Collections.Specialized.NotifyCollectionChangedAction.Remove || e.OldItems[0] as Actor == null) return;
-            var actor = e.OldItems[0] as Actor;
-            actor.ClearTexture();
-            if (actor.ToObject2D() is Player player) player.Dispose();
+            foreach (var actor in e.NewItems?.OfType<Actor>() ?? e.OldItems?.OfType<Actor>())
+            {
+                switch (e.Action)
+                {
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                        actor.MapEvent = this;
+                        break;
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                        actor.ClearTexture();
+                        actor.MapEvent = null;
+                        break;
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Replace:
+                        break;
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Move:
+                        break;
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
-        public static async Task<MapEvent> CreateMapEventAsync(MapEventIO mapEventIO)
+        public static async Task<MapEvent> CreateMapEventAsync(MapEventIO mapEventIO, Func<MapEventIO.ActorIO, Task<IActor>> searchFunc)
         {
             var mapEvent = new MapEvent();
+            mapEvent.SearchActor += searchFunc;
             mapEvent.Position = mapEventIO.Position;
             mapEvent.Size = mapEventIO.Size;
             mapEvent.MainCamera.InitPosition = mapEventIO.Camera != null && mapEventIO.Camera.InitPosition != null ?
@@ -411,8 +438,7 @@ namespace SatCore.MapEditor.Object.MapEvent
         {
             foreach (var item in Actors)
             {
-                Layer.AddObject(item.ToObject2D());
-                item.SetTexture(Layer, item.InitPosition, new asd.Color(255, 255, 255));
+                item.SetTexture(item.InitPosition, new asd.Color(255, 255, 255));
             }
             Layer.AddObject(MainCamera);
             MainCamera.SetGeometry(Layer, MainCamera.InitPosition, new asd.Color(255, 255, 0, 100));
@@ -423,7 +449,6 @@ namespace SatCore.MapEditor.Object.MapEvent
             foreach (var item in Actors)
             {
                 item.ClearTexture();
-                item.Layer.RemoveObject(item.ToObject2D());
             }
             MainCamera.ClearGeometry();
             MainCamera.Layer.RemoveObject(MainCamera);
@@ -481,7 +506,7 @@ namespace SatCore.MapEditor.Object.MapEvent
             private asd.Vector2DF _initPosition;
             private IActor _actorImp;
 
-            public asd.Object2D ToObject2D()
+            asd.Object2D ToObject2D()
                 => _actorImp as asd.Object2D;
 
             public int ID => _actorImp.ID;
@@ -501,7 +526,7 @@ namespace SatCore.MapEditor.Object.MapEvent
                 }
             }
 
-            public PhysicalShape CollisionShape => _actorImp.CollisionShape;
+            public MapEvent MapEvent { get; internal set; }
 
             List<asd.TextureObject2D> TextureObjects { get; set; }
 
@@ -512,7 +537,7 @@ namespace SatCore.MapEditor.Object.MapEvent
                 GroundShape = new asd.RectangleShape();
             }
 
-            public void SetTexture(asd.Layer2D layer, asd.Vector2DF position, asd.Color color)
+            public void SetTexture(asd.Vector2DF position, asd.Color color)
             {
                 var textureObject = new asd.TextureObject2D();
                 textureObject.Position = position;
@@ -522,7 +547,7 @@ namespace SatCore.MapEditor.Object.MapEvent
                 textureObject.DrawingPriority = 3;
                 textureObject.CameraGroup = 1;
                 TextureObjects.Add(textureObject);
-                layer.AddObject(textureObject);
+                MapEvent?.Layer?.AddObject(textureObject);
             }
 
             public void ClearTexture()
@@ -546,6 +571,7 @@ namespace SatCore.MapEditor.Object.MapEvent
                         {
                             item.IsDrawn = false;
                         }
+                        MapEvent?.Layer?.AddObject(ToObject2D());
                     }
                     else
                     {
@@ -554,8 +580,15 @@ namespace SatCore.MapEditor.Object.MapEvent
                             item.IsDrawn = true;
                         }
                         Position = InitPosition;
+                        ToObject2D()?.Layer?.RemoveObject(ToObject2D());
                     }
                 }
+            }
+
+            public bool IsSimulateEvent
+            {
+                get => _actorImp.IsEvent;
+                set => _actorImp.IsEvent = value;
             }
 
             public bool IsCollidedWithGround

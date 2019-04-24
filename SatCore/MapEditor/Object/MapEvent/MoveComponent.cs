@@ -131,6 +131,13 @@ namespace SatCore.MapEditor.Object.MapEvent
             var actorsInitPos = Actors.ToDictionary(obj => obj, obj => obj.Position);
             var before = Commands.ContainsKey(actor) ? Commands[actor].MoveCommandElements : new List<Dictionary<Inputs, bool>>();
             if (Commands.ContainsKey(actor)) Commands[actor].MoveCommandElements = new List<Dictionary<Inputs, bool>>(before);
+
+            foreach (var item in Actors)
+            {
+                if (item == actor) continue;
+                item.IsSimulateEvent = true;
+            }
+
             for (int i = 0; i < Frame; i++)
             {
                 Dictionary<Inputs, bool> moveCommandElements = new Dictionary<Inputs, bool>();
@@ -165,14 +172,15 @@ namespace SatCore.MapEditor.Object.MapEvent
                     {
                         if (item == actor) continue;
                         item.Active = false;
+                        item.IsSimulateEvent = false;
                         item.Position = actorsInitPos[item];
                     }
                     MainCamera.Active = false;
                     MainCamera.Position = initCameraPos;
                     actor.Active = false;
                     actor.ClearTexture();
-                    actor.SetTexture(actor.Layer, initActorPos, new asd.Color(100, 255, 100));
-                    actor.SetTexture(actor.Layer, actor.Position, new asd.Color(255, 100, 100));
+                    actor.SetTexture(initActorPos, new asd.Color(100, 255, 100));
+                    actor.SetTexture(actor.Position, new asd.Color(255, 100, 100));
                     actor.Position = initActorPos;
                     UndoRedoManager.ChangeProperty(Commands[actor], Commands[actor].MoveCommandElements, before, "MoveCommandElements");
                 }
@@ -187,6 +195,12 @@ namespace SatCore.MapEditor.Object.MapEvent
             var actorsInitPos = Actors.ToDictionary(obj => obj, obj => obj.Position);
             var before = CameraCommand.MoveCommandElements;
             CameraCommand.MoveCommandElements = new List<Dictionary<Inputs, bool>>(before);
+
+            foreach (var item in Actors)
+            {
+                item.IsSimulateEvent = true;
+            }
+
             for (int i = 0; i < Frame; i++)
             {
                 Dictionary<Inputs, bool> moveCommandElements = new Dictionary<Inputs, bool>();
@@ -211,6 +225,7 @@ namespace SatCore.MapEditor.Object.MapEvent
                     foreach (var item in Actors)
                     {
                         item.Active = false;
+                        item.IsSimulateEvent = false;
                         item.Position = actorsInitPos[item];
                     }
                     camera.Active = false;

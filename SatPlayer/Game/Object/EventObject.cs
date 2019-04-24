@@ -57,7 +57,7 @@ namespace SatPlayer.Game.Object
 
         public bool IsUseName => false;
 
-        public virtual event Action<IEventObject> Update = delegate { };
+        public virtual new event Action<IEventObject> Update = delegate { };
 
         PhysicalShape IActor.CollisionShape => CollisionShape as PhysicalRectangleShape;
 
@@ -77,6 +77,7 @@ namespace SatPlayer.Game.Object
         protected override void OnRemoved()
         {
             CollisionShape?.Dispose();
+            collision = null;
             base.OnRemoved();
         }
 

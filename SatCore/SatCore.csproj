@@ -161,6 +161,7 @@
     <Compile Include="MapEditor\Object\MapEvent\CharacterImage.cs" />
     <Compile Include="MapEditor\Object\MapEvent\MapEvent.cs" />
     <Compile Include="MapEditor\Object\MapEvent\MapEventComponent.cs" />
+    <Compile Include="MapEditor\Object\MapEvent\MapEventPlayer.cs" />
     <Compile Include="MapEditor\Object\MapEvent\MoveComponent.cs" />
     <Compile Include="MapEditor\Object\MapEvent\TalkComponent.cs" />
     <Compile Include="MapEditor\Object\MapObject.cs" />

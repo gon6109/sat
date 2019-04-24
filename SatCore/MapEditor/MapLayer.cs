@@ -201,9 +201,8 @@ namespace SatCore.MapEditor
             {
                 foreach (var item in mapData.MapEvents)
                 {
-                    var mapEvent = await Object.MapEvent.MapEvent.CreateMapEventAsync(item);
+                    var mapEvent = await Object.MapEvent.MapEvent.CreateMapEventAsync(item, SearchActorAsync);
                     mapEvent.RequireOpenFileDialog += RequireOpenFileDialog;
-                    mapEvent.SearchActor += SearchActorAsync;
                     AddObject(mapEvent);
                 }
             }
@@ -265,7 +264,7 @@ namespace SatCore.MapEditor
         {
             if (actorIO.Path != null)
             {
-                return await Player.CreatePlayerAsync(PlayersListDialog.GetPlayersScriptPaths().First(obj => obj == actorIO.Path));
+                return await Object.MapEvent.MapEventPlayer.CreatePlayerAsync(PlayersListDialog.GetPlayersScriptPaths().First(obj => obj == actorIO.Path));
             }
             else
             {

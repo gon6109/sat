@@ -109,7 +109,7 @@ namespace SatPlayer.Game.Object
 
         public string Name { get; set; }
 
-        public string Path { get; private set; }
+        public string Path { get; protected set; }
 
         /// <summary>
         /// 衝突情報
@@ -180,6 +180,7 @@ namespace SatPlayer.Game.Object
         protected override void OnRemoved()
         {
             CollisionShape?.Dispose();
+            CollisionShape = null;
             base.OnRemoved();
         }
 
@@ -200,7 +201,7 @@ namespace SatPlayer.Game.Object
                 IsCollidedWithGround = layer.Obstacles.Any(obj => obj.GetIsCollidedWith(GroundCollision));
             }
 
-            if (IsEvent)
+            if (IsEvent && MoveCommands.Count > 0)
             {
                 var currentCommand = MoveCommands.Dequeue();
                 foreach (BaseComponent.Inputs item in Enum.GetValues(typeof(BaseComponent.Inputs)))
