@@ -163,17 +163,14 @@ namespace SatPlayer.Game.Object
             if (Layer is MapLayer map)
                 CollisionShape = new PhysicalRectangleShape(PhysicalShapeType.Dynamic, map.PhysicalWorld);
 
-            CollisionShape.GroupIndex = -1;
-            CenterPosition = Texture?.Size.To2DF() / 2.0f ?? new asd.Vector2DF();
-
-            CollisionShape.DrawingArea = new asd.RectF(Position - CenterPosition + new asd.Vector2DF(5, 0), Texture?.Size.To2DF() ?? new asd.Vector2DF() - new asd.Vector2DF(10, 0));
             CollisionShape.Density = 2.5f;
             CollisionShape.Restitution = 0.0f;
             CollisionShape.Friction = 0.0f;
             CollisionShape.GroupIndex = -1;
             DrawingPriority = 2;
 
-            GroundCollision.DrawingArea = new asd.RectF(CollisionShape.DrawingArea.X + 3, CollisionShape.DrawingArea.Vertexes[2].Y, CollisionShape.DrawingArea.Width - 3, 5);
+            SetCollision();
+
             base.OnAdded();
         }
 
@@ -275,6 +272,15 @@ namespace SatPlayer.Game.Object
         void IActor.OnUpdate()
         {
             OnUpdate();
+        }
+
+        protected void SetCollision()
+        {
+            if (Texture == null)
+                Texture = AnimationPart.FirstOrDefault().Value?.Textures.FirstOrDefault();
+            CenterPosition = Texture?.Size.To2DF() / 2.0f ?? new asd.Vector2DF();
+            CollisionShape.DrawingArea = new asd.RectF(Position - CenterPosition + new asd.Vector2DF(5, 0), Texture?.Size.To2DF() ?? new asd.Vector2DF() - new asd.Vector2DF(10, 0));
+            GroundCollision.DrawingArea = new asd.RectF(CollisionShape.DrawingArea.X + 3, CollisionShape.DrawingArea.Vertexes[2].Y, CollisionShape.DrawingArea.Width - 3, 5);
         }
 
         public static async Task<Player> CreatePlayerAsync(string playerDataPath, int playerGroup = 0)
