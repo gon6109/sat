@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.Scripting;
 using PhysicAltseed;
 using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using SatIO;
@@ -170,7 +171,7 @@ namespace SatPlayer.Game.Object
         /// <summary>
         /// センサーを設定・取得する
         /// </summary>
-        public Dictionary<string, ISensor> Sensors => sensors.ToDictionary(obj => obj.Key, obj => (ISensor)obj.Value);
+        public IReadOnlyDictionary<string, ISensor> Sensors => sensors.ToDictionary(obj => obj.Key, obj => (ISensor)obj.Value);
 
         Color IMapObject.Color { get => Color.ToScriptColor(); set => Color = value.ToAsdColor(); }
 
@@ -373,6 +374,7 @@ namespace SatPlayer.Game.Object
         /// 力を加える
         /// </summary>
         /// <param name="direct">力の向き・強さ</param>
+        /// 
         /// <param name="position">力を加える場所の相対座標</param>
         public void SetForce(Vector direct, Vector position)
         {
@@ -420,6 +422,9 @@ namespace SatPlayer.Game.Object
             }
         }
 
+        public void SetSensor(string name, Vector position, float diameter = 3)
+            => sensors.Add(name, new Sensor(position.ToAsdVector(), diameter));
+
         public static async Task<MapObject> CreateMapObjectAsync(MapObjectIO mapObjectIO)
         {
             var mapObject = new MapObject();
@@ -427,10 +432,9 @@ namespace SatPlayer.Game.Object
             {
                 try
                 {
-                    var stream = await IO.GetStreamAsync(mapObjectIO.ScriptPath);
-                    using (stream)
+                    using (var stream = await IO.GetStreamAsync(mapObjectIO.ScriptPath))
                     {
-                        var script = ScriptOption.ScriptOptions["MapObject"]?.CreateScript<object>(stream.ToString());
+                        var script = ScriptOption.ScriptOptions["MapObject"]?.CreateScript<object>(Encoding.UTF8.GetString(stream.ToArray()));
                         await Task.Run(() => script.Compile());
                         await script.RunAsync(mapObject);
                     }

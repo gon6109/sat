@@ -60,14 +60,21 @@ namespace SatCore.ScriptEditor
 
         protected override void OnUpdate()
         {
-            Update(this);
-            base.OnUpdate();
+            try
+            {
+                Update(this);
+                base.OnUpdate();
+            }
+            catch (Exception e)
+            {
+                ErrorIO.AddError(e);
+            }
         }
 
         [Button("Run")]
         public void Run()
         {
-            if (isEdited) 
+            if (isEdited)
             {
                 IsSuccessBuild = true;
                 try
