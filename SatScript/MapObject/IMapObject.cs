@@ -100,7 +100,7 @@ namespace SatScript.MapObject
         /// <summary>
         /// センサーを設定・取得する
         /// </summary>
-        Dictionary<string, ISensor> Sensors { get; }
+        IReadOnlyDictionary<string, ISensor> Sensors { get; }
 
         /// <summary>
         /// OnUpdate時に呼び出される関数のデリゲート
@@ -144,6 +144,14 @@ namespace SatScript.MapObject
         /// <param name="name">エフェクト名</param>
         /// <param name="position">配置する相対座標</param>
         void SetEffect(string name, Vector position);
+
+        /// <summary>
+        /// センサーを作成する
+        /// </summary>
+        /// <param name="name">名前</param>
+        /// <param name="position">プレイヤーとの相対座標</param>
+        /// <param name="diameter">センサーのサイズ</param>
+        void SetSensor(string name, Vector position, float diameter = 3);
 
         /// <summary>
         /// オブジェクトを消去する

@@ -269,6 +269,26 @@ namespace SatPlayer.Game.Object
             else return AltseedScript.Common.Input.GetInputState(inputs);
         }
 
+        /// <summary>
+        /// 力を加える
+        /// </summary>
+        /// <param name="direct">力の向き・強さ</param>
+        /// <param name="position">力を加える場所の相対座標</param>
+        public void SetForce(Vector direct, Vector position)
+        {
+            CollisionShape.SetForce(direct.ToAsdVector(), position.ToAsdVector());
+        }
+
+        /// <summary>
+        /// 衝撃を加える
+        /// </summary>
+        /// <param name="direct">力の向き・強さ</param>
+        /// <param name="position">力を加える芭蕉の相対座標</param>
+        public void SetImpulse(Vector direct, Vector position)
+        {
+            CollisionShape.SetImpulse(direct.ToAsdVector(), position.ToAsdVector());
+        }
+
         void IActor.OnUpdate()
         {
             OnUpdate();

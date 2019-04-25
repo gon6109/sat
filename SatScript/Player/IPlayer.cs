@@ -62,6 +62,20 @@ namespace SatScript.Player
         Vector Velocity { get; set; }
 
         /// <summary>
+        /// 力を加える
+        /// </summary>
+        /// <param name="direct">力の強さ・向き</param>
+        /// <param name="position">力を加える場所の相対座標</param>
+        void SetForce(Vector direct, Vector position);
+
+        /// <summary>
+        /// 衝撃を加える
+        /// </summary>
+        /// <param name="direct">衝撃の強さ・向き</param>
+        /// <param name="position">衝撃を加える場所の相対座標</param>
+        void SetImpulse(Vector direct, Vector position);
+
+        /// <summary>
         /// OnUpdate時に呼び出される関数のデリゲート
         /// </summary>
         event Action<IPlayer> Update;
