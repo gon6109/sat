@@ -178,7 +178,7 @@ namespace SatCore.MapEditor
             Viewer = new MapViewer(this);
 
             AddLayer(Map);
-        } 
+        }
 
         /// <summary>
         /// 背景更新時
@@ -292,7 +292,7 @@ namespace SatCore.MapEditor
             {
                 PlayersListDialog playersListDialog = new PlayersListDialog();
                 if (playersListDialog.Show() != PlayersListDialogResult.OK) return;
-                
+
                 var playerName = new PlayerName()
                 {
                     Name = playersListDialog.PlayerName,
@@ -316,27 +316,34 @@ namespace SatCore.MapEditor
             [Button("Play")]
             public async Task PlayMapAsync()
             {
-                if (isLoading || PlayerNames.Count == 0 || asd.Engine.CurrentScene != RefMapEditor) return;
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                RefMapEditor.SaveMapData("temp.map");
-                await SatPlayer.Game.GameScene.LoadPlayersDataAsync();
-                var newScene = new SatPlayer.Game.GameScene("temp.map", SatPlayer.Game.GameScene.Players.Where(obj => PlayerNames.Any(obj2 => obj.Name == obj2.Name)).ToList(), PlayerPosition, isPreviewMode: true);
-                newScene.OnGameOver += (() =>
+                try
                 {
-                    asd.Engine.ChangeScene(RefMapEditor);
-                });
-                newScene.OnChangeMap += (path, initPlayers, playerPosition, doorID, savePointID) =>
+                    if (isLoading || PlayerNames.Count == 0 || asd.Engine.CurrentScene != RefMapEditor) return;
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    RefMapEditor.SaveMapData("temp.map");
+                    await SatPlayer.Game.GameScene.LoadPlayersDataAsync();
+                    var newScene = new SatPlayer.Game.GameScene("temp.map", SatPlayer.Game.GameScene.Players.Where(obj => PlayerNames.Any(obj2 => obj.Path == obj2.Name)).ToList(), PlayerPosition, isPreviewMode: true);
+                    newScene.OnGameOver += (() =>
+                    {
+                        asd.Engine.ChangeScene(RefMapEditor);
+                    });
+                    newScene.OnChangeMap += (path, initPlayers, playerPosition, doorID, savePointID) =>
+                    {
+                        asd.Engine.ChangeScene(RefMapEditor);
+                    };
+                    newScene.OnEnd += () =>
+                    {
+                        asd.Engine.ChangeScene(RefMapEditor);
+                    };
+                    (int taskCount, int progress) info = default;
+                    await newScene.LoadMapAsync(info);
+                    asd.Engine.ChangeScene(newScene, false);
+                }
+                catch (Exception e)
                 {
-                    asd.Engine.ChangeScene(RefMapEditor);
-                };
-                newScene.OnEnd += () =>
-                {
-                    asd.Engine.ChangeScene(RefMapEditor);
-                };
-                (int taskCount, int progress) info = default;
-                await newScene.LoadMapAsync(info);
-                asd.Engine.ChangeScene(newScene, false);
+                    ErrorIO.AddError(e);
+                }
             }
 
             public class PlayerName : IListInput

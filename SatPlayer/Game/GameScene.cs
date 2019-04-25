@@ -10,6 +10,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections.Concurrent;
 using SatIO;
 using SatPlayer.Game.Object;
+using System.Xml.Serialization;
 
 namespace SatPlayer.Game
 {
@@ -55,7 +56,7 @@ namespace SatPlayer.Game
         /// マップ名
         /// </summary>
         public string MapName { get; private set; }
-        
+
         /// <summary>
         /// マップレイヤー
         /// </summary>
@@ -202,13 +203,16 @@ namespace SatPlayer.Game
         public static async Task LoadPlayersDataAsync()
         {
             Players.Clear();
-            BinaryFormatter serializser = new BinaryFormatter();
-            var playerDataPaths = (List<string>)serializser.Deserialize(IO.GetStream("Player/PlayersList.dat"));
-            foreach (var item in playerDataPaths)
+            XmlSerializer serializser = new XmlSerializer(typeof(List<string>));
+            using (var stream = await IO.GetStreamAsync("Player/PlayersList.dat"))
             {
-                if (!asd.Engine.File.Exists(item)) continue;
-                Player player = await Player.CreatePlayerAsync(item);
-                Players.Add(player);
+                var playerDataPaths = (List<string>)serializser.Deserialize(stream);
+                foreach (var item in playerDataPaths)
+                {
+                    if (!asd.Engine.File.Exists(item)) continue;
+                    Player player = await Player.CreatePlayerAsync(item);
+                    Players.Add(player);
+                }
             }
         }
 
