@@ -326,7 +326,11 @@ namespace SatPlayer.Game
                 item.Collision = new Collision();
                 foreach (var item2 in item.Sensors)
                 {
-                    if (item2.Value is MapObject.Sensor sensor) sensor.Collision = new Collision();
+                    if (item2.Value is MapObject.Sensor sensor)
+                    {
+                        sensor.
+                        sensor.Collision = new Collision();
+                    }
                 }
             }
 
@@ -348,7 +352,7 @@ namespace SatPlayer.Game
             }
 
             //Sensor=>All
-            foreach (var item in Objects.OfType<MapObject>().SelectMany(obj => obj.Sensors).OfType<MapObject.Sensor>())
+            foreach (var item in Objects.OfType<MapObject>().SelectMany(obj => obj.Sensors).Select(obj => obj.Value).OfType<MapObject.Sensor>())
             {
                 if (item.Collision is Collision collision)
                 {

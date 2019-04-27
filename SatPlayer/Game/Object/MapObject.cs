@@ -479,6 +479,8 @@ namespace SatPlayer.Game.Object
             /// </summary>
             public ICollision Collision { get; set; }
 
+            public MapObject Owner { get; internal set; }
+
             public Sensor(asd.Vector2DF sensorPosition, float diameter)
             {
                 circleShape = new asd.CircleShape();
