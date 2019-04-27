@@ -276,7 +276,7 @@ namespace SatPlayer.Game.Object
         /// <param name="position">力を加える場所の相対座標</param>
         public void SetForce(Vector direct, Vector position)
         {
-            CollisionShape.SetForce(direct.ToAsdVector(), position.ToAsdVector());
+            CollisionShape.SetForce(direct.ToAsdVector(), position.ToAsdVector()+ CenterPosition);
         }
 
         /// <summary>
@@ -286,7 +286,7 @@ namespace SatPlayer.Game.Object
         /// <param name="position">力を加える芭蕉の相対座標</param>
         public void SetImpulse(Vector direct, Vector position)
         {
-            CollisionShape.SetImpulse(direct.ToAsdVector(), position.ToAsdVector());
+            CollisionShape.SetImpulse(direct.ToAsdVector(), position.ToAsdVector() + CenterPosition);
         }
 
         void IActor.OnUpdate()

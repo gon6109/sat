@@ -28,12 +28,6 @@ namespace SatCore.ScriptEditor
             //}
         }
 
-        protected override void OnUpdating()
-        {
-            UpdateCollision();
-            base.OnUpdating();
-        }
-
         protected override void OnUpdated()
         {
             base.OnUpdated();

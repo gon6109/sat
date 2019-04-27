@@ -328,7 +328,7 @@ namespace SatPlayer.Game
                 {
                     if (item2.Value is MapObject.Sensor sensor)
                     {
-                        sensor.
+                        sensor.Update();
                         sensor.Collision = new Collision();
                     }
                 }

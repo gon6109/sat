@@ -106,7 +106,9 @@ namespace SatCore.ScriptEditor
         public new object Clone()
         {
             var clone = new EditableMapObject();
-            clone.sensors = new Dictionary<string, Sensor>(sensors);
+
+            clone.sensors = CopySensors(clone, true);
+
             clone.childMapObjectData = new Dictionary<string, MapObject>(childMapObjectData);
             clone.Effects = new Dictionary<string, Effect>(Effects);
             clone.Update = Update;

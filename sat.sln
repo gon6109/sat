@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.168
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SatUI", "SatUI\SatUI.csproj", "{018CA898-8430-42AD-83FD-A0DCE47EC0B7}"
 EndProject
@@ -61,8 +61,8 @@ Global
 		{6B7E4F63-C309-497C-8C8A-092EB424EBBA}.Release|x86.Build.0 = Release|x86
 		{26D7E1F6-C8F8-4FA1-A6F9-DB2816B4A0CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{26D7E1F6-C8F8-4FA1-A6F9-DB2816B4A0CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{26D7E1F6-C8F8-4FA1-A6F9-DB2816B4A0CB}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{26D7E1F6-C8F8-4FA1-A6F9-DB2816B4A0CB}.Debug|x86.Build.0 = Debug|Any CPU
+		{26D7E1F6-C8F8-4FA1-A6F9-DB2816B4A0CB}.Debug|x86.ActiveCfg = Debug|x86
+		{26D7E1F6-C8F8-4FA1-A6F9-DB2816B4A0CB}.Debug|x86.Build.0 = Debug|x86
 		{26D7E1F6-C8F8-4FA1-A6F9-DB2816B4A0CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26D7E1F6-C8F8-4FA1-A6F9-DB2816B4A0CB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{26D7E1F6-C8F8-4FA1-A6F9-DB2816B4A0CB}.Release|x86.ActiveCfg = Release|Any CPU

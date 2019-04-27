@@ -131,7 +131,7 @@ namespace SatPlayer.Game.Object
         public new object Clone()
         {
             EventObject clone = new EventObject();
-            clone.sensors = new Dictionary<string, Sensor>(sensors);
+            clone.sensors = CopySensors(clone);
             clone.childMapObjectData = new Dictionary<string, MapObject>(childMapObjectData);
             clone.Effects = new Dictionary<string, Effect>(Effects);
             clone.Update = Update;

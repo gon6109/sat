@@ -310,7 +310,7 @@ namespace SatPlayer.Game.Object
         public new object Clone()
         {
             MapObject clone = new MapObject();
-            clone.sensors = new Dictionary<string, Sensor>(sensors);
+            clone.sensors = CopySensors(clone);
             clone.childMapObjectData = new Dictionary<string, MapObject>(childMapObjectData);
             clone.Effects = new Dictionary<string, Effect>(Effects);
             clone.Update = Update;
@@ -379,7 +379,7 @@ namespace SatPlayer.Game.Object
         public void SetForce(Vector direct, Vector position)
         {
             if (collision is PhysicalRectangleShape shape)
-                shape.SetForce(direct.ToAsdVector(), position.ToAsdVector());
+                shape.SetForce(direct.ToAsdVector(), position.ToAsdVector() + CenterPosition);
         }
 
         /// <summary>
@@ -390,7 +390,7 @@ namespace SatPlayer.Game.Object
         public void SetImpulse(Vector direct, Vector position)
         {
             if (collision is PhysicalRectangleShape shape)
-                shape.SetImpulse(direct.ToAsdVector(), position.ToAsdVector());
+                shape.SetImpulse(direct.ToAsdVector(), position.ToAsdVector() + CenterPosition);
         }
 
         /// <summary>
@@ -423,7 +423,7 @@ namespace SatPlayer.Game.Object
         }
 
         public void SetSensor(string name, Vector position, float diameter = 3)
-            => sensors.Add(name, new Sensor(position.ToAsdVector(), diameter));
+            => sensors.Add(name, new Sensor(this, position.ToAsdVector(), diameter));
 
         public static async Task<MapObject> CreateMapObjectAsync(MapObjectIO mapObjectIO)
         {
@@ -446,6 +446,16 @@ namespace SatPlayer.Game.Object
             }
             mapObject.Position = mapObjectIO.Position;
             return mapObject;
+        }
+
+        protected Dictionary<string, Sensor> CopySensors(MapObject to, bool isPreview = false)
+        {
+            var result = new Dictionary<string, Sensor>();
+            foreach (var item in sensors)
+            {
+                result.Add(item.Key, new Sensor(to, item.Value.Position.ToAsdVector(), item.Value.Radius * 2, isPreview));
+            }
+            return result;
         }
 
         /// <summary>
@@ -479,13 +489,21 @@ namespace SatPlayer.Game.Object
             /// </summary>
             public ICollision Collision { get; set; }
 
-            public MapObject Owner { get; internal set; }
+            public MapObject Owner { get; private set; }
 
-            public Sensor(asd.Vector2DF sensorPosition, float diameter)
+            public Sensor(MapObject owner, asd.Vector2DF sensorPosition, float diameter, bool isPreview = false)
             {
                 circleShape = new asd.CircleShape();
                 position = sensorPosition;
                 circleShape.OuterDiameter = diameter;
+                Owner = owner;
+                if (isPreview)
+                    Owner.AddChild(new asd.GeometryObject2D()
+                    {
+                        Shape = circleShape,
+                        Color = new asd.Color(100, 0, 0)
+                    },
+                    (asd.ChildManagementMode)0b1111, asd.ChildTransformingMode.Nothing);
             }
 
             public bool GetIsCollidedWith(asd.Shape shape)
@@ -493,6 +511,21 @@ namespace SatPlayer.Game.Object
 
             public bool GetIsCollidedWith(PhysicalShape shape)
                 => shape.GetIsCollidedWith(circleShape);
+
+            public void Update()
+            {
+                if (Owner?.IsAlive ?? false)
+                {
+                    if (Owner.IsAllowRotation)
+                    {
+                        var pos = position;
+                        pos.Degree += Owner.Angle;
+                        circleShape.Position = Owner.Position + pos;
+                    }
+                    else
+                        circleShape.Position = Owner.Position + position;
+                }
+            }
         }
     }
 }
