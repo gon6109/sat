@@ -51,10 +51,13 @@ namespace SatUI
 
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                Path.Text = openFileDialog.FileName;
                 try
                 {
-                    if (IsAutoConvertRelativePath) Path.Text = SatCore.Path.GetRelativePath(Path.Text, RootPath);
+                    if (IsAutoConvertRelativePath)
+                        Path.Text = SatCore.Path.GetRelativePath(Path.Text, RootPath);
+                    else
+                        Path.Text = openFileDialog.FileName;
+
                 }
                 catch (Exception ex)
                 {
