@@ -104,7 +104,7 @@ namespace SatPlayer.Game.Object
         /// <summary>
         /// OnUpdate時に呼び出されるイベント
         /// </summary>
-        public virtual event Action<IMapObject> Update = delegate { };
+        public event Action<IMapObject> Update = delegate { };
 
         /// <summary>
         /// HP
@@ -208,13 +208,13 @@ namespace SatPlayer.Game.Object
             }
         }
 
-        protected Dictionary<string, Sensor> sensors;
-        protected Dictionary<string, MapObject> childMapObjectData;
+        Dictionary<string, Sensor> sensors;
+        Dictionary<string, MapObject> childMapObjectData;
         private int hP;
         private MapObjectType _mapObjectType;
-        private short _collisionGroup;
-        private ushort _collisionCategory;
-        private ushort _collisionMask;
+        private short _collisionGroup = 0;
+        private ushort _collisionCategory = 0x0001;
+        private ushort _collisionMask = 0xffff;
 
         public MapObject()
         {
@@ -310,7 +310,13 @@ namespace SatPlayer.Game.Object
         public new object Clone()
         {
             MapObject clone = new MapObject();
-            clone.sensors = CopySensors(clone);
+            CloneImp(clone);
+            return clone;
+        }
+
+        protected void CloneImp(MapObject clone, bool isPreview = false)
+        {
+            clone.sensors = CopySensors(clone, isPreview);
             clone.childMapObjectData = new Dictionary<string, MapObject>(childMapObjectData);
             clone.Effects = new Dictionary<string, Effect>(Effects);
             clone.Update = Update;
@@ -331,7 +337,6 @@ namespace SatPlayer.Game.Object
             clone.CollisionGroup = CollisionGroup;
             clone.CollisionMask = CollisionMask;
             clone.CollisionCategory = CollisionCategory;
-            return clone;
         }
 
         /// <summary>
@@ -410,6 +415,9 @@ namespace SatPlayer.Game.Object
                         {
                             physicalRectangleShape.DrawingArea = new asd.RectF(Position - physicalRectangleShape.DrawingArea.Size / 2, AnimationPart.FirstOrDefault().Value?.Textures.FirstOrDefault()?.Size.To2DF() ?? default);
                             CenterPosition = physicalRectangleShape.DrawingArea.Size / 2;
+                            physicalRectangleShape.GroupIndex = CollisionGroup;
+                            physicalRectangleShape.CategoryBits = CollisionCategory;
+                            physicalRectangleShape.MaskBits = CollisionMask;
                         }
                         break;
                     case MapObjectType.Passive:
@@ -423,7 +431,8 @@ namespace SatPlayer.Game.Object
         }
 
         public void SetSensor(string name, Vector position, float diameter = 3)
-            => sensors.Add(name, new Sensor(this, position.ToAsdVector(), diameter));
+            => 
+            sensors.Add(name, new Sensor(this, position.ToAsdVector(), diameter));
 
         public static async Task<MapObject> CreateMapObjectAsync(MapObjectIO mapObjectIO)
         {
@@ -456,6 +465,14 @@ namespace SatPlayer.Game.Object
                 result.Add(item.Key, new Sensor(to, item.Value.Position.ToAsdVector(), item.Value.Radius * 2, isPreview));
             }
             return result;
+        }
+
+        protected virtual void Reset()
+        {
+            sensors = new Dictionary<string, Sensor>();
+            Effects = new Dictionary<string, Effect>();
+            childMapObjectData = new Dictionary<string, MapObject>();
+            Update = delegate { };
         }
 
         /// <summary>

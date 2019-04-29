@@ -44,6 +44,7 @@ namespace SatCore.MapEditor
             {
                 UndoRedoManager.ChangeProperty(this, value);
                 _scriptPath = value;
+                Reset();
                 Script<object> script;
                 try
                 {
@@ -69,11 +70,12 @@ namespace SatCore.MapEditor
 
         public EventObject()
         {
-
+            IsUpdated = false;
         }
 
         protected override void OnAdded()
         {
+            base.OnAdded();
             if (Texture == null)
                 Texture = TextureManager.LoadTexture("");
             if (Layer is MapLayer map)
@@ -82,7 +84,6 @@ namespace SatCore.MapEditor
                 if (CollisionShape is PhysicalRectangleShape shape)
                     shape.DrawingArea = new asd.RectF(Position - CenterPosition, Texture.Size.To2DF());
             }
-            base.OnAdded();
         }
 
         [Button("消去")]

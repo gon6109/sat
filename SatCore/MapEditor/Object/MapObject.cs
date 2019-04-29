@@ -80,11 +80,10 @@ namespace SatCore.MapEditor
                     catch (Exception e)
                     {
                         ErrorIO.AddError(e);
-                        //TODO: 仮画像
-                        Texture = TextureManager.LoadTexture("walk_g0000.png");
+                        Texture = TextureManager.LoadTexture("Static/error.png");
                     }
                 }
-                else Texture = TextureManager.LoadTexture("walk_g0000.png");
+                else Texture = TextureManager.LoadTexture("Static/error.png");
                 CenterPosition = Texture.Size.To2DF() / 2;
                 CollisionShape.DrawingArea = new asd.RectF(Position - CenterPosition, Texture.Size.To2DF());
             }
@@ -98,8 +97,7 @@ namespace SatCore.MapEditor
             CollisionShape = new asd.RectangleShape();
             Color = new asd.Color(255, 255, 255, 200);
             DrawingPriority = 2;
-            //TODO: 仮画像
-            Texture = TextureManager.LoadTexture("walk_g0000.png");
+            Texture = TextureManager.LoadTexture("Static/error.png");
             ScriptPath = "";
         }
 

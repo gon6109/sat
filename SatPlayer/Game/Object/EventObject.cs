@@ -57,7 +57,7 @@ namespace SatPlayer.Game.Object
 
         public bool IsUseName => false;
 
-        public virtual new event Action<IEventObject> Update = delegate { };
+        public new event Action<IEventObject> Update = delegate { };
 
         PhysicalShape IActor.CollisionShape => CollisionShape as PhysicalRectangleShape;
 
@@ -131,29 +131,21 @@ namespace SatPlayer.Game.Object
         public new object Clone()
         {
             EventObject clone = new EventObject();
-            clone.sensors = CopySensors(clone);
-            clone.childMapObjectData = new Dictionary<string, MapObject>(childMapObjectData);
-            clone.Effects = new Dictionary<string, Effect>(Effects);
-            clone.Update = Update;
-            clone.State = State;
-            clone.Tag = Tag;
-            clone.Copy(this);
-            clone.MapObjectType = MapObjectType;
-            clone.IsAllowRotation = IsAllowRotation;
-            try
-            {
-                clone.collision.DrawingArea = new asd.RectF(new asd.Vector2DF(), clone.AnimationPart.First().Value.Textures.First().Size.To2DF());
-            }
-            catch (Exception e)
-            {
-                ErrorIO.AddError(e);
-            }
-            clone.CenterPosition = clone.collision.DrawingArea.Size / 2;
-            clone.CollisionGroup = CollisionGroup;
-            clone.CollisionMask = CollisionMask;
-            clone.CollisionCategory = CollisionCategory;
-            clone.IsEvent = IsEvent;
+            CloneImp(clone);
             return clone;
+        }
+
+        protected void CloneImp(EventObject clone, bool isPreview = false)
+        {
+            CloneImp((MapObject)clone, isPreview);
+            clone.Update = Update;
+            clone.IsEvent = IsEvent;
+        }
+
+        protected override void Reset()
+        {
+            base.Reset();
+            Update = delegate { };
         }
 
         public static async Task<EventObject> CreateEventObjectAsync(EventObjectIO eventObjectIO)
@@ -163,10 +155,9 @@ namespace SatPlayer.Game.Object
             {
                 try
                 {
-                    var stream = await IO.GetStreamAsync(eventObjectIO.ScriptPath);
-                    using (stream)
+                    using (var stream = await IO.GetStreamAsync(eventObjectIO.ScriptPath))
                     {
-                        var script = ScriptOption.ScriptOptions["EventObject"]?.CreateScript<object>(stream.ToString());
+                        var script = ScriptOption.ScriptOptions["EventObject"]?.CreateScript<object>(Encoding.UTF8.GetString(stream.ToArray()));
                         await Task.Run(() => script.Compile());
                         await script.RunAsync(eventObject);
                     }

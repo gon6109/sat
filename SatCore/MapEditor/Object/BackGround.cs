@@ -135,7 +135,7 @@ namespace SatCore.MapEditor.Object
         {
             Camera = new asd.CameraObject2D();
             _zoom = 1;
-            Camera.UpdatePriority = 10;
+            UpdatePriority = 10;
             DrawingPriority = -1;
         }
 
