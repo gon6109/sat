@@ -12,6 +12,7 @@ using SatPlayer;
 using Microsoft.CodeAnalysis.Scripting;
 using SatCore.Attribute;
 using System.IO;
+using SatScript.MapObject;
 
 namespace SatCore.MapEditor
 {
@@ -70,7 +71,6 @@ namespace SatCore.MapEditor
 
         public EventObject()
         {
-            IsUpdated = false;
         }
 
         protected override void OnAdded()
@@ -84,6 +84,12 @@ namespace SatCore.MapEditor
                 if (CollisionShape is PhysicalRectangleShape shape)
                     shape.DrawingArea = new asd.RectF(Position - CenterPosition, Texture.Size.To2DF());
             }
+        }
+
+        protected override void OnUpdate()
+        {
+            IsEvent = true;
+            base.OnUpdate();
         }
 
         [Button("消去")]

@@ -95,7 +95,7 @@ namespace SatCore.MapEditor.Object.MapEvent
 
                 var actor = new Actor(await MapEventPlayer.CreatePlayerAsync(playersListDialog.FileName));
 
-                actor.InitPosition = Position + new asd.Vector2DF(Size.X, 0) - actor.Texture.Size.To2DF();
+                actor.InitPosition = Position + new asd.Vector2DF(Size.X, 0) - actor.Texture?.Size.To2DF() ?? new asd.Vector2DF();
                 actor.Position = actor.InitPosition;
                 Actors.Add(actor);
                 actor.Active = true;
@@ -166,6 +166,14 @@ namespace SatCore.MapEditor.Object.MapEvent
             MainCamera.Active = true;
 
             asd.Engine.Update();
+
+            foreach (var item in Actors)
+            {
+                item.ClearTexture();
+                item.SetTexture(item.Position, new asd.Color(100, 255, 100));
+            }
+            MainCamera.ClearGeometry();
+            MainCamera.SetGeometry(Layer, MainCamera.Position, new asd.Color(255, 0, 0, 100));
 
             foreach (var component in EventComponents)
             {
@@ -436,11 +444,12 @@ namespace SatCore.MapEditor.Object.MapEvent
 
         public void OnSelected()
         {
-            foreach (var item in Actors)
+            foreach (var item in Actors.Select(obj => obj.ToObject2D()).OfType<EventObject>())
             {
-                item.SetTexture(item.InitPosition, new asd.Color(255, 255, 255));
+                item.Layer?.RemoveObject(item);
             }
             Layer.AddObject(MainCamera);
+            Simulate(SelectedComponent);
             MainCamera.SetGeometry(Layer, MainCamera.InitPosition, new asd.Color(255, 255, 0, 100));
         }
 
@@ -452,6 +461,10 @@ namespace SatCore.MapEditor.Object.MapEvent
             }
             MainCamera.ClearGeometry();
             MainCamera.Layer.RemoveObject(MainCamera);
+            foreach (var item in Actors.Select(obj => obj.ToObject2D()).OfType<EventObject>())
+            {
+                Layer.AddObject(item);
+            }
         }
 
         public bool GetIsActive()
@@ -506,7 +519,7 @@ namespace SatCore.MapEditor.Object.MapEvent
             private asd.Vector2DF _initPosition;
             private IActor _actorImp;
 
-            asd.Object2D ToObject2D()
+            internal asd.Object2D ToObject2D()
                 => _actorImp as asd.Object2D;
 
             public int ID => _actorImp.ID;

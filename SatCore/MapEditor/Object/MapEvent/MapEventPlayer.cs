@@ -33,6 +33,8 @@ namespace SatCore.MapEditor.Object.MapEvent
                     var script = ScriptOption.ScriptOptions["Player"].CreateScript<object>(Encoding.UTF8.GetString(stream.ToArray()));
                     await script.RunAsync(player);
                 }
+                if (player.Texture == null)
+                    player.State = player.AnimationPart.FirstOrDefault().Key;
                 return player;
             }
             catch

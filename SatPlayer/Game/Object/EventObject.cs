@@ -92,7 +92,7 @@ namespace SatPlayer.Game.Object
                 IsCollidedWithGround = layer.Obstacles.Any(obj => obj.GetIsCollidedWith(GroundCollision));
             }
 
-            if (IsEvent)
+            if (IsEvent && MoveCommands.Count > 0)
             {
                 var currentCommand = MoveCommands.Dequeue();
                 foreach (BaseComponent.Inputs item in Enum.GetValues(typeof(BaseComponent.Inputs)))
