@@ -223,7 +223,7 @@ namespace SatPlayer.Game.Object.MapEvent
             MainCamera.WaitStatePoints.Enqueue(InitCameraPosition);
 
             int count = 0;
-            while (Actors.Any(obj => (obj.InitPosition - obj.ActorObject.Position).Length > 5) || count < 256)
+            while (Actors.Where(obj => obj.ActorObject is PlayerName).Any(obj => (obj.InitPosition - obj.ActorObject.Position).Length > 5) || count < 256)
             {
                 foreach (MapObject item in Layer.Objects.Where(obj => obj is MapObject))
                 {
