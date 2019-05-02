@@ -209,9 +209,9 @@ namespace SatPlayer.Game
                     try
                     {
                         bool isSkip = false;
-                        foreach (var item2 in item.Actors.Where(obj => obj.Path != null))
+                        foreach (var item2 in item.Actors.Where(obj => obj.Path != null && obj.Path.IndexOf(".pc") > -1))
                         {
-                            if (!gameScene.CanUsePlayers.Any(obj => obj.Name == item2.Path))
+                            if (!gameScene.CanUsePlayers.Any(obj => obj.Path == item2.Path))
                             {
                                 isSkip = true;
                                 break;
