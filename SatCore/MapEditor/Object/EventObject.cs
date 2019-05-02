@@ -19,7 +19,7 @@ namespace SatCore.MapEditor
     /// <summary>
     /// Event対応キャラクター
     /// </summary>
-    public class EventObject : SatPlayer.Game.Object.EventObject, ICopyPasteObject, IMovable
+    public class EventObject : SatPlayer.Game.Object.EventObject, ICopyPasteObject, IMovable, IActor
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -27,12 +27,29 @@ namespace SatCore.MapEditor
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         private string _scriptPath;
+        private asd.Vector2DF _position;
+        bool _isActivePhysic;
 
         [TextOutput("ID")]
         public new int ID { get => base.ID; set => base.ID = value; }
 
         [VectorInput("座標")]
-        public new asd.Vector2DF Position { get => base.Position; set => base.Position = value; }
+        public asd.Vector2DF StartPosition
+        {
+            get => _position;
+            set
+            {
+                base.Position = value;
+                _position = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public new asd.Vector2DF Position
+        {
+            get => base.Position;
+            set => base.Position = value;
+        }
 
         /// <summary>
         /// スクリプトへのパス
@@ -69,6 +86,19 @@ namespace SatCore.MapEditor
             }
         }
 
+        PhysicalShape IActor.CollisionShape => CollisionShape as PhysicalShape;
+
+        public bool IsActivePhysic
+        {
+            get => _isActivePhysic;
+            set
+            {
+                _isActivePhysic = value;
+                if (CollisionShape is PhysicalShape shape)
+                    shape.IsActive = value;
+            }
+        }
+
         public EventObject()
         {
         }
@@ -78,18 +108,42 @@ namespace SatCore.MapEditor
             base.OnAdded();
             if (Texture == null)
                 Texture = TextureManager.LoadTexture("");
-            if (Layer is MapLayer map)
-            {
-                collision = new PhysicalRectangleShape(PhysicalShapeType.Dynamic, map.PhysicalWorld);
-                if (CollisionShape is PhysicalRectangleShape shape)
-                    shape.DrawingArea = new asd.RectF(Position - CenterPosition, Texture.Size.To2DF());
-            }
+            SetCollision();
+        }
+
+        protected override void OnDispose()
+        {
+            if (collision is PhysicalShape shape)
+                shape.Dispose();
+            collision = null;
+        }
+
+        protected override void OnRemoved()
+        {
+            if (collision is PhysicalShape shape)
+                shape.Dispose();
+            collision = null;
         }
 
         protected override void OnUpdate()
         {
-            IsEvent = true;
-            base.OnUpdate();
+            if (!IsEvent)
+            {
+                UpdatePhysic();
+                if (!AnimationPart.ContainsKey(State) || !IsAnimate) return;
+                if (AnimationPart[State].Update() && IsOneLoop)
+                {
+                    State = PreState;
+                    IsOneLoop = false;
+                }
+                if (AnimationPart[State].IsUpdated)
+                {
+                    Texture = AnimationPart[State].CurrentTexture;
+                    AnimationPart[State].IsUpdated = false;
+                }
+            }
+            else
+                base.OnUpdate();
         }
 
         [Button("消去")]
@@ -104,7 +158,7 @@ namespace SatCore.MapEditor
             UndoRedoManager.Enable = false;
             EventObject copy = new EventObject();
             copy.ScriptPath = ScriptPath;
-            copy.Position = Position + new asd.Vector2DF(50, 50);
+            copy.Position = StartPosition + new asd.Vector2DF(50, 50);
             return copy;
         }
 
@@ -112,12 +166,12 @@ namespace SatCore.MapEditor
 
         public void StartMove()
         {
-            pos = Position;
+            pos = StartPosition;
         }
 
         public void EndMove()
         {
-            UndoRedoManager.ChangeProperty(this, Position, pos, "Position");
+            UndoRedoManager.ChangeProperty(this, StartPosition, pos, "StartPosition");
         }
 
         public EventObjectIO ToIO()
@@ -125,7 +179,7 @@ namespace SatCore.MapEditor
             var result = new EventObjectIO()
             {
                 ScriptPath = ScriptPath,
-                Position = Position,
+                Position = StartPosition,
                 ID = ID,
             };
             return result;
@@ -135,9 +189,37 @@ namespace SatCore.MapEditor
         {
             var eventObject = new EventObject();
             eventObject.ScriptPath = mapObject.ScriptPath;
-            eventObject.Position = mapObject.Position;
+            eventObject.StartPosition = mapObject.Position;
             eventObject.ID = mapObject.ID;
             return eventObject;
+        }
+
+        public void SetCollision(MapLayer mapLayer)
+        {
+            if (collision is PhysicalShape shape)
+                shape.Dispose();
+            collision = new PhysicalRectangleShape(PhysicalShapeType.Dynamic, mapLayer.PhysicalWorld);
+            if (CollisionShape is PhysicalRectangleShape shape2)
+            {
+                shape2.DrawingArea = new asd.RectF(Position - CenterPosition, Texture?.Size.To2DF() ?? default);
+                shape2.IsActive = IsActivePhysic;
+            }
+        }
+
+        void SetCollision()
+        {
+            if (CollisionShape == null)
+                collision = new asd.RectangleShape();
+
+            if (CollisionShape is asd.RectangleShape shape2)
+            {
+                shape2.DrawingArea = new asd.RectF(Position - CenterPosition, Texture?.Size.To2DF() ?? default);
+            }
+        }
+
+        void IActor.OnUpdate()
+        {
+            OnUpdate();
         }
     }
 }

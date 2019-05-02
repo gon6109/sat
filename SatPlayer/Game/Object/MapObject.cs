@@ -250,12 +250,7 @@ namespace SatPlayer.Game.Object
 
         protected override void OnUpdate()
         {
-            if (collision is PhysicalRectangleShape shape)
-            {
-                base.Position = shape.CenterPosition + shape.DrawingArea.Position;
-                if (Math.Abs(shape.Angle) > 1.0f && !IsAllowRotation) shape.AngularVelocity = -shape.Angle * 30.0f;
-                if (IsAllowRotation) Angle = shape.Angle;
-            }
+            UpdatePhysic();
 
             try
             {
@@ -268,6 +263,16 @@ namespace SatPlayer.Game.Object
             }
 
             base.OnUpdate();
+        }
+
+        protected void UpdatePhysic()
+        {
+            if (collision is PhysicalRectangleShape shape)
+            {
+                base.Position = shape.CenterPosition + shape.DrawingArea.Position;
+                if (Math.Abs(shape.Angle) > 1.0f && !IsAllowRotation) shape.AngularVelocity = -shape.Angle * 30.0f;
+                if (IsAllowRotation) Angle = shape.Angle;
+            }
         }
 
         /// <summary>
@@ -405,8 +410,8 @@ namespace SatPlayer.Game.Object
         {
             if (Layer is MapLayer map)
             {
-                if (collision != null)
-                    collision.Dispose();
+                if (collision is PhysicalShape shape)
+                    shape.Dispose();
                 switch (MapObjectType)
                 {
                     case MapObjectType.Active:

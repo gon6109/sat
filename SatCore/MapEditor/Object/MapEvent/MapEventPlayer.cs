@@ -1,4 +1,5 @@
 ﻿using BaseComponent;
+using PhysicAltseed;
 using SatPlayer;
 using System;
 using System.Collections.Generic;
@@ -11,13 +12,12 @@ namespace SatCore.MapEditor.Object.MapEvent
     /// <summary>
     /// MapEvent用Player
     /// </summary>
-    public class MapEventPlayer : SatPlayer.Game.Object.Player
+    public class MapEventPlayer : SatPlayer.Game.Object.Player, IActor
     {
+        PhysicalShape IActor.CollisionShape => CollisionShape;
+
         protected override void OnAdded()
         {
-            if (Layer is MapLayer map)
-                CollisionShape = new PhysicAltseed.PhysicalRectangleShape(PhysicAltseed.PhysicalShapeType.Dynamic, map.PhysicalWorld);
-            base.OnAdded();
         }
 
         public static async new Task<MapEventPlayer> CreatePlayerAsync(string playerDataPath, int playerGroup = 0)
@@ -41,6 +41,24 @@ namespace SatCore.MapEditor.Object.MapEvent
             {
                 throw;
             }
+        }
+
+        void IActor.SetCollision(MapLayer mapLayer)
+        {
+            CollisionShape = new PhysicalRectangleShape(PhysicalShapeType.Dynamic, mapLayer.PhysicalWorld);
+
+            CollisionShape.Density = 2.5f;
+            CollisionShape.Restitution = 0.0f;
+            CollisionShape.Friction = 0.0f;
+            CollisionShape.GroupIndex = -1;
+            DrawingPriority = 2;
+
+            SetCollision();
+        }
+
+        void IActor.OnUpdate()
+        {
+            OnUpdate();
         }
     }
 }

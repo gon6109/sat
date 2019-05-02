@@ -149,6 +149,7 @@
     <Compile Include="Attribute\GroupAttribute.cs" />
     <Compile Include="Attribute\IOAttribute.cs" />
     <Compile Include="Attribute\ListInputAttribute.cs" />
+    <Compile Include="MapEditor\IActor.cs" />
     <Compile Include="MapEditor\Object\BackGround.cs" />
     <Compile Include="MapEditor\Object\CameraRestriction.cs" />
     <Compile Include="MapEditor\Object\CollisionBox.cs" />

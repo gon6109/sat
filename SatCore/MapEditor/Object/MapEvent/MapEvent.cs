@@ -76,11 +76,26 @@ namespace SatCore.MapEditor.Object.MapEvent
             ((MapLayer)Layer).CurrentToolType = ToolType.SelectEventObject;
         }
 
-        public void AddEventObjectActor(IActor actorObject, int id, asd.Vector2DF initPosition)
+        public void AddEventObjectActor(EventObject actorObject, int id, asd.Vector2DF initPosition)
         {
             var actor = new Actor(actorObject);
+            actor.InitPosition = actorObject.StartPosition;
             Actors.Add(actor);
-            actor.SetTexture(actor.InitPosition, new asd.Color(255, 255, 255));
+            actor.Active = true;
+
+            if (Layer is MapLayer map)
+                for (int i = 0; i < 60; i++)
+                {
+                    UpdateCollision();
+                    map.PhysicalWorld.Update();
+                    actor.Update();
+                }
+
+            actor.InitPosition = actorObject.Position;
+            actor.Active = false;
+            actorObject.IsActivePhysic = true;
+
+            actor.SetTexture(actor.Position, new asd.Color(255, 255, 255));
         }
 
         [Button("プレイヤーを登録")]
@@ -100,11 +115,10 @@ namespace SatCore.MapEditor.Object.MapEvent
                 Actors.Add(actor);
                 actor.Active = true;
 
-                asd.Engine.Update();
-
                 if (Layer is MapLayer map)
                     for (int i = 0; i < 60; i++)
                     {
+                        UpdateCollision();
                         map.PhysicalWorld.Update();
                         actor.Update();
                     }
@@ -165,8 +179,6 @@ namespace SatCore.MapEditor.Object.MapEvent
             MainCamera.Position = MainCamera.InitPosition;
             MainCamera.Active = true;
 
-            asd.Engine.Update();
-
             foreach (var item in Actors)
             {
                 item.ClearTexture();
@@ -190,6 +202,7 @@ namespace SatCore.MapEditor.Object.MapEvent
 
                 if (component is MoveComponent)
                 {
+                    UpdateCollision();
                     for (int i = 0; i < ((MoveComponent)component).Frame; i++)
                     {
                         foreach (var item in Actors)
@@ -444,13 +457,13 @@ namespace SatCore.MapEditor.Object.MapEvent
 
         public void OnSelected()
         {
+            Layer.AddObject(MainCamera);
+            MainCamera.SetGeometry(Layer, MainCamera.InitPosition, new asd.Color(255, 255, 0, 100));
             foreach (var item in Actors.Select(obj => obj.ToObject2D()).OfType<EventObject>())
             {
-                item.Layer?.RemoveObject(item);
+                item.IsActivePhysic = true;
             }
-            Layer.AddObject(MainCamera);
             Simulate(SelectedComponent);
-            MainCamera.SetGeometry(Layer, MainCamera.InitPosition, new asd.Color(255, 255, 0, 100));
         }
 
         public void OnUnselected()
@@ -464,6 +477,7 @@ namespace SatCore.MapEditor.Object.MapEvent
             foreach (var item in Actors.Select(obj => obj.ToObject2D()).OfType<EventObject>())
             {
                 Layer.AddObject(item);
+                item.Position = item.StartPosition;
             }
         }
 
@@ -471,6 +485,47 @@ namespace SatCore.MapEditor.Object.MapEvent
         {
             if (Actors.Any(obj => obj.Active)) return true;
             return MainCamera.Active;
+        }
+
+        public void UpdateCollision()
+        {
+            //初期化
+            foreach (var item in Actors.Select(obj => obj.ToObject2D()).OfType<EventObject>())
+            {
+                item.Collision = new Collision();
+                foreach (var item2 in item.Sensors)
+                {
+                    if (item2.Value is SatPlayer.Game.Object.MapObject.Sensor sensor)
+                    {
+                        sensor.Update();
+                        sensor.Collision = new Collision();
+                    }
+                }
+            }
+
+            var Obstacles = Layer.Objects.Select<asd.Object2D, PhysicalShape>(obj =>
+            {
+                if (obj is CollisionBox box)
+                    return box.Shape;
+                else if (obj is CollisionTriangle triangle)
+                    return triangle.Shape;
+                return null;
+            }).OfType<PhysicalShape>();
+
+            //MapObject,EventObject=>Obstacle
+            foreach (var item in Actors.OfType<EventObject>())
+            {
+                if (item.Collision is Collision mapObjectCollision) mapObjectCollision.IsCollidedWithObstacle = Obstacles.Any(obj => obj.GetIsCollidedWith(item.CollisionShape));
+            }
+
+            //Sensor=>All
+            foreach (var item in Actors.Select(obj => obj.ToObject2D()).OfType<EventObject>().SelectMany(obj => obj.Sensors).Select(obj => obj.Value).OfType<SatPlayer.Game.Object.MapObject.Sensor>())
+            {
+                if (item.Collision is Collision collision)
+                {
+                    collision.IsCollidedWithObstacle = Obstacles.Any(obj => item.GetIsCollidedWith(obj));
+                }
+            }
         }
 
         [Button("消去")]
@@ -584,7 +639,10 @@ namespace SatCore.MapEditor.Object.MapEvent
                         {
                             item.IsDrawn = false;
                         }
-                        MapEvent?.Layer?.AddObject(ToObject2D());
+                        if (MapEvent?.Layer is MapLayer mapLayer)
+                            _actorImp.SetCollision(mapLayer);
+                        if (ToObject2D()?.Layer == null)
+                            MapEvent?.Layer?.AddObject(ToObject2D());
                     }
                     else
                     {
@@ -619,11 +677,6 @@ namespace SatCore.MapEditor.Object.MapEvent
             }
 
             public void Update()
-            {
-                OnUpdate();
-            }
-
-            public void OnUpdate()
             {
                 _actorImp.OnUpdate();
             }

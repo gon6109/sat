@@ -54,7 +54,7 @@ namespace SatUI
                 try
                 {
                     if (IsAutoConvertRelativePath)
-                        Path.Text = SatCore.Path.GetRelativePath(Path.Text, RootPath);
+                        Path.Text = SatCore.Path.GetRelativePath(openFileDialog.FileName, RootPath);
                     else
                         Path.Text = openFileDialog.FileName;
 

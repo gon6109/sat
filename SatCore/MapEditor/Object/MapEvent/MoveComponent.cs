@@ -134,7 +134,6 @@ namespace SatCore.MapEditor.Object.MapEvent
 
             foreach (var item in Actors)
             {
-                if (item == actor) continue;
                 item.IsSimulateEvent = true;
             }
 
@@ -147,6 +146,9 @@ namespace SatCore.MapEditor.Object.MapEvent
                     moveCommandElements[item] = Input.GetInputState(item) > 0;
                 }
 
+                actor.MapEvent.UpdateCollision();
+
+                actor.AddRequest(moveCommandElements);
                 if (!Commands.ContainsKey(actor))
                 {
                     Commands[actor] = new CharacterMoveCommand();
@@ -170,7 +172,6 @@ namespace SatCore.MapEditor.Object.MapEvent
                 {
                     foreach (var item in Actors)
                     {
-                        if (item == actor) continue;
                         item.Active = false;
                         item.IsSimulateEvent = false;
                         item.Position = actorsInitPos[item];
@@ -209,6 +210,8 @@ namespace SatCore.MapEditor.Object.MapEvent
                 {
                     moveCommandElements[item] = Input.GetInputState(item) > 0;
                 }
+
+                Actors.FirstOrDefault()?.MapEvent.UpdateCollision();
 
                 if (CameraCommand.MoveCommandElements.Count > i) CameraCommand.MoveCommandElements[i] = moveCommandElements;
                 else CameraCommand.MoveCommandElements.Add(moveCommandElements);

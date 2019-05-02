@@ -203,7 +203,8 @@ namespace SatPlayer.Game.Object
                 var currentCommand = MoveCommands.Dequeue();
                 foreach (BaseComponent.Inputs item in Enum.GetValues(typeof(BaseComponent.Inputs)))
                 {
-                    if (currentCommand[item] && inputState[item] > -1) inputState[item]++;
+                    if (!currentCommand.ContainsKey(item)) inputState[item] = 0;
+                    else if (currentCommand[item] && inputState[item] > -1) inputState[item]++;
                     else if (currentCommand[item] && inputState[item] == -1) inputState[item] = 1;
                     else if (!currentCommand[item] && inputState[item] > 0) inputState[item] = -1;
                     else inputState[item] = 0;

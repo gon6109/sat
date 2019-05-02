@@ -53,13 +53,13 @@ namespace SatCore.ScriptEditor
         /// </summary>
         public override event Action<SatScript.Player.IPlayer> Update = delegate { };
 
-        protected override void OnAdded()
-        {
-            base.OnAdded();
-            if (Layer is MapLayer map)
-                CollisionShape = new PhysicalRectangleShape(PhysicalShapeType.Dynamic, map.PhysicalWorld);
-            SetCollision();
-        }
+        //protected override void OnAdded()
+        //{
+        //    base.OnAdded();
+        //    if (Layer is MapLayer map)
+        //        CollisionShape = new PhysicalRectangleShape(PhysicalShapeType.Dynamic, map.PhysicalWorld);
+        //    SetCollision();
+        //}
 
         protected override void OnUpdate()
         {

@@ -569,7 +569,7 @@ namespace SatCore.MapEditor
                 UndoRedoManager.Enable = false;
                 EventObject mapObject;
                 mapObject = new EventObject();
-                mapObject.Position = GetMouseRelativePosition();
+                mapObject.StartPosition = GetMouseRelativePosition();
                 if (Scene is MapEditorScene && ((MapEditorScene)Scene).SelectedTemplate as MapObjectTemplate != null)
                 {
                     var template = ((MapEditorScene)Scene).SelectedTemplate as MapObjectTemplate;
@@ -1093,7 +1093,7 @@ namespace SatCore.MapEditor
         {
             return DragObject((EventObject)SelectedObject, ((EventObject)SelectedObject).CollisionShape, () =>
             {
-                ((EventObject)SelectedObject).Position += GetMouseMoveVector();
+                ((EventObject)SelectedObject).StartPosition += GetMouseMoveVector();
             });
         }
 

@@ -76,7 +76,8 @@ namespace SatPlayer.Game.Object
 
         protected override void OnRemoved()
         {
-            CollisionShape?.Dispose();
+            if (collision is PhysicalShape shape)
+                shape.Dispose();
             collision = null;
             base.OnRemoved();
         }
@@ -97,7 +98,8 @@ namespace SatPlayer.Game.Object
                 var currentCommand = MoveCommands.Dequeue();
                 foreach (BaseComponent.Inputs item in Enum.GetValues(typeof(BaseComponent.Inputs)))
                 {
-                    if (currentCommand[item] && inputState[item] > -1) inputState[item]++;
+                    if (!currentCommand.ContainsKey(item)) inputState[item] = 0;
+                    else if (currentCommand[item] && inputState[item] > -1) inputState[item]++;
                     else if (currentCommand[item] && inputState[item] == -1) inputState[item] = 1;
                     else if (!currentCommand[item] && inputState[item] > 0) inputState[item] = -1;
                     else inputState[item] = 0;
@@ -111,7 +113,6 @@ namespace SatPlayer.Game.Object
             catch (Exception e)
             {
                 ErrorIO.AddError(e);
-                Dispose();
             }
         }
 
