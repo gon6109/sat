@@ -697,7 +697,7 @@ namespace SatCore.MapEditor.Object.MapEvent
             {
                 var actorIO = new MapEventIO.ActorIO()
                 {
-                    Path = actor.Path,
+                    Path = actor._actorImp.Path,
                     ID = actor.ID,
                     InitPosition = actor.InitPosition,
                 };

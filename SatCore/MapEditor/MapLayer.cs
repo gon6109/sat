@@ -262,7 +262,7 @@ namespace SatCore.MapEditor
 
         async Task<IActor> SearchActorAsync(MapEventIO.ActorIO actorIO)
         {
-            if (actorIO.Path != null)
+            if (PlayersListDialog.GetPlayersScriptPaths().Any(obj => obj == actorIO.Path))
             {
                 return await Object.MapEvent.MapEventPlayer.CreatePlayerAsync(PlayersListDialog.GetPlayersScriptPaths().First(obj => obj == actorIO.Path));
             }
@@ -310,7 +310,7 @@ namespace SatCore.MapEditor
                 mapData.MapObjects.Add(item.ToIO());
             }
 
-            foreach (var item in EventObjects)
+            foreach (var item in EventObjects.Union(MapEvents.SelectMany(obj => obj.Actors.Select(actor => actor.ToObject2D()).OfType<EventObject>())))
             {
                 mapData.EventObjects.Add(item.ToIO());
             }
