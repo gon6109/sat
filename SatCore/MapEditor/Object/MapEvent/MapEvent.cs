@@ -489,41 +489,35 @@ namespace SatCore.MapEditor.Object.MapEvent
 
         public void UpdateCollision()
         {
-            //初期化
-            foreach (var item in Actors.Select(obj => obj.ToObject2D()).OfType<EventObject>())
+            if (Layer is MapLayer map)
             {
-                item.Collision = new Collision();
-                foreach (var item2 in item.Sensors)
+                //初期化
+                foreach (var item in Actors.Select(obj => obj.ToObject2D()).OfType<EventObject>())
                 {
-                    if (item2.Value is SatPlayer.Game.Object.MapObject.Sensor sensor)
+                    item.Collision = new Collision();
+                    foreach (var item2 in item.Sensors)
                     {
-                        sensor.Update();
-                        sensor.Collision = new Collision();
+                        if (item2.Value is SatPlayer.Game.Object.MapObject.Sensor sensor)
+                        {
+                            sensor.Update();
+                            sensor.Collision = new Collision();
+                        }
                     }
                 }
-            }
 
-            var Obstacles = Layer.Objects.Select<asd.Object2D, PhysicalShape>(obj =>
-            {
-                if (obj is CollisionBox box)
-                    return box.Shape;
-                else if (obj is CollisionTriangle triangle)
-                    return triangle.Shape;
-                return null;
-            }).OfType<PhysicalShape>();
-
-            //MapObject,EventObject=>Obstacle
-            foreach (var item in Actors.OfType<EventObject>())
-            {
-                if (item.Collision is Collision mapObjectCollision) mapObjectCollision.IsCollidedWithObstacle = Obstacles.Any(obj => obj.GetIsCollidedWith(item.CollisionShape));
-            }
-
-            //Sensor=>All
-            foreach (var item in Actors.Select(obj => obj.ToObject2D()).OfType<EventObject>().SelectMany(obj => obj.Sensors).Select(obj => obj.Value).OfType<SatPlayer.Game.Object.MapObject.Sensor>())
-            {
-                if (item.Collision is Collision collision)
+                //MapObject,EventObject=>Obstacle
+                foreach (var item in Actors.OfType<EventObject>())
                 {
-                    collision.IsCollidedWithObstacle = Obstacles.Any(obj => item.GetIsCollidedWith(obj));
+                    if (item.Collision is Collision mapObjectCollision) mapObjectCollision.IsCollidedWithObstacle = map.Obstacles.Any(obj => obj.GetIsCollidedWith(item.CollisionShape));
+                }
+
+                //Sensor=>All
+                foreach (var item in Actors.Select(obj => obj.ToObject2D()).OfType<EventObject>().SelectMany(obj => obj.Sensors).Select(obj => obj.Value).OfType<SatPlayer.Game.Object.MapObject.Sensor>())
+                {
+                    if (item.Collision is Collision collision)
+                    {
+                        collision.IsCollidedWithObstacle = map.Obstacles.Any(obj => item.GetIsCollidedWith(obj));
+                    }
                 }
             }
         }

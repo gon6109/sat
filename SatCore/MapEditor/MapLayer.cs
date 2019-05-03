@@ -69,14 +69,23 @@ namespace SatCore.MapEditor
         asd.Vector2DF preMousePosition;
         object dragObject;
 
-        IEnumerable<CollisionBox> CollisionBoxes => Objects.OfType<CollisionBox>();
-        IEnumerable<CollisionTriangle> CollisionTriangles => Objects.OfType<CollisionTriangle>();
-        IEnumerable<Door> Doors => Objects.OfType<Door>();
-        IEnumerable<MapObject> MapObjects => Objects.OfType<MapObject>();
-        IEnumerable<EventObject> EventObjects => Objects.OfType<EventObject>();
-        IEnumerable<Object.MapEvent.MapEvent> MapEvents => Objects.OfType<Object.MapEvent.MapEvent>();
-        IEnumerable<CameraRestriction> CameraRestrictions => Objects.OfType<CameraRestriction>();
-        IEnumerable<SavePoint> SavePoints => Objects.OfType<SavePoint>();
+        public IEnumerable<CollisionBox> CollisionBoxes => Objects.OfType<CollisionBox>();
+        public IEnumerable<CollisionTriangle> CollisionTriangles => Objects.OfType<CollisionTriangle>();
+        public IEnumerable<Door> Doors => Objects.OfType<Door>();
+        public IEnumerable<MapObject> MapObjects => Objects.OfType<MapObject>();
+        public IEnumerable<EventObject> EventObjects => Objects.OfType<EventObject>();
+        public IEnumerable<Object.MapEvent.MapEvent> MapEvents => Objects.OfType<Object.MapEvent.MapEvent>();
+        public IEnumerable<CameraRestriction> CameraRestrictions => Objects.OfType<CameraRestriction>();
+        public IEnumerable<SavePoint> SavePoints => Objects.OfType<SavePoint>();
+
+        public IEnumerable<PhysicalShape> Obstacles => Objects.Select<asd.Object2D, PhysicalShape>(obj =>
+        {
+            if (obj is CollisionBox box)
+                return box.Shape;
+            else if (obj is CollisionTriangle triangle)
+                return triangle.Shape;
+            return null;
+        }).OfType<PhysicalShape>();
 
         ToolType currentToolType;
         /// <summary>

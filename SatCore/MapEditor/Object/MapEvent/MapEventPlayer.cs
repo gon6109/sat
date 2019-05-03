@@ -56,6 +56,13 @@ namespace SatCore.MapEditor.Object.MapEvent
             SetCollision();
         }
 
+        protected override void OnUpdate()
+        {
+            if (Layer is MapLayer map)
+                IsCollidedWithGround = map.Obstacles.Any(obj => obj.GetIsCollidedWith(GroundCollision));
+            base.OnUpdate();
+        }
+
         void IActor.OnUpdate()
         {
             OnUpdate();

@@ -66,7 +66,7 @@ namespace SatPlayer.Game.Object
         /// <summary>
         /// 地面と接しているか
         /// </summary>
-        public bool IsCollidedWithGround { get; private set; }
+        public bool IsCollidedWithGround { get; protected set; }
 
         /// <summary>
         /// イベント時か
