@@ -402,10 +402,6 @@ namespace SatCore.MapEditor
             {
                 if (item.Shape.ShapeType == asd.ShapeType.CircleShape) ((asd.CircleShape)item.Shape).OuterDiameter = 8.0f * (Zoom > 1 ? Zoom : 1);
             }
-        }
-
-        protected override void OnUpdated()
-        {
 
             switch (CurrentToolType)
             {
@@ -445,6 +441,10 @@ namespace SatCore.MapEditor
                     SetSavePoint();
                     break;
             }
+        }
+
+        protected override void OnUpdated()
+        {
             base.OnUpdated();
 
             preMousePosition = Mouse.Position;

@@ -178,7 +178,6 @@ namespace SatCore.MapEditor
             collisionTriangle.CameraGroup = 1;
             for (int i = 0; i < 3; i++) collisionTriangle._vertex[i] = triangleIO.vertexes[i];
             collisionTriangle.Color = new asd.Color(0, 0, 255, 100);
-            collisionTriangle.DrawingPriority = 4;
             return collisionTriangle;
         }
     }

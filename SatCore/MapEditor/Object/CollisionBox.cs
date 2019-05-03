@@ -137,7 +137,6 @@ namespace SatCore.MapEditor
             collisionBox._rectPosition = boxIO.Position;
             collisionBox._rectSize = boxIO.Size;
             collisionBox.Color = new asd.Color(0, 0, 255, 100);
-            collisionBox.DrawingPriority = 4;
             return collisionBox;
         }
     }
