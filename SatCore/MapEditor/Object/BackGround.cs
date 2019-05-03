@@ -117,8 +117,16 @@ namespace SatCore.MapEditor.Object
                 UndoRedoManager.ChangeProperty(this, value);
                 base.Position *= value / _zoom;
                 _zoom = value;
-                if (value > 1) Camera.DrawingPriority = 3;
-                else Camera.DrawingPriority = -1;
+                if (value > 1)
+                {
+                    Camera.DrawingPriority = 3;
+                    Color = new asd.Color(255, 255, 255, 210);
+                }
+                else
+                {
+                    Camera.DrawingPriority = -1;
+                    Color = new asd.Color(255, 255, 255);
+                }
                 OnPropertyChanged();
             }
         }
@@ -208,10 +216,8 @@ namespace SatCore.MapEditor.Object
         {
             BackGround backGround = new BackGround();
             backGround.Position = backGroundIO.Position;
-            backGround._zoom = backGroundIO.Zoom;
+            backGround.Zoom = backGroundIO.Zoom;
             backGround.TexturePath = backGroundIO.TexturePath;
-            if (backGround.Zoom > 1) backGround.Camera.DrawingPriority = 3;
-            else backGround.Camera.DrawingPriority = -1;
             return backGround;
         }
     }
