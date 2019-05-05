@@ -224,6 +224,8 @@ namespace SatCore.MapEditor
         protected override void OnUpdated()
         {
             cameraUpdater?.MoveNext();
+            if (Input.GetInputState(Inputs.Esc) == 1)
+                asd.Engine.Reload();
             base.OnUpdated();
         }
 

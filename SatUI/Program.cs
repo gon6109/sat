@@ -45,7 +45,10 @@ namespace SatUI
             MainWindow.EditorPanel.Child.MouseWheel += Child_MouseWheel;
             MainWindow.Show();
 
-            asd.Engine.InitializeByExternalWindow(MainWindow.EditorPanel.Child.Handle, System.IntPtr.Zero, (int)MainWindow.EditorPanel.RenderSize.Width, (int)MainWindow.EditorPanel.RenderSize.Height, new asd.EngineOption());
+            asd.Engine.InitializeByExternalWindow(MainWindow.EditorPanel.Child.Handle, System.IntPtr.Zero, (int)MainWindow.EditorPanel.RenderSize.Width, (int)MainWindow.EditorPanel.RenderSize.Height, new asd.EngineOption()
+            {
+                IsReloadingEnabled = true
+            });
             BinaryFormatter deserializer = new BinaryFormatter();
             try
             {

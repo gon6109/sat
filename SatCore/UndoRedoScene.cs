@@ -15,6 +15,7 @@ namespace SatCore
         public UndoRedoScene()
         {
             ErrorIO.Scene = this;
+            asd.Engine.Reload();
         }
 
         protected override void OnStartUpdating()
