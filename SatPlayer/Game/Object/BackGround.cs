@@ -96,10 +96,9 @@ namespace SatPlayer.Game.Object
             {
                 try
                 {
-                    var stream = await IO.GetStreamAsync(backGroundIO.TexturePath);
-                    using (stream)
+                    using (var stream = await IO.GetStreamAsync(backGroundIO.TexturePath))
                     {
-                        var script = ScriptOption.ScriptOptions["BackGround"].CreateScript<object>(stream.ToString());
+                        var script = ScriptOption.ScriptOptions["BackGround"].CreateScript<object>(Encoding.UTF8.GetString(stream.ToArray()));
                         await Task.Run(() => script.Compile());
                         await script.RunAsync(backGround);
                     }

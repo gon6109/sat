@@ -115,7 +115,6 @@ namespace SatCore.MapEditor.Object
             set
             {
                 UndoRedoManager.ChangeProperty(this, value);
-                base.Position *= value / _zoom;
                 _zoom = value;
                 if (value > 1)
                 {
