@@ -159,6 +159,7 @@
     <Compile Include="MapEditor\IMovable.cs" />
     <Compile Include="MapEditor\MapLayer.cs" />
     <Compile Include="MapEditor\MapEditorScene.cs" />
+    <Compile Include="MapEditor\Object\IMapElement.cs" />
     <Compile Include="MapEditor\Object\MapEvent\CharacterImage.cs" />
     <Compile Include="MapEditor\Object\MapEvent\MapEvent.cs" />
     <Compile Include="MapEditor\Object\MapEvent\MapEventComponent.cs" />

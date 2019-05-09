@@ -14,6 +14,9 @@ using SatPlayer.Game;
 using SatCore.Attribute;
 using SatCore.MapEditor.Object;
 using System.Threading.Tasks;
+using MapObject = SatCore.MapEditor.Object.MapObject;
+using SavePoint = SatCore.MapEditor.Object.SavePoint;
+using EventObject = SatCore.MapEditor.Object.EventObject;
 
 namespace SatCore.MapEditor
 {
@@ -57,8 +60,10 @@ namespace SatCore.MapEditor
         public asd.CameraObject2D ScrollCamera { get; }
         public float Zoom { get; set; }
 
-        [VectorInput("マップサイズ")]
-        public asd.Vector2DF WorldSize { get; set; }
+        private IMapElement maxXObject;
+        private IMapElement maxYObject;
+
+        public asd.Vector2DF WorldSize { get; private set; }
 
         /// <summary>
         /// 選択されているオブジェクト
@@ -160,6 +165,7 @@ namespace SatCore.MapEditor
         asd.GeometryObject2D polygonObject;
 
         List<EventObject> eventObjects;
+        private int objectCount;
 
         public MapLayer()
         {
@@ -446,8 +452,29 @@ namespace SatCore.MapEditor
         protected override void OnUpdated()
         {
             base.OnUpdated();
-
+            if (objectCount != ObjectCount)
+            {
+                OnChangedMaxPositionObject(this, new PropertyChangedEventArgs(""));
+                objectCount = ObjectCount;
+            }
             preMousePosition = Mouse.Position;
+        }
+
+        private void OnChangedMaxPositionObject(object sender, PropertyChangedEventArgs e)
+        {
+            if (maxXObject is INotifyPropertyChanged x)
+                x.PropertyChanged -= OnChangedMaxPositionObject;
+            if (maxYObject is INotifyPropertyChanged y)
+                y.PropertyChanged -= OnChangedMaxPositionObject;
+
+            maxXObject = Objects.OfType<IMapElement>().OrderByDescending(obj => obj.BottomRight.X).FirstOrDefault();
+            maxYObject = Objects.OfType<IMapElement>().OrderByDescending(obj => obj.BottomRight.Y).FirstOrDefault();
+            WorldSize = new asd.Vector2DF(maxXObject.BottomRight.X, maxYObject.BottomRight.Y);
+
+            if (maxXObject is INotifyPropertyChanged x2)
+                x2.PropertyChanged += OnChangedMaxPositionObject;
+            if (maxYObject is INotifyPropertyChanged y2)
+                y2.PropertyChanged += OnChangedMaxPositionObject;
         }
 
         void SetCollisionBox()

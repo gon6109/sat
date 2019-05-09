@@ -18,7 +18,7 @@ namespace SatCore.MapEditor.Object.MapEvent
     /// <summary>
     /// 強制イベント
     /// </summary>
-    public class MapEvent : asd.GeometryObject2D, INotifyPropertyChanged, IMovable
+    public class MapEvent : asd.GeometryObject2D, INotifyPropertyChanged, IMovable, IMapElement
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -334,6 +334,8 @@ namespace SatCore.MapEditor.Object.MapEvent
                 Size = value.Size;
             }
         }
+
+        public asd.Vector2DF BottomRight => Position + Size;
 
         asd.RectF rect;
         private string _toMapPath;

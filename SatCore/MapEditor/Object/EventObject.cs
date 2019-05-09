@@ -14,17 +14,17 @@ using SatCore.Attribute;
 using System.IO;
 using SatScript.MapObject;
 
-namespace SatCore.MapEditor
+namespace SatCore.MapEditor.Object
 {
     /// <summary>
     /// Event対応キャラクター
     /// </summary>
-    public class EventObject : SatPlayer.Game.Object.EventObject, ICopyPasteObject, IMovable, IActor
+    public class EventObject : SatPlayer.Game.Object.EventObject, ICopyPasteObject, IMovable, IActor, IMapElement
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         private string _scriptPath;
         private asd.Vector2DF _position;
@@ -98,6 +98,8 @@ namespace SatCore.MapEditor
                     shape.IsActive = value;
             }
         }
+
+        public asd.Vector2DF BottomRight => StartPosition + CenterPosition;
 
         public EventObject()
         {

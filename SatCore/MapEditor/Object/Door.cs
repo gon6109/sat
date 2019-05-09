@@ -8,12 +8,12 @@ using System.Runtime.CompilerServices;
 using BaseComponent;
 using SatCore.Attribute;
 
-namespace SatCore.MapEditor
+namespace SatCore.MapEditor.Object
 {
     /// <summary>
     /// マップ移動オブジェクト
     /// </summary>
-    public class Door : MultiAnimationObject2D, INotifyPropertyChanged, IMovable, ICopyPasteObject
+    public class Door : MultiAnimationObject2D, INotifyPropertyChanged, IMovable, ICopyPasteObject, IMapElement
     {
         private string _resourcePath;
         private string _moveToMap;
@@ -25,7 +25,7 @@ namespace SatCore.MapEditor
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         /// <summary>
         /// IDを設定・取得
@@ -168,6 +168,8 @@ namespace SatCore.MapEditor
         }
 
         public asd.RectangleShape CollisionShape { get; set; }
+
+        asd.Vector2DF IMapElement.BottomRight => Position + CenterPosition;
 
         public Door()
         {

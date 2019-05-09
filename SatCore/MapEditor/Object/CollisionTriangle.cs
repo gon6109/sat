@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 using PhysicAltseed;
 using SatCore.Attribute;
 
-namespace SatCore.MapEditor
+namespace SatCore.MapEditor.Object
 {
     /// <summary>
     /// 障害物(三角形)
     /// </summary>
-    public class CollisionTriangle : asd.GeometryObject2D, INotifyPropertyChanged, IMovable, ICopyPasteObject
+    public class CollisionTriangle : asd.GeometryObject2D, INotifyPropertyChanged, IMovable, ICopyPasteObject, IMapElement
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         public new PhysicalTriangleShape Shape
         {
@@ -136,6 +136,8 @@ namespace SatCore.MapEditor
                 Vertex3 = value.vec3;
             }
         }
+
+        public asd.Vector2DF BottomRight => new asd.Vector2DF(new[] { Vertex1, Vertex2, Vertex3 }.Max(obj => obj.X), new[] { Vertex1, Vertex2, Vertex3 }.Max(obj => obj.Y));
 
         Triangle triangle;
 

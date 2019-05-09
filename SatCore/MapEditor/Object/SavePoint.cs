@@ -1,4 +1,5 @@
-﻿using BaseComponent;
+﻿using asd;
+using BaseComponent;
 using SatCore.Attribute;
 using SatIO;
 using System;
@@ -9,17 +10,17 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SatCore.MapEditor
+namespace SatCore.MapEditor.Object
 {
     /// <summary>
     /// セーブポイント
     /// </summary>
-    public class SavePoint : asd.TextureObject2D, IMovable, ICopyPasteObject, INotifyPropertyChanged
+    public class SavePoint : asd.TextureObject2D, IMovable, ICopyPasteObject, INotifyPropertyChanged, IMapElement
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         private asd.RectangleShape rect;
 
@@ -45,6 +46,8 @@ namespace SatCore.MapEditor
                 return rect;
             }
         }
+
+        public Vector2DF BottomRight => Position + CenterPosition;
 
         public SavePoint()
         {

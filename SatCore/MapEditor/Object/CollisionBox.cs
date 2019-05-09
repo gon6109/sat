@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 using PhysicAltseed;
 using SatCore.Attribute;
 
-namespace SatCore.MapEditor
+namespace SatCore.MapEditor.Object
 {
     /// <summary>
     /// 障害物(四角形)
     /// </summary>
-    public class CollisionBox : asd.GeometryObject2D, INotifyPropertyChanged, IMovable, ICopyPasteObject
+    public class CollisionBox : asd.GeometryObject2D, INotifyPropertyChanged, IMovable, ICopyPasteObject, IMapElement
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         public new PhysicalRectangleShape Shape
         {
@@ -66,6 +66,8 @@ namespace SatCore.MapEditor
                 RectSize = value.Size;
             }
         }
+
+        public asd.Vector2DF BottomRight => RectPosition + RectSize;
 
         public CollisionBox()
         {

@@ -13,12 +13,12 @@ using Microsoft.CodeAnalysis.Scripting;
 using PhysicAltseed;
 using SatCore.Attribute;
 
-namespace SatCore.MapEditor
+namespace SatCore.MapEditor.Object
 {
     /// <summary>
     /// マップオブジェクト
     /// </summary>
-    public class MapObject : MultiAnimationObject2D, INotifyPropertyChanged, IMovable, ICopyPasteObject
+    public class MapObject : MultiAnimationObject2D, INotifyPropertyChanged, IMovable, ICopyPasteObject, IMapElement
     {
         static ScriptOptions options = ScriptOptions.Default.WithImports("SatPlayer", "PhysicAltseed", "System")
                                      .WithReferences(System.Reflection.Assembly.GetAssembly(typeof(MapObject))
@@ -28,7 +28,7 @@ namespace SatCore.MapEditor
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         [VectorInput("座標")]
         public new asd.Vector2DF Position
@@ -45,7 +45,7 @@ namespace SatCore.MapEditor
                 OnPropertyChanged();
             }
         }
-        
+
         private string _scriptPath;
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace SatCore.MapEditor
                         StreamReader reader = new StreamReader(IO.GetStream(_scriptPath));
                         string code = "";
                         string temp;
-                        while (( temp = reader.ReadLine()) != null)
+                        while ((temp = reader.ReadLine()) != null)
                         {
                             if (temp.IndexOf("AddAnimationPart(") > -1) code += temp + "\n";
                         }
@@ -90,6 +90,8 @@ namespace SatCore.MapEditor
         }
 
         public asd.RectangleShape CollisionShape { get; }
+
+        public asd.Vector2DF BottomRight => Position + CenterPosition;
 
         public MapObject()
         {
