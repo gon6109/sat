@@ -164,6 +164,11 @@ namespace SatCore.MapEditor
         /// </summary>
         asd.GeometryObject2D polygonObject;
 
+        /// <summary>
+        /// ワールド表示用ボックス
+        /// </summary>
+        RectangleLineShapeObject2D WorldBoxObject { get; }
+
         List<EventObject> eventObjects;
         private int objectCount;
 
@@ -179,6 +184,11 @@ namespace SatCore.MapEditor
             polygonObject.CameraGroup = 1;
             PhysicalWorld = new PhysicalWorld(new asd.RectF(-200, -200, 20400, 5400), new asd.Vector2DF(0, 2000));
             Zoom = 1.0f;
+            WorldBoxObject = new RectangleLineShapeObject2D();
+            WorldBoxObject.Thickness =  2 * Zoom;
+            WorldBoxObject.Color = new asd.Color(0, 255, 255);
+            WorldBoxObject.CameraGroup = 1;
+            AddObject(WorldBoxObject);
         }
 
         /// <summary>
@@ -457,6 +467,10 @@ namespace SatCore.MapEditor
                 OnChangedMaxPositionObject(this, new PropertyChangedEventArgs(""));
                 objectCount = ObjectCount;
             }
+
+            WorldBoxObject.Thickness =  2 * Zoom;
+            WorldBoxObject.DrawingArea = new asd.RectF(default, WorldSize);
+
             preMousePosition = Mouse.Position;
         }
 
