@@ -226,6 +226,12 @@ namespace SatCore.MapEditor
             cameraUpdater?.MoveNext();
             if (Input.GetInputState(Inputs.Esc) == 1)
                 asd.Engine.Reload();
+
+            if (Viewer.Progress != 0)
+            {
+                //TODO: ProgressDialog表示デリゲート呼び出し
+            }
+
             base.OnUpdated();
         }
 
@@ -306,8 +312,9 @@ namespace SatCore.MapEditor
             public asd.Vector2DF PlayerPosition { get; set; }
 
             public MapEditorScene RefMapEditor { get; private set; }
+            public (int taskCount, int progress) ProgressInfo { get; private set; }
 
-            bool isLoading;
+            public int Progress => ProgressInfo.taskCount != 0 ? (int)((float)ProgressInfo.progress / ProgressInfo.taskCount * 100) : 0;
 
             public MapViewer(MapEditorScene mapEditor)
             {
@@ -320,7 +327,7 @@ namespace SatCore.MapEditor
             {
                 try
                 {
-                    if (isLoading || PlayerNames.Count == 0 || asd.Engine.CurrentScene != RefMapEditor) return;
+                    if (PlayerNames.Count == 0 || asd.Engine.CurrentScene != RefMapEditor) return;
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
                     RefMapEditor.SaveMapData("temp.map");
@@ -338,8 +345,10 @@ namespace SatCore.MapEditor
                     {
                         asd.Engine.ChangeScene(RefMapEditor);
                     };
-                    (int taskCount, int progress) info = default;
-                    await newScene.LoadMapAsync(info);
+
+                    await newScene.LoadMapAsync(ProgressInfo);
+                    ProgressInfo = default;
+
                     asd.Engine.ChangeScene(newScene, false);
                 }
                 catch (Exception e)

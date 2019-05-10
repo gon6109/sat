@@ -256,6 +256,9 @@
     <Compile Include="MapEditor.xaml.cs">
       <DependentUpon>MapEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProgressDialog.xaml.cs">
+      <DependentUpon>ProgressDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ScriptOjectRoslynHost.cs" />
     <Compile Include="NumberInput.xaml.cs">
       <DependentUpon>NumberInput.xaml</DependentUpon>
@@ -333,6 +336,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PlayersListDialogUI.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ProgressDialog.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Property.xaml">
