@@ -91,10 +91,18 @@ namespace SatUI
             SatCore.Mouse.Position = new asd.Vector2DF(pos.X / (float)source.CompositionTarget.TransformToDevice.M11,
                 pos.Y / (float)source.CompositionTarget.TransformToDevice.M22);
             SatCore.Mouse.MouseWheel = 0;
-            if (!new System.Drawing.Rectangle(new System.Drawing.Point(), MainWindow.EditorPanel.Child.Size).Contains(pos) || !MainWindow.EditorPanel.IsFocused) return;
-            SatCore.Mouse.IsLeftButton = (Control.MouseButtons & MouseButtons.Left) == MouseButtons.Left;
-            SatCore.Mouse.IsRightButton = (Control.MouseButtons & MouseButtons.Right) == MouseButtons.Right;
-            SatCore.Mouse.IsMiddleButton = (Control.MouseButtons & MouseButtons.Middle) == MouseButtons.Middle;
+            if (!new System.Drawing.Rectangle(new System.Drawing.Point(), MainWindow.EditorPanel.Child.Size).Contains(pos) || !MainWindow.EditorPanel.IsFocused)
+            {
+                SatCore.Mouse.IsLeftButton = false;
+                SatCore.Mouse.IsRightButton = false;
+                SatCore.Mouse.IsMiddleButton = false;
+            }
+            else
+            {
+                SatCore.Mouse.IsLeftButton = (Control.MouseButtons & MouseButtons.Left) == MouseButtons.Left;
+                SatCore.Mouse.IsRightButton = (Control.MouseButtons & MouseButtons.Right) == MouseButtons.Right;
+                SatCore.Mouse.IsMiddleButton = (Control.MouseButtons & MouseButtons.Middle) == MouseButtons.Middle;
+            }
         }
 
         static void KeyInput()
