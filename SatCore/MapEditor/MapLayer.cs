@@ -60,9 +60,6 @@ namespace SatCore.MapEditor
         public asd.CameraObject2D ScrollCamera { get; }
         public float Zoom { get; set; }
 
-        private IMapElement maxXObject;
-        private IMapElement maxYObject;
-
         public asd.Vector2DF WorldSize { get; private set; }
 
         /// <summary>
@@ -170,7 +167,6 @@ namespace SatCore.MapEditor
         RectangleLineShapeObject2D WorldBoxObject { get; }
 
         List<EventObject> eventObjects;
-        private int objectCount;
 
         public MapLayer()
         {
@@ -185,7 +181,7 @@ namespace SatCore.MapEditor
             PhysicalWorld = new PhysicalWorld(new asd.RectF(-200, -200, 20400, 5400), new asd.Vector2DF(0, 2000));
             Zoom = 1.0f;
             WorldBoxObject = new RectangleLineShapeObject2D();
-            WorldBoxObject.Thickness =  2 * Zoom;
+            WorldBoxObject.Thickness = 2 * Zoom;
             WorldBoxObject.Color = new asd.Color(0, 255, 255);
             WorldBoxObject.CameraGroup = 1;
             AddObject(WorldBoxObject);
@@ -462,33 +458,15 @@ namespace SatCore.MapEditor
         protected override void OnUpdated()
         {
             base.OnUpdated();
-            if (objectCount != ObjectCount)
-            {
-                OnChangedMaxPositionObject(this, new PropertyChangedEventArgs(""));
-                objectCount = ObjectCount;
-            }
 
-            WorldBoxObject.Thickness =  2 * Zoom;
+            IEnumerable<IMapElement> elements = Objects.OfType<IMapElement>();
+            if (elements.Count() != 0)
+                WorldSize = new asd.Vector2DF(elements.Max(obj => obj.BottomRight.X), elements.Max(obj => obj.BottomRight.Y));
+
+            WorldBoxObject.Thickness = 2 * Zoom;
             WorldBoxObject.DrawingArea = new asd.RectF(default, WorldSize);
 
             preMousePosition = Mouse.Position;
-        }
-
-        private void OnChangedMaxPositionObject(object sender, PropertyChangedEventArgs e)
-        {
-            if (maxXObject is INotifyPropertyChanged x)
-                x.PropertyChanged -= OnChangedMaxPositionObject;
-            if (maxYObject is INotifyPropertyChanged y)
-                y.PropertyChanged -= OnChangedMaxPositionObject;
-
-            maxXObject = Objects.OfType<IMapElement>().OrderByDescending(obj => obj.BottomRight.X).FirstOrDefault();
-            maxYObject = Objects.OfType<IMapElement>().OrderByDescending(obj => obj.BottomRight.Y).FirstOrDefault();
-            WorldSize = new asd.Vector2DF(maxXObject.BottomRight.X, maxYObject.BottomRight.Y);
-
-            if (maxXObject is INotifyPropertyChanged x2)
-                x2.PropertyChanged += OnChangedMaxPositionObject;
-            if (maxYObject is INotifyPropertyChanged y2)
-                y2.PropertyChanged += OnChangedMaxPositionObject;
         }
 
         void SetCollisionBox()
