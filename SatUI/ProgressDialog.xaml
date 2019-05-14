@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SatUI"
         mc:Ignorable="d"
-        Title="ProgressDialog" Height="100" Width="250">
+        Title="ProgressDialog" Height="100" Width="250" ResizeMode="NoResize" Closed="Window_Closed">
     <Grid>
-        <ProgressBar x:Name="progress" Margin="5,20"/>
+        <ProgressBar x:Name="progress" Margin="5,20" ValueChanged="Progress_ValueChanged"/>
     </Grid>
 </Window>

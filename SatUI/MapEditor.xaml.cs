@@ -83,6 +83,7 @@ namespace SatUI
         private void map_Click(object sender, RoutedEventArgs e)
         {
             var newFile = new SatCore.MapEditor.MapEditorScene();
+            newFile.OnRequestShowProgressDialog += ShowProgressDialog;
             newFile.Map.OnChangeSelectedObject += OnChangeSelectedObject;
             newFile.Map.OnCreateDoor += OnCreateDoor;
             newFile.Map.OnCreateMapObject += OnCreateMapObject;
@@ -94,6 +95,12 @@ namespace SatUI
 
             Property mapProperty = new Property("Map", new object[] { newFile.Map, newFile });
             propertyPanel.AddProperty(mapProperty);
+        }
+
+        private void ShowProgressDialog(string title, string bindingPath, INotifyPropertyChanged bindingSource)
+        {
+            var dialog = new ProgressDialog(title, bindingPath, bindingSource);
+            dialog.ShowDialog();
         }
 
         private void characterImage_Click(object sender, RoutedEventArgs e)
@@ -182,6 +189,7 @@ namespace SatUI
             try
             {
                 var loadFile = new SatCore.MapEditor.MapEditorScene();
+                loadFile.OnRequestShowProgressDialog += ShowProgressDialog;
                 loadFile.Map.OnChangeSelectedObject += OnChangeSelectedObject;
                 loadFile.Map.OnCreateDoor += OnCreateDoor;
                 loadFile.Map.OnCreateMapObject += OnCreateMapObject;

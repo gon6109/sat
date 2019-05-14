@@ -114,11 +114,11 @@ namespace SatPlayer.Game
         /// <summary>
         /// マップをロードする
         /// </summary>
-        /// <param name="info">ロード情報</param>
+        /// <param name="loader">ロードするオブジェクト</param>
         /// <returns>タスク</returns>
-        public async Task LoadMapAsync((int taskCount, int progress) info)
+        public async Task LoadMapAsync(ILoader loader)
         {
-            info.progress = 0;
+            loader.ProgressInfo = (loader.ProgressInfo.taskCount, 0);
 
             AddLayer(Map);
             MessageLayer2D.Reset();
@@ -128,9 +128,9 @@ namespace SatPlayer.Game
             mapIO = await BaseIO.LoadAsync<MapIO>(MapPath);
             MapName = mapIO.MapName;
 
-            info.taskCount = mapIO.GetMapElementCount();
+            loader.ProgressInfo = (mapIO.GetMapElementCount(), loader.ProgressInfo.progress);
 
-            await Map.LoadMapData(mapIO, InitDoorID, InitSavePointID, info);
+            await Map.LoadMapData(mapIO, InitDoorID, InitSavePointID, loader);
 
             foreach (var item in CanUsePlayers)
             {

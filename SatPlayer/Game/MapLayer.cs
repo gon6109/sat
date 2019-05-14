@@ -85,16 +85,16 @@ namespace SatPlayer.Game
         /// <param name="mapIO">マップデータ</param>
         /// <param name="initDoorID">初期ドアID</param>
         /// <param name="initSavePointID">初期セーブポイント</param>
-        /// <param name="info">ロード情報</param>
+        /// <param name="loader">ロードするオブジェクト</param>
         /// <returns></returns>
-        public async Task LoadMapData(SatIO.MapIO mapIO, int initDoorID, int initSavePointID, (int taskCount, int progress) info)
+        public async Task LoadMapData(SatIO.MapIO mapIO, int initDoorID, int initSavePointID, ILoader loader)
         {
             //背景
             foreach (var item in mapIO.BackGrounds)
             {
                 var backGround = await BackGround.CreateBackGroudAsync(item);
                 AddObject(backGround);
-                info.taskCount++;
+                loader.ProgressInfo = (loader.ProgressInfo.taskCount, loader.ProgressInfo.progress + 1);
             }
 
             //物理世界構築
@@ -121,7 +121,7 @@ namespace SatPlayer.Game
                 temp.Friction = 0;
                 temp.DrawingArea = new asd.RectF(item.Position, item.Size);
                 Obstacles.Add(temp);
-                info.taskCount++;
+                loader.ProgressInfo = (loader.ProgressInfo.taskCount, loader.ProgressInfo.progress + 1);
 #if DEBUG
                 asd.GeometryObject2D geometryObject = new asd.GeometryObject2D();
                 geometryObject.CameraGroup = 1;
@@ -145,8 +145,7 @@ namespace SatPlayer.Game
                     i++;
                 }
                 Obstacles.Add(temp);
-                info.taskCount++;
-
+                loader.ProgressInfo = (loader.ProgressInfo.taskCount, loader.ProgressInfo.progress + 1);
 #if DEBUG
                 asd.GeometryObject2D geometryObject = new asd.GeometryObject2D();
                 geometryObject.CameraGroup = 1;
@@ -165,7 +164,7 @@ namespace SatPlayer.Game
                 door.OnLeave += OnLeave;
                 AddObject(door);
                 tempDoors.Add(door);
-                info.taskCount++;
+                loader.ProgressInfo = (loader.ProgressInfo.taskCount, loader.ProgressInfo.progress + 1);
             }
 
             //マップオブジェクト
@@ -180,7 +179,7 @@ namespace SatPlayer.Game
                 {
                     ErrorIO.AddError(e);
                 }
-                info.taskCount++;
+                loader.ProgressInfo = (loader.ProgressInfo.taskCount, loader.ProgressInfo.progress + 1);
             }
 
             //イベントオブジェクト
@@ -197,7 +196,7 @@ namespace SatPlayer.Game
                 {
                     ErrorIO.AddError(e);
                 }
-                info.taskCount++;
+                loader.ProgressInfo = (loader.ProgressInfo.taskCount, loader.ProgressInfo.progress + 1);
             }
 
             //イベント
@@ -225,7 +224,7 @@ namespace SatPlayer.Game
                     {
                         ErrorIO.AddError(e);
                     }
-                    info.taskCount++;
+                loader.ProgressInfo = (loader.ProgressInfo.taskCount, loader.ProgressInfo.progress + 1);
                 }
             }
 
@@ -236,7 +235,7 @@ namespace SatPlayer.Game
                 SavePoint savePoint = new SavePoint(item);
                 AddObject(savePoint);
                 tempSavePoints.Add(savePoint);
-                info.taskCount++;
+                loader.ProgressInfo = (loader.ProgressInfo.taskCount, loader.ProgressInfo.progress + 1);
             }
 
             //プレイヤー初期配置

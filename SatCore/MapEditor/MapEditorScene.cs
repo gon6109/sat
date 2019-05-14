@@ -130,6 +130,9 @@ namespace SatCore.MapEditor
 
         public event Action<bool, bool> OnCopyObjectChanged = delegate { };
 
+        public event Action<string, string, INotifyPropertyChanged
+            > OnRequestShowProgressDialog = delegate { };
+
         [ListInput("Map Objectテンプレート", "SelectedTemplate", "AddTemplate")]
         public ObservableCollection<MapObjectTemplate> MapObjectTemplates { get; set; }
 
@@ -227,9 +230,10 @@ namespace SatCore.MapEditor
             if (Input.GetInputState(Inputs.Esc) == 1)
                 asd.Engine.Reload();
 
-            if (Viewer.Progress != 0)
+            if (Viewer.IsRequireProgressDialog)
             {
-                //TODO: ProgressDialog表示デリゲート呼び出し
+                OnRequestShowProgressDialog("Loading Map", "Progress", Viewer);
+                Viewer.IsRequireProgressDialog = false;
             }
 
             base.OnUpdated();
@@ -237,6 +241,8 @@ namespace SatCore.MapEditor
 
         protected override void OnDispose()
         {
+            OnRequestShowProgressDialog = delegate { };
+            OnCopyObjectChanged = delegate { };
             SatIO.MapObjectTemplateIO templateIO = new SatIO.MapObjectTemplateIO();
             foreach (var item in MapObjectTemplates)
             {
@@ -290,8 +296,15 @@ namespace SatCore.MapEditor
         /// <summary>
         /// マップビューアー
         /// </summary>
-        public class MapViewer
+        public class MapViewer : INotifyPropertyChanged, ILoader
         {
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+            private (int taskCount, int progress) progressInfo;
+            private bool isCancel;
 
             [ListInput("プレイヤー", additionButtonEventMethodName: "AddPlayerData")]
             public ObservableCollection<PlayerName> PlayerNames { get; set; }
@@ -312,7 +325,27 @@ namespace SatCore.MapEditor
             public asd.Vector2DF PlayerPosition { get; set; }
 
             public MapEditorScene RefMapEditor { get; private set; }
-            public (int taskCount, int progress) ProgressInfo { get; private set; }
+            public (int taskCount, int progress) ProgressInfo
+            {
+                get => progressInfo;
+                set
+                {
+                    progressInfo = value;
+                    OnPropertyChanged("Progress");
+                }
+            }
+
+            public bool IsRequireProgressDialog { get; set; }
+
+            public bool IsCancel
+            {
+                get => isCancel;
+                set
+                {
+                    isCancel = value;
+                    OnPropertyChanged();
+                }
+            }
 
             public int Progress => ProgressInfo.taskCount != 0 ? (int)((float)ProgressInfo.progress / ProgressInfo.taskCount * 100) : 0;
 
@@ -330,6 +363,9 @@ namespace SatCore.MapEditor
                     if (PlayerNames.Count == 0 || asd.Engine.CurrentScene != RefMapEditor) return;
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
+                    IsCancel = false;
+                    IsRequireProgressDialog = true;
+
                     RefMapEditor.SaveMapData("temp.map");
                     await SatPlayer.Game.GameScene.LoadPlayersDataAsync();
                     var newScene = new SatPlayer.Game.GameScene("temp.map", SatPlayer.Game.GameScene.Players.Where(obj => PlayerNames.Any(obj2 => obj.Path == obj2.Name)).ToList(), PlayerPosition, isPreviewMode: true);
@@ -346,13 +382,16 @@ namespace SatCore.MapEditor
                         asd.Engine.ChangeScene(RefMapEditor);
                     };
 
-                    await newScene.LoadMapAsync(ProgressInfo);
+                    await newScene.LoadMapAsync(this);
                     ProgressInfo = default;
+                    IsCancel = true;
 
                     asd.Engine.ChangeScene(newScene, false);
                 }
                 catch (Exception e)
                 {
+                    IsRequireProgressDialog = false;
+                    isCancel = true;
                     ErrorIO.AddError(e);
                 }
             }
