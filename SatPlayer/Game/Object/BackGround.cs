@@ -17,11 +17,6 @@ namespace SatPlayer.Game.Object
     /// </summary>
     public class BackGround : MultiAnimationObject2D, IBackGround, ICloneable
     {
-        /// <summary>
-        /// 表示用カメラ
-        /// </summary>
-        public asd.CameraObject2D Camera { get; }
-
         public float Zoom { get; set; }
 
         /// <summary>
@@ -39,23 +34,25 @@ namespace SatPlayer.Game.Object
         }
 
         /// <summary>
+        /// 座標
+        /// 
+        /// </summary>
+        public new asd.Vector2DF Position { get; set; }
+
+        /// <summary>
         /// スクリプト用Color
         /// </summary>
         Color IBackGround.Color { get => Color.ToScriptColor(); set => Color = value.ToAsdColor(); }
 
         public BackGround()
         {
-            Camera = new asd.CameraObject2D();
             Zoom = 1;
-            Camera.UpdatePriority = 10;
+            UpdatePriority = 10;
             DrawingPriority = -1;
         }
 
         protected override void OnAdded()
         {
-            CameraGroup = (int)Math.Pow(2, Layer.Objects.Count(obj => obj is BackGround) + 1);
-            Camera.CameraGroup = CameraGroup;
-            Layer.AddObject(Camera);
             base.OnAdded();
         }
 
@@ -64,8 +61,7 @@ namespace SatPlayer.Game.Object
             if (Layer is MapLayer mapLayer &&
                 mapLayer.PlayerCamera != null)
             {
-                Camera.Dst = mapLayer.PlayerCamera.Dst;
-                Camera.Src = new asd.RectI((mapLayer.PlayerCamera.Src.Position.To2DF() * Zoom).To2DI(), mapLayer.PlayerCamera.Src.Size);
+                base.Position = Position - mapLayer.PlayerCamera.Src.Position.To2DF() * (Zoom - 1);
             }
             Update(this);
             base.OnUpdate();
@@ -109,8 +105,8 @@ namespace SatPlayer.Game.Object
                 }
             }
             else backGround.Texture = await TextureManager.LoadTextureAsync(backGroundIO.TexturePath);
-            if (backGround.Zoom > 1) backGround.Camera.DrawingPriority = 3;
-            else backGround.Camera.DrawingPriority = -1;
+            if (backGround.Zoom > 1) backGround.DrawingPriority = 3;
+            else backGround.DrawingPriority = -1;
             return backGround;
         }
     }

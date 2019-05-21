@@ -24,7 +24,6 @@ namespace SatCore.MapEditor
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         private string _bGMPath;
-        private IEnumerator<int> cameraUpdater;
 
         public MapLayer Map { get; }
 
@@ -207,26 +206,10 @@ namespace SatCore.MapEditor
                 default:
                     break;
             }
-            cameraUpdater = UpdateCamera();
-        }
-
-        IEnumerator<int> UpdateCamera()
-        {
-            foreach (var item in BackGrounds)
-            {
-                item.Camera.Layer?.RemoveObject(item.Camera);
-            }
-            yield return 0;
-            foreach (var item in BackGrounds)
-            {
-                Map.AddObject(item.Camera);
-            }
-            yield return 0;
         }
 
         protected override void OnUpdated()
         {
-            cameraUpdater?.MoveNext();
             if (Input.GetInputState(Inputs.Esc) == 1)
                 asd.Engine.Reload();
 

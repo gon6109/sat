@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using SatCore.Attribute;
+using asd;
 
 namespace SatCore.MapEditor.Object
 {
@@ -32,11 +33,7 @@ namespace SatCore.MapEditor.Object
         private float _zoom;
         private bool _isMove;
         asd.Vector2DF prePosition;
-
-        /// <summary>
-        /// カメラ
-        /// </summary>
-        public asd.CameraObject2D Camera { get; }
+        private Vector2DF _position;
 
         /// <summary>
         /// 動かすか
@@ -99,11 +96,11 @@ namespace SatCore.MapEditor.Object
         [VectorInput("座標")]
         public new asd.Vector2DF Position
         {
-            get => base.Position;
+            get => _position;
             set
             {
                 UndoRedoManager.ChangeProperty(this, value);
-                base.Position = value;
+                _position = value;
                 OnPropertyChanged();
             }
         }
@@ -118,12 +115,10 @@ namespace SatCore.MapEditor.Object
                 _zoom = value;
                 if (value > 1)
                 {
-                    Camera.DrawingPriority = 3;
                     Color = new asd.Color(255, 255, 255, 210);
                 }
                 else
                 {
-                    Camera.DrawingPriority = -1;
                     Color = new asd.Color(255, 255, 255);
                 }
                 OnPropertyChanged();
@@ -140,7 +135,6 @@ namespace SatCore.MapEditor.Object
 
         public BackGround()
         {
-            Camera = new asd.CameraObject2D();
             _zoom = 1;
             UpdatePriority = 10;
             DrawingPriority = -1;
@@ -148,13 +142,6 @@ namespace SatCore.MapEditor.Object
 
         protected override void OnAdded()
         {
-            CameraGroup = (int)Math.Pow(2, Layer.Objects.Count(obj => obj is BackGround) + 1);
-            Camera.CameraGroup = CameraGroup;
-            if (Layer is MapLayer map)
-            {
-                Camera.Dst = map.ScrollCamera.Dst;
-                Camera.Src = new asd.RectI((map.ScrollCamera.Src.Position.To2DF() * Zoom).To2DI(), map.ScrollCamera.Src.Size);
-            }
             base.OnAdded();
         }
 
@@ -162,8 +149,7 @@ namespace SatCore.MapEditor.Object
         {
             if (Layer is MapLayer map)
             {
-                Camera.Dst = map.ScrollCamera.Dst;
-                Camera.Src = new asd.RectI((map.ScrollCamera.Src.Position.To2DF() * Zoom).To2DI(), map.ScrollCamera.Src.Size);
+                base.Position = Position - map.ScrollCamera.Src.Position.To2DF() * (Zoom - 1);
             }
 
             if (IsMove)

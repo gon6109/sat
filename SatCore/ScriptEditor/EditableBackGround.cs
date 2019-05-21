@@ -97,7 +97,6 @@ namespace SatCore.ScriptEditor
         protected override void OnAdded()
         {
             base.OnAdded();
-            Camera.IsDrawn = false;
         }
 
         protected override void OnUpdate()
@@ -108,7 +107,6 @@ namespace SatCore.ScriptEditor
 
         protected override void OnDispose()
         {
-            Camera.Dispose();
             base.OnDispose();
         }
     }
