@@ -355,7 +355,6 @@ namespace SatCore.MapEditor.Object.MapEvent
 
         public MapEvent()
         {
-            CameraGroup = 1;
             Shape = new asd.RectangleShape();
             Color = new asd.Color(0, 255, 0, 100);
             DrawingPriority = 2;
@@ -609,7 +608,6 @@ namespace SatCore.MapEditor.Object.MapEvent
                 textureObject.Texture = Texture;
                 textureObject.CenterPosition = Texture.Size.To2DF() / 2;
                 textureObject.DrawingPriority = 3;
-                textureObject.CameraGroup = 1;
                 TextureObjects.Add(textureObject);
                 MapEvent?.Layer?.AddObject(textureObject);
             }
@@ -755,7 +753,6 @@ namespace SatCore.MapEditor.Object.MapEvent
                 GeometryObjects = new List<asd.GeometryObject2D>();
                 Color = new asd.Color(255, 255, 0, 100);
                 DrawingPriority = 2;
-                CameraGroup = 1;
                 IsDrawn = false;
                 IsUpdated = false;
             }
@@ -765,7 +762,6 @@ namespace SatCore.MapEditor.Object.MapEvent
                 var geometryObject = new asd.GeometryObject2D();
                 geometryObject.Color = color;
                 geometryObject.DrawingPriority = 3;
-                geometryObject.CameraGroup = 1;
                 geometryObject.Shape = new asd.RectangleShape()
                 {
                     DrawingArea = new asd.RectF(position, ScalingLayer2D.OriginDisplaySize),

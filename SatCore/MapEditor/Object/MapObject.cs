@@ -95,7 +95,6 @@ namespace SatCore.MapEditor.Object
 
         public MapObject()
         {
-            CameraGroup = 1;
             CollisionShape = new asd.RectangleShape();
             Color = new asd.Color(255, 255, 255, 200);
             DrawingPriority = 2;
@@ -143,7 +142,6 @@ namespace SatCore.MapEditor.Object
         public static MapObject CreateMapObject(MapObjectIO mapObjectIO)
         {
             var mapObject = new MapObject();
-            mapObject.CameraGroup = 1;
             mapObject.Color = new asd.Color(255, 255, 255, 200);
             mapObject.DrawingPriority = 2;
             mapObject.ScriptPath = mapObjectIO.ScriptPath;

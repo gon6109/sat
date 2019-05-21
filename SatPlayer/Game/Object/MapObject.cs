@@ -223,7 +223,6 @@ namespace SatPlayer.Game.Object
 
         void Init()
         {
-            CameraGroup = 1;
             HP = 100;
             DamageRequests = new Queue<DamageRect>();
             sensors = new Dictionary<string, Sensor>();

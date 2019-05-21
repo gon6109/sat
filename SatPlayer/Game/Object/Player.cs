@@ -144,7 +144,6 @@ namespace SatPlayer.Game.Object
         public Player()
         {
             GroundCollision = new asd.RectangleShape();
-            CameraGroup = 1;
             base.Position = new asd.Vector2DF();
             Effects = new Dictionary<string, Effect>();
             IsCollidedWithGround = false;

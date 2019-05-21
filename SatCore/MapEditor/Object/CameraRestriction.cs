@@ -31,7 +31,6 @@ namespace SatCore.MapEditor.Object
 
         public CameraRestriction()
         {
-            CameraGroup = 1;
             Shape = new asd.RectangleShape();
             Color = new asd.Color(100, 0, 100, 100);
             DrawingPriority = 4;
@@ -109,7 +108,6 @@ namespace SatCore.MapEditor.Object
         public static CameraRestriction CreateCameraRestriction(SatIO.CameraRestrictionIO boxIO)
         {
             var cameraRestriction = new CameraRestriction();
-            cameraRestriction.CameraGroup = 1;
             cameraRestriction.Shape = new asd.RectangleShape();
             cameraRestriction.Shape.DrawingArea = new asd.RectF(boxIO.Position, boxIO.Size);
             cameraRestriction.Color = new asd.Color(100, 0, 100, 100);

@@ -14,7 +14,6 @@ namespace SatPlayer.Game
     {
         public Effect()
         {
-            CameraGroup = 1;
         }
 
         private new void LoadAnimationFile(string animationGroup, string extension, int sheets)

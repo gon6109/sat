@@ -23,7 +23,6 @@ namespace SatPlayer.Game.Object
 
         public SavePoint(SatIO.SavePointIO savePointIO)
         {
-            CameraGroup = 1;
             Texture = TextureManager.LoadTexture("Static/save_point.png");
             CenterPosition = Texture.Size.To2DF() / 2;
             Position = savePointIO.Position;

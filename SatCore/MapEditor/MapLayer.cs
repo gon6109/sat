@@ -171,19 +171,16 @@ namespace SatCore.MapEditor
         public MapLayer()
         {
             ScrollCamera = new asd.CameraObject2D();
-            ScrollCamera.CameraGroup = 1;
             cursorShape = new asd.CircleShape();
             ScrollCamera.Src = new asd.RectI(0, 0, asd.Engine.WindowSize.X, asd.Engine.WindowSize.Y);
             ScrollCamera.Dst = new asd.RectI(0, 0, asd.Engine.WindowSize.X, asd.Engine.WindowSize.Y);
             dotObjects = new List<asd.GeometryObject2D>();
             polygonObject = new asd.GeometryObject2D();
-            polygonObject.CameraGroup = 1;
             PhysicalWorld = new PhysicalWorld(new asd.RectF(-200, -200, 20400, 5400), new asd.Vector2DF(0, 2000));
             Zoom = 1.0f;
             WorldBoxObject = new RectangleLineShapeObject2D();
             WorldBoxObject.Thickness = 2 * Zoom;
             WorldBoxObject.Color = new asd.Color(0, 255, 255);
-            WorldBoxObject.CameraGroup = 1;
             AddObject(WorldBoxObject);
         }
 
@@ -478,7 +475,6 @@ namespace SatCore.MapEditor
                 {
                     DrawingArea = new asd.RectF(GetMouseRelativePosition(), new asd.Vector2DF())
                 };
-                polygonObject.CameraGroup = 1;
                 polygonObject.Color = new asd.Color(0, 0, 255, 100);
                 AddObject(polygonObject);
             }
@@ -513,7 +509,6 @@ namespace SatCore.MapEditor
                     Position = GetMouseRelativePosition(),
                     OuterDiameter = 8,
                 };
-                temp.CameraGroup = 1;
                 temp.Color = new asd.Color(255, 255, 255);
                 dotObjects.Add(temp);
                 AddObject(temp);
@@ -636,7 +631,6 @@ namespace SatCore.MapEditor
                 {
                     DrawingArea = new asd.RectF(GetMouseRelativePosition(), new asd.Vector2DF())
                 };
-                polygonObject.CameraGroup = 1;
                 polygonObject.Color = new asd.Color(0, 0, 255, 100);
                 AddObject(polygonObject);
             }
@@ -724,7 +718,6 @@ namespace SatCore.MapEditor
                 {
                     DrawingArea = new asd.RectF(GetMouseRelativePosition(), new asd.Vector2DF())
                 };
-                polygonObject.CameraGroup = 1;
                 polygonObject.Color = new asd.Color(0, 0, 255, 100);
                 AddObject(polygonObject);
             }
@@ -879,14 +872,12 @@ namespace SatCore.MapEditor
                             Position = ((CollisionBox)SelectedObject).Shape.DrawingArea.Vertexes[i],
                             OuterDiameter = 8,
                         };
-                        temp.CameraGroup = 1;
                         temp.Color = new asd.Color(255, 255, 255);
                         dotObjects.Add(temp);
                         AddObject(temp);
                     }
                     polygonObject = new asd.GeometryObject2D();
                     polygonObject.Shape = ((CollisionBox)SelectedObject).Shape;
-                    polygonObject.CameraGroup = 1;
                     polygonObject.Color = new asd.Color(255, 0, 0, 50);
                     AddObject(polygonObject);
                     break;
@@ -899,35 +890,30 @@ namespace SatCore.MapEditor
                             Position = ((CollisionTriangle)SelectedObject).Shape.GetPointByIndex(i),
                             OuterDiameter = 8,
                         };
-                        temp.CameraGroup = 1;
                         temp.Color = new asd.Color(255, 255, 255);
                         dotObjects.Add(temp);
                         AddObject(temp);
                     }
                     polygonObject = new asd.GeometryObject2D();
                     polygonObject.Shape = ((CollisionTriangle)SelectedObject).Shape;
-                    polygonObject.CameraGroup = 1;
                     polygonObject.Color = new asd.Color(255, 0, 0, 50);
                     AddObject(polygonObject);
                     break;
                 case SelectType.Door:
                     polygonObject = new asd.GeometryObject2D();
                     polygonObject.Shape = ((Door)SelectedObject).CollisionShape;
-                    polygonObject.CameraGroup = 1;
                     polygonObject.Color = new asd.Color(255, 0, 0, 50);
                     AddObject(polygonObject);
                     break;
                 case SelectType.Object:
                     polygonObject = new asd.GeometryObject2D();
                     polygonObject.Shape = ((MapObject)SelectedObject).CollisionShape;
-                    polygonObject.CameraGroup = 1;
                     polygonObject.Color = new asd.Color(255, 0, 0, 50);
                     AddObject(polygonObject);
                     break;
                 case SelectType.EventObject:
                     polygonObject = new asd.GeometryObject2D();
                     polygonObject.Shape = ((EventObject)SelectedObject).CollisionShape;
-                    polygonObject.CameraGroup = 1;
                     polygonObject.Color = new asd.Color(255, 0, 0, 50);
                     AddObject(polygonObject);
                     break;
@@ -940,14 +926,12 @@ namespace SatCore.MapEditor
                             Position = ((Object.MapEvent.MapEvent)SelectedObject).Shape.DrawingArea.Vertexes[i],
                             OuterDiameter = 8,
                         };
-                        temp.CameraGroup = 1;
                         temp.Color = new asd.Color(255, 255, 255);
                         dotObjects.Add(temp);
                         AddObject(temp);
                     }
                     polygonObject = new asd.GeometryObject2D();
                     polygonObject.Shape = ((Object.MapEvent.MapEvent)SelectedObject).Shape;
-                    polygonObject.CameraGroup = 1;
                     polygonObject.Color = new asd.Color(255, 0, 0, 50);
                     AddObject(polygonObject);
                     ((Object.MapEvent.MapEvent)SelectedObject).OnSelected();
@@ -961,21 +945,18 @@ namespace SatCore.MapEditor
                             Position = ((CameraRestriction)SelectedObject).Shape.DrawingArea.Vertexes[i],
                             OuterDiameter = 8,
                         };
-                        temp.CameraGroup = 1;
                         temp.Color = new asd.Color(255, 255, 255);
                         dotObjects.Add(temp);
                         AddObject(temp);
                     }
                     polygonObject = new asd.GeometryObject2D();
                     polygonObject.Shape = ((CameraRestriction)SelectedObject).Shape;
-                    polygonObject.CameraGroup = 1;
                     polygonObject.Color = new asd.Color(255, 0, 0, 50);
                     AddObject(polygonObject);
                     break;
                 case SelectType.SavePoint:
                     polygonObject = new asd.GeometryObject2D();
                     polygonObject.Shape = ((SavePoint)SelectedObject).Shape;
-                    polygonObject.CameraGroup = 1;
                     polygonObject.Color = new asd.Color(255, 0, 0, 50);
                     AddObject(polygonObject);
                     break;

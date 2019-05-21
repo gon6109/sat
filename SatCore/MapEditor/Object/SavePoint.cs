@@ -51,7 +51,6 @@ namespace SatCore.MapEditor.Object
 
         public SavePoint()
         {
-            CameraGroup = 1;
             rect = new asd.RectangleShape();
             DrawingPriority = 2;
             Texture = TextureManager.LoadTexture("save_point.png");
@@ -90,7 +89,6 @@ namespace SatCore.MapEditor.Object
         public static SavePoint CreateSavePoint(SavePointIO savePointIO)
         {
             var savePoint = new SavePoint();
-            savePoint.CameraGroup = 1;
             savePoint.rect = new asd.RectangleShape();
             savePoint.Position = savePointIO.Position;
             savePoint.ID = savePointIO.ID;

@@ -124,7 +124,6 @@ namespace SatPlayer.Game
                 loader.ProgressInfo = (loader.ProgressInfo.taskCount, loader.ProgressInfo.progress + 1);
 #if DEBUG
                 asd.GeometryObject2D geometryObject = new asd.GeometryObject2D();
-                geometryObject.CameraGroup = 1;
                 geometryObject.Shape = temp;
                 geometryObject.Color = new asd.Color(0, 0, 255, 100);
                 geometryObject.DrawingPriority = 2;
@@ -148,7 +147,6 @@ namespace SatPlayer.Game
                 loader.ProgressInfo = (loader.ProgressInfo.taskCount, loader.ProgressInfo.progress + 1);
 #if DEBUG
                 asd.GeometryObject2D geometryObject = new asd.GeometryObject2D();
-                geometryObject.CameraGroup = 1;
                 geometryObject.Shape = temp;
                 geometryObject.Color = new asd.Color(0, 0, 255, 100);
                 geometryObject.DrawingPriority = 2;

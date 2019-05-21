@@ -96,7 +96,6 @@ namespace SatPlayer
 
         public Door()
         {
-            CameraGroup = 1;
             CollisionShape = new asd.RectangleShape();
             MoveToID = 0;
             ID = 0;

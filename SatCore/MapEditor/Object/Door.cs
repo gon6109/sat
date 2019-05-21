@@ -175,7 +175,6 @@ namespace SatCore.MapEditor.Object
         {
             try
             {
-                CameraGroup = 1;
                 CollisionShape = new asd.RectangleShape();
                 ResourcePath = "Static/door.csx";
                 Color = new asd.Color(255, 255, 255, 200);

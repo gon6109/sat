@@ -33,7 +33,6 @@ namespace SatCore.MapEditor.Object
 
         public CollisionTriangle()
         {
-            CameraGroup = 1;
             Color = new asd.Color(0, 0, 255, 100);
             DrawingPriority = 4;
         }
@@ -177,7 +176,6 @@ namespace SatCore.MapEditor.Object
         public static CollisionTriangle CreateCollisionTriangle(SatIO.CollisionTriangleIO triangleIO)
         {
             var collisionTriangle = new CollisionTriangle();
-            collisionTriangle.CameraGroup = 1;
             for (int i = 0; i < 3; i++) collisionTriangle._vertex[i] = triangleIO.vertexes[i];
             collisionTriangle.Color = new asd.Color(0, 0, 255, 100);
             return collisionTriangle;

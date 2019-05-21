@@ -78,7 +78,6 @@ namespace SatPlayer.Game.Object
 
         public ScrollCamera(List<SatIO.CameraRestrictionIO> cameraRestrictions)
         {
-            CameraGroup = 1;
             HomingParameter = 0.07f;
             MapSize = new asd.Vector2DF();
             MoveCommands = new Queue<Dictionary<Inputs, bool>>();

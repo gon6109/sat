@@ -71,7 +71,6 @@ namespace SatCore.MapEditor.Object
 
         public CollisionBox()
         {
-            CameraGroup = 1;
             Color = new asd.Color(0, 0, 255, 100);
             DrawingPriority = 4;
         }
@@ -135,7 +134,6 @@ namespace SatCore.MapEditor.Object
         public static CollisionBox CreateCollsiionBox(SatIO.CollisionBoxIO boxIO)
         {
             var collisionBox = new CollisionBox();
-            collisionBox.CameraGroup = 1;
             collisionBox._rectPosition = boxIO.Position;
             collisionBox._rectSize = boxIO.Size;
             collisionBox.Color = new asd.Color(0, 0, 255, 100);
