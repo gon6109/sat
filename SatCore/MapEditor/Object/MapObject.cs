@@ -63,29 +63,37 @@ namespace SatCore.MapEditor.Object
                     _scriptPath = value;
                     OnPropertyChanged();
                     AnimationPart.Clear();
-                    try
-                    {
-                        StreamReader reader = new StreamReader(IO.GetStream(_scriptPath));
-                        string code = "";
-                        string temp;
-                        while ((temp = reader.ReadLine()) != null)
-                        {
-                            if (temp.IndexOf("AddAnimationPart(") > -1) code += temp + "\n";
-                        }
-                        Script<object> script = CSharpScript.Create(code, options: options, globalsType: typeof(MapObject));
-                        var thread = script.RunAsync(this);
-                        thread.Wait();
-                        State = AnimationPart.First().Key;
-                    }
-                    catch (Exception e)
-                    {
-                        ErrorIO.AddError(e);
-                        Texture = TextureManager.LoadTexture("Static/error.png");
-                    }
+                    var task = LoadAnimationAsync();
+                    task.Wait();
                 }
                 else Texture = TextureManager.LoadTexture("Static/error.png");
                 CenterPosition = Texture.Size.To2DF() / 2;
                 CollisionShape.DrawingArea = new asd.RectF(Position - CenterPosition, Texture.Size.To2DF());
+            }
+        }
+
+        private async Task LoadAnimationAsync()
+        {
+            try
+            {
+                using (var stream = await IO.GetStreamAsync(_scriptPath))
+                using (var reader = new StreamReader(stream))
+                {
+                    string code = "";
+                    string temp;
+                    while ((temp = reader.ReadLine()) != null)
+                    {
+                        if (temp.IndexOf("AddAnimationPart(") > -1) code += temp + "\n";
+                    }
+                    Script<object> script = CSharpScript.Create(code, options: options, globalsType: typeof(MapObject));
+                    await script.RunAsync(this);
+                    State = AnimationPart.First().Key;
+                }
+            }
+            catch (Exception e)
+            {
+                ErrorIO.AddError(e);
+                Texture = await TextureManager.LoadTextureAsync("Static/error.png");
             }
         }
 
@@ -139,12 +147,13 @@ namespace SatCore.MapEditor.Object
             return result;
         }
 
-        public static MapObject CreateMapObject(MapObjectIO mapObjectIO)
+        public static async Task<MapObject> CreateMapObjectAsync(MapObjectIO mapObjectIO)
         {
             var mapObject = new MapObject();
             mapObject.Color = new asd.Color(255, 255, 255, 200);
             mapObject.DrawingPriority = 2;
-            mapObject.ScriptPath = mapObjectIO.ScriptPath;
+            mapObject._scriptPath = mapObjectIO.ScriptPath;
+            await mapObject.LoadAnimationAsync();
             mapObject.Position = mapObjectIO.Position;
             return mapObject;
         }

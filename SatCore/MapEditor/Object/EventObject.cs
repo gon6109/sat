@@ -62,28 +62,33 @@ namespace SatCore.MapEditor.Object
             {
                 UndoRedoManager.ChangeProperty(this, value);
                 _scriptPath = value;
-                Reset();
-                Script<object> script;
-                try
-                {
-                    using (var stream = IO.GetStream(_scriptPath))
-                        script = ScriptOption.ScriptOptions["EventObject"]?.CreateScript<object>(Encoding.UTF8.GetString(stream.ToArray()));
-                    script.Compile();
-                    var task = script.RunAsync(this);
-                    task.Wait();
-                    State = AnimationPart.FirstOrDefault().Key;
-                }
-                catch (Exception e)
-                {
-                    ErrorIO.AddError(e);
-                }
-                if (Texture == null)
-                    Texture = TextureManager.LoadTexture("");
-                CenterPosition = Texture.Size.To2DF() / 2;
-                if (CollisionShape is PhysicalRectangleShape shape)
-                    shape.DrawingArea = new asd.RectF(Position - CenterPosition, Texture.Size.To2DF());
+                var task = LoadAnimationAsync();
+                task.Wait();
                 OnPropertyChanged();
             }
+        }
+
+        private async Task LoadAnimationAsync()
+        {
+            Reset();
+            Script<object> script;
+            try
+            {
+                using (var stream = await IO.GetStreamAsync(_scriptPath))
+                    script = ScriptOption.ScriptOptions["EventObject"]?.CreateScript<object>(Encoding.UTF8.GetString(stream.ToArray()));
+                script.Compile();
+                await script.RunAsync(this);
+                State = AnimationPart.FirstOrDefault().Key;
+            }
+            catch (Exception e)
+            {
+                ErrorIO.AddError(e);
+            }
+            if (Texture == null)
+                Texture = await TextureManager.LoadTextureAsync("");
+            CenterPosition = Texture.Size.To2DF() / 2;
+            if (CollisionShape is PhysicalRectangleShape shape)
+                shape.DrawingArea = new asd.RectF(Position - CenterPosition, Texture.Size.To2DF());
         }
 
         PhysicalShape IActor.CollisionShape => CollisionShape as PhysicalShape;
@@ -187,10 +192,11 @@ namespace SatCore.MapEditor.Object
             return result;
         }
 
-        public static EventObject CreateEventObject(EventObjectIO mapObject)
+        public static async Task<EventObject> CreateEventObjectAsync(EventObjectIO mapObject)
         {
             var eventObject = new EventObject();
-            eventObject.ScriptPath = mapObject.ScriptPath;
+            eventObject._scriptPath = mapObject.ScriptPath;
+            await eventObject.LoadAnimationAsync();
             eventObject.StartPosition = mapObject.Position;
             eventObject.ID = mapObject.ID;
             return eventObject;

@@ -165,7 +165,7 @@ namespace SatUI
             codeColumn.Width = new GridLength(EditorPanel.ActualWidth / 2);
         }
 
-        private void OpenFile_Click(object sender, RoutedEventArgs e)
+        private async void OpenFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.FileName = "";
@@ -179,12 +179,12 @@ namespace SatUI
 
             Reset(PropertyPanel.ResetMode.General);
 
-            if (openFileDialog.FileName.Contains(".map")) OpenMapFile(openFileDialog.FileName);
+            if (openFileDialog.FileName.Contains(".map")) await OpenMapFile(openFileDialog.FileName);
             else if (openFileDialog.FileName.Contains(".ci")) OpenCharacterImageFile(openFileDialog.FileName);
             else OpenScriptFile(openFileDialog.FileName);
         }
 
-        void OpenMapFile(string fileName)
+        async Task OpenMapFile(string fileName)
         {
             try
             {
@@ -196,7 +196,7 @@ namespace SatUI
                 loadFile.Map.FocusToEditorPanel += () => EditorPanel.Focus();
                 loadFile.Map.RequireOpenFileDialog += OpenCharacterImageFileDialog;
                 loadFile.OnCopyObjectChanged += OnCopyObjectChanged;
-                loadFile.LoadMapData(fileName);
+                await loadFile.LoadMapData(fileName);
                 asd.Engine.ChangeScene(loadFile);
                 Property mapProperty = new Property("Map", new object[] { loadFile.Map, loadFile });
                 propertyPanel.AddProperty(mapProperty);

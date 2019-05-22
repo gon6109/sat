@@ -60,18 +60,28 @@ namespace SatCore.MapEditor.Object
             set
             {
                 if (!asd.Engine.File.Exists(value)) return;
-                if (value.IndexOf(".png") > -1)
+                var task = LoadTextureAsync(value);
+                if (!task.Result)
+                    return;
+                UndoRedoManager.ChangeProperty(this, value);
+                _texturePath = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private async Task<bool> LoadTextureAsync(string value)
+        {
+            if (value.IndexOf(".png") > -1)
+            {
+                Texture = await TextureManager.LoadTextureAsync(value);
+            }
+            else if (value.IndexOf(".bg") > -1)
+            {
+                try
                 {
-                    UndoRedoManager.ChangeProperty(this, value);
-                    _texturePath = value;
-                    Texture = TextureManager.LoadTexture(value);
-                    OnPropertyChanged();
-                }
-                else if (value.IndexOf(".bg") > -1)
-                {
-                    try
+                    using (var stream = await IO.GetStreamAsync(value))
+                    using (var reader = new StreamReader(stream))
                     {
-                        StreamReader reader = new StreamReader(IO.GetStream(value));
                         string code = "";
                         string temp;
                         while ((temp = reader.ReadLine()) != null)
@@ -82,15 +92,16 @@ namespace SatCore.MapEditor.Object
                         var thread = script.RunAsync(this);
                         thread.Wait();
                         State = AnimationPart.First().Key;
-                        _texturePath = value;
-                        OnPropertyChanged();
-                    }
-                    catch (Exception e)
-                    {
-                        ErrorIO.AddError(e);
                     }
                 }
+                catch (Exception e)
+                {
+                    ErrorIO.AddError(e);
+                }
             }
+            else
+                return false;
+            return true;
         }
 
         [VectorInput("座標")]
@@ -197,12 +208,13 @@ namespace SatCore.MapEditor.Object
             return backGroundIO;
         }
 
-        public static BackGround CreateBackGroud(BackGroundIO backGroundIO)
+        public static async Task<BackGround> CreateBackGroudAsync(BackGroundIO backGroundIO)
         {
             BackGround backGround = new BackGround();
             backGround.Position = backGroundIO.Position;
             backGround.Zoom = backGroundIO.Zoom;
-            backGround.TexturePath = backGroundIO.TexturePath;
+            if (await backGround.LoadTextureAsync(backGroundIO.TexturePath))
+                backGround._texturePath = backGroundIO.TexturePath;
             return backGround;
         }
     }

@@ -240,21 +240,21 @@ namespace SatCore.MapEditor
             base.OnDispose();
         }
 
-        public void LoadMapData(string path)
+        public async Task LoadMapData(string path)
         {
             Path = path;
             try
             {
-                var mapdata = SatIO.BaseIO.Load<SatIO.MapIO>(path);
+                var mapdata = await SatIO.BaseIO.LoadAsync<SatIO.MapIO>(path);
                 MapName = mapdata.MapName;
                 if (mapdata.BackGrounds != null)
                 {
                     foreach (var item in mapdata.BackGrounds)
                     {
-                        BackGrounds.Add(BackGround.CreateBackGroud(item));
+                        BackGrounds.Add(await BackGround.CreateBackGroudAsync(item));
                     }
                 }
-                _ = Map.LoadMapDataAsync(mapdata);
+                await Map.LoadMapDataAsync(mapdata);
                 BGMPath = mapdata.BGMPath;
             }
             catch (Exception e)

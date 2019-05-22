@@ -196,7 +196,7 @@ namespace SatCore.MapEditor
             {
                 foreach (var item in mapData.MapObjects)
                 {
-                    var temp = MapObject.CreateMapObject(item);
+                    var temp = await MapObject.CreateMapObjectAsync(item);
                     AddObject(temp);
                 }
             }
@@ -206,7 +206,7 @@ namespace SatCore.MapEditor
             {
                 foreach (var item in mapData.EventObjects)
                 {
-                    var temp = EventObject.CreateEventObject(item);
+                    var temp = await EventObject.CreateEventObjectAsync(item);
                     if (!eventObjects.Any(obj => obj.ID == temp.ID))
                     {
                         AddObject(temp);
