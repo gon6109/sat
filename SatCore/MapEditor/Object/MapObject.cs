@@ -57,44 +57,51 @@ namespace SatCore.MapEditor.Object
             get => _scriptPath;
             set
             {
-                if (value != null && asd.Engine.File.Exists(value))
-                {
-                    UndoRedoManager.ChangeProperty(this, value);
-                    _scriptPath = value;
-                    OnPropertyChanged();
-                    AnimationPart.Clear();
-                    var task = LoadAnimationAsync();
-                    task.Wait();
-                }
-                else Texture = TextureManager.LoadTexture("Static/error.png");
-                CenterPosition = Texture.Size.To2DF() / 2;
-                CollisionShape.DrawingArea = new asd.RectF(Position - CenterPosition, Texture.Size.To2DF());
+                var task = LoadAnimationAsync(value);
+                if (!task.Result)
+                    return;
+                UndoRedoManager.ChangeProperty(this, value);
+                _scriptPath = value;
+                OnPropertyChanged();
             }
         }
 
-        private async Task LoadAnimationAsync()
+        private async Task<bool> LoadAnimationAsync(string path)
         {
-            try
+            var result = true;
+            if (path != null && asd.Engine.File.Exists(path))
             {
-                using (var stream = await IO.GetStreamAsync(_scriptPath))
-                using (var reader = new StreamReader(stream))
+                AnimationPart.Clear();
+                try
                 {
-                    string code = "";
-                    string temp;
-                    while ((temp = reader.ReadLine()) != null)
+                    using (var stream = await IO.GetStreamAsync(path))
+                    using (var reader = new StreamReader(stream))
                     {
-                        if (temp.IndexOf("AddAnimationPart(") > -1) code += temp + "\n";
+                        string code = "";
+                        string temp;
+                        while ((temp = reader.ReadLine()) != null)
+                        {
+                            if (temp.IndexOf("AddAnimationPart(") > -1) code += temp + "\n";
+                        }
+                        Script<object> script = CSharpScript.Create(code, options: options, globalsType: typeof(MapObject));
+                        await script.RunAsync(this);
+                        State = AnimationPart.First().Key;
                     }
-                    Script<object> script = CSharpScript.Create(code, options: options, globalsType: typeof(MapObject));
-                    await script.RunAsync(this);
-                    State = AnimationPart.First().Key;
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                    Texture = await TextureManager.LoadTextureAsync("Static/error.png");
                 }
             }
-            catch (Exception e)
+            else
             {
-                Logger.Error(e);
-                Texture = await TextureManager.LoadTextureAsync("Static/error.png");
+                Texture = TextureManager.LoadTexture("Static/error.png");
+                result = false;
             }
+            CenterPosition = Texture.Size.To2DF() / 2;
+            CollisionShape.DrawingArea = new asd.RectF(Position - CenterPosition, Texture.Size.To2DF());
+            return result;
         }
 
         public asd.RectangleShape CollisionShape { get; }
@@ -152,8 +159,10 @@ namespace SatCore.MapEditor.Object
             var mapObject = new MapObject();
             mapObject.Color = new asd.Color(255, 255, 255, 200);
             mapObject.DrawingPriority = 2;
-            mapObject._scriptPath = mapObjectIO.ScriptPath;
-            await mapObject.LoadAnimationAsync();
+            if (await mapObject.LoadAnimationAsync(mapObjectIO.ScriptPath))
+                mapObject._scriptPath = mapObjectIO.ScriptPath;
+            mapObject.CenterPosition = mapObject.Texture.Size.To2DF() / 2;
+            mapObject.CollisionShape.DrawingArea = new asd.RectF(mapObject.Position - mapObject.CenterPosition, mapObject.Texture.Size.To2DF());
             mapObject.Position = mapObjectIO.Position;
             return mapObject;
         }
