@@ -257,7 +257,7 @@ namespace SatPlayer.Game.Object
             }
             catch (Exception e)
             {
-                ErrorIO.AddError(e);
+                Logger.Error(e);
                 Dispose();
             }
 
@@ -335,7 +335,7 @@ namespace SatPlayer.Game.Object
             }
             catch (Exception e)
             {
-                ErrorIO.AddError(e);
+                Logger.Error(e);
             }
             clone.CenterPosition = clone.collision.DrawingArea.Size / 2;
             clone.CollisionGroup = CollisionGroup;
@@ -454,7 +454,7 @@ namespace SatPlayer.Game.Object
                 }
                 catch (Exception e)
                 {
-                    ErrorIO.AddError(e);
+                    Logger.Error(e);
                 }
             }
             mapObject.Position = mapObjectIO.Position;

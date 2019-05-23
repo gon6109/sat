@@ -47,7 +47,7 @@ namespace SatUI
                 }
                 catch (Exception e)
                 {
-                    ErrorIO.AddError(e);
+                    Logger.Error(e);
                 }
 
                 playerExePath = value;
@@ -204,7 +204,7 @@ namespace SatUI
             catch (Exception e)
             {
                 ErrorIO.Scene = asd.Engine.CurrentScene;
-                ErrorIO.AddError(new Exception(fileName + "の読み込みに失敗しました(" + e.GetType().ToString() + ")"));
+                Logger.Error(new Exception(fileName + "の読み込みに失敗しました(" + e.GetType().ToString() + ")"));
             }
         }
 
@@ -226,7 +226,7 @@ namespace SatUI
             else if (fileName.Contains(".bg")) scriptType = SatCore.ScriptEditor.ScriptEditor.ScriptType.BackGround;
             else
             {
-                ErrorIO.AddError(new NotImplementedException("対応していない拡張子です。"));
+                Logger.Error(new NotImplementedException("対応していない拡張子です。"));
                 return;
             }
 
@@ -456,7 +456,7 @@ namespace SatUI
                     dialog.Filter = "Back Ground Script|*.bg";
                     break;
                 default:
-                    ErrorIO.AddError(new NotImplementedException("実装されていません:" + scriptType.ToString()));
+                    Logger.Error(new NotImplementedException("実装されていません:" + scriptType.ToString()));
                     break;
             }
             return dialog;

@@ -175,7 +175,7 @@ namespace SatPlayer.Game
                 }
                 catch (Exception e)
                 {
-                    ErrorIO.AddError(e);
+                    Logger.Error(e);
                 }
                 loader.ProgressInfo = (loader.ProgressInfo.taskCount, loader.ProgressInfo.progress + 1);
             }
@@ -192,7 +192,7 @@ namespace SatPlayer.Game
                 }
                 catch (Exception e)
                 {
-                    ErrorIO.AddError(e);
+                    Logger.Error(e);
                 }
                 loader.ProgressInfo = (loader.ProgressInfo.taskCount, loader.ProgressInfo.progress + 1);
             }
@@ -220,7 +220,7 @@ namespace SatPlayer.Game
                     }
                     catch (Exception e)
                     {
-                        ErrorIO.AddError(e);
+                        Logger.Error(e);
                     }
                 loader.ProgressInfo = (loader.ProgressInfo.taskCount, loader.ProgressInfo.progress + 1);
                 }

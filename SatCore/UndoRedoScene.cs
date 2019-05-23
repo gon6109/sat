@@ -14,7 +14,10 @@ namespace SatCore
     {
         public UndoRedoScene()
         {
-            ErrorIO.Scene = this;
+            var printer = new LogPrintLayer2D();
+            printer.DrawingPriority = 3;
+            Logger.Printer = printer;
+            AddLayer(printer);
             asd.Engine.Reload();
         }
 

@@ -201,7 +201,7 @@ namespace SatPlayer
                 }
                 catch (Exception e)
                 {
-                    ErrorIO.AddError(e);
+                    Logger.Error(e);
                 }
             }
 

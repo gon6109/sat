@@ -216,7 +216,7 @@ namespace SatPlayer.Game.Object
             }
             catch (Exception e)
             {
-                ErrorIO.AddError(e);
+                Logger.Error(e);
                 Update = obj => { };
             }
             base.OnUpdate();
@@ -276,7 +276,7 @@ namespace SatPlayer.Game.Object
         /// <param name="position">力を加える場所の相対座標</param>
         public void SetForce(Vector direct, Vector position)
         {
-            CollisionShape.SetForce(direct.ToAsdVector(), position.ToAsdVector()+ CenterPosition);
+            CollisionShape.SetForce(direct.ToAsdVector(), position.ToAsdVector() + CenterPosition);
         }
 
         /// <summary>

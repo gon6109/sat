@@ -96,7 +96,7 @@ namespace SatCore.MapEditor.Object
                 }
                 catch (Exception e)
                 {
-                    ErrorIO.AddError(e);
+                    Logger.Error(e);
                 }
             }
             else

@@ -112,7 +112,7 @@ namespace SatPlayer.Game.Object
             }
             catch (Exception e)
             {
-                ErrorIO.AddError(e);
+                Logger.Error(e);
             }
         }
 
@@ -175,7 +175,7 @@ namespace SatPlayer.Game.Object
             }
             catch (Exception e)
             {
-                ErrorIO.AddError(e);
+                Logger.Error(e);
             }
             eventObject.CenterPosition = eventObject.collision.DrawingArea.Size / 2;
             eventObject.Position = eventObjectIO.Position;

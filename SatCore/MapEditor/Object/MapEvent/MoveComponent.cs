@@ -94,7 +94,7 @@ namespace SatCore.MapEditor.Object.MapEvent
                 }
                 catch (Exception e)
                 {
-                    ErrorIO.AddError(e);
+                    Logger.Error(e);
                 }
             }
             if (moveComponentIO.CameraCommand != null)

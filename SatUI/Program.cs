@@ -56,7 +56,7 @@ namespace SatUI
             }
             catch (Exception e)
             {
-                ErrorIO.AddError(e);
+                Logger.Error(e);
             }
 #if DEBUG
             asd.Engine.ProfilerIsVisible = true;

@@ -111,7 +111,7 @@ namespace SatCore.MapEditor.Object.MapEvent
                 }
                 catch (Exception e)
                 {
-                    ErrorIO.AddError(e);
+                    Logger.Error(e);
                 }
             }
             return component;

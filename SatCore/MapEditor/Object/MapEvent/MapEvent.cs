@@ -136,7 +136,7 @@ namespace SatCore.MapEditor.Object.MapEvent
             }
             catch (Exception e)
             {
-                ErrorIO.AddError(e);
+                Logger.Error(e);
             }
         }
 
@@ -427,7 +427,7 @@ namespace SatCore.MapEditor.Object.MapEvent
                 }
                 catch (Exception e)
                 {
-                    ErrorIO.AddError(e);
+                    Logger.Error(e);
                 }
             }
             foreach (var item in mapEventIO.CharacterImagePaths)

@@ -82,7 +82,7 @@ namespace SatCore.MapEditor.Object
             }
             catch (Exception e)
             {
-                ErrorIO.AddError(e);
+                Logger.Error(e);
             }
             if (Texture == null)
                 Texture = await TextureManager.LoadTextureAsync("");

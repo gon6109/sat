@@ -68,7 +68,7 @@ namespace SatCore.ScriptEditor
                 }
                 catch (Exception e)
                 {
-                    ErrorIO.AddError(e);
+                    Logger.Error(e);
                     IsSuccessBuild = false;
                 }
             }

@@ -236,7 +236,7 @@ namespace SatCore.MapEditor
                     }
                     catch (Exception e)
                     {
-                        ErrorIO.AddError(e);
+                        Logger.Error(e);
                     }
                 }
             }

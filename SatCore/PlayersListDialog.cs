@@ -41,7 +41,7 @@ namespace SatCore
             }
             catch (Exception e)
             {
-                ErrorIO.AddError(e);
+                Logger.Error(e);
             }
         }
 
@@ -96,7 +96,7 @@ namespace SatCore
             }
             catch (Exception e)
             {
-                ErrorIO.AddError(e);
+                Logger.Error(e);
                 return PlayersListDialogResult.Cancel;
             }
         }

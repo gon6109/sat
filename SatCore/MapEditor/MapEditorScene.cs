@@ -375,7 +375,7 @@ namespace SatCore.MapEditor
                 {
                     IsRequireProgressDialog = false;
                     isCancel = true;
-                    ErrorIO.AddError(e);
+                    Logger.Error(e);
                 }
             }
 

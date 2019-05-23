@@ -101,7 +101,7 @@ namespace SatPlayer.Game.Object
                 }
                 catch (Exception e)
                 {
-                    ErrorIO.AddError(e);
+                    Logger.Error(e);
                 }
             }
             else backGround.Texture = await TextureManager.LoadTextureAsync(backGroundIO.TexturePath);
