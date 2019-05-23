@@ -192,7 +192,7 @@ namespace SatCore.MapEditor.Object
             return result;
         }
 
-        public static async Task<EventObject> CreateEventObjectAsync(EventObjectIO mapObject)
+        public static async new Task<EventObject> CreateEventObjectAsync(EventObjectIO mapObject)
         {
             var eventObject = new EventObject();
             eventObject._scriptPath = mapObject.ScriptPath;

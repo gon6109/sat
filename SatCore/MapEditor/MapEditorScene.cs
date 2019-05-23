@@ -236,7 +236,6 @@ namespace SatCore.MapEditor
                 templateIO.Templates.Add(item.Name, temp);
             }
             templateIO.Save("mot.data");
-            if (Path != null) ErrorIO.SaveError(Path.Split('.')[0] + ".log");
             base.OnDispose();
         }
 

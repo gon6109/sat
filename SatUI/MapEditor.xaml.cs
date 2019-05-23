@@ -203,7 +203,10 @@ namespace SatUI
             }
             catch (Exception e)
             {
-                ErrorIO.Scene = asd.Engine.CurrentScene;
+                var printer = new LogPrintLayer2D();
+                printer.DrawingPriority = 3;
+                Logger.Printer = printer;
+                asd.Engine.CurrentScene.AddLayer(printer);
                 Logger.Error(new Exception(fileName + "の読み込みに失敗しました(" + e.GetType().ToString() + ")"));
             }
         }

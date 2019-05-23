@@ -74,7 +74,7 @@ namespace SatUI
                 asd.Engine.Update();
             }
 
-            ErrorIO.SaveError("error.log");
+            Logger.Save("latest.log");
 
             asd.Engine.Terminate();
         }
