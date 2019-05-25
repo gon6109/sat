@@ -60,7 +60,7 @@ namespace SatCore.MapEditor.Object
             set
             {
                 if (!asd.Engine.File.Exists(value)) return;
-                var task = LoadTextureAsync(value);
+                var task = LoadTextureAsync(value, false);
                 if (!task.Result)
                     return;
                 UndoRedoManager.ChangeProperty(this, value);
@@ -69,17 +69,21 @@ namespace SatCore.MapEditor.Object
             }
         }
 
-        private async Task<bool> LoadTextureAsync(string value)
+        private async Task<bool> LoadTextureAsync(string path, bool awaitable = true)
         {
-            if (value.IndexOf(".png") > -1)
+            if (path.IndexOf(".png") > -1)
             {
-                Texture = await TextureManager.LoadTextureAsync(value);
+                if (awaitable)
+                    Texture = await TextureManager.LoadTextureAsync(path);
+                else
+                    Texture = TextureManager.LoadTexture(path);
+
             }
-            else if (value.IndexOf(".bg") > -1)
+            else if (path.IndexOf(".bg") > -1)
             {
                 try
                 {
-                    using (var stream = await IO.GetStreamAsync(value))
+                    using (var stream = awaitable ? await IO.GetStreamAsync(path) : IO.GetStream(path))
                     using (var reader = new StreamReader(stream))
                     {
                         string code = "";
@@ -89,8 +93,7 @@ namespace SatCore.MapEditor.Object
                             if (temp.IndexOf("AddAnimationPart(") > -1) code += temp + "\n";
                         }
                         Script<object> script = CSharpScript.Create(code, options: options, globalsType: typeof(BackGround));
-                        var thread = script.RunAsync(this);
-                        thread.Wait();
+                        await script.RunAsync(this).ConfigureAwait(awaitable);
                         State = AnimationPart.First().Key;
                     }
                 }

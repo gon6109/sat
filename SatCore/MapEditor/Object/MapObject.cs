@@ -57,7 +57,7 @@ namespace SatCore.MapEditor.Object
             get => _scriptPath;
             set
             {
-                var task = LoadAnimationAsync(value);
+                var task = LoadAnimationAsync(value, false);
                 if (!task.Result)
                     return;
                 UndoRedoManager.ChangeProperty(this, value);
@@ -66,7 +66,7 @@ namespace SatCore.MapEditor.Object
             }
         }
 
-        private async Task<bool> LoadAnimationAsync(string path)
+        private async Task<bool> LoadAnimationAsync(string path, bool awaitable = true)
         {
             var result = true;
             if (path != null && asd.Engine.File.Exists(path))
@@ -74,7 +74,7 @@ namespace SatCore.MapEditor.Object
                 AnimationPart.Clear();
                 try
                 {
-                    using (var stream = await IO.GetStreamAsync(path))
+                    using (var stream = awaitable ? await IO.GetStreamAsync(path) : IO.GetStream(path))
                     using (var reader = new StreamReader(stream))
                     {
                         string code = "";
@@ -84,14 +84,14 @@ namespace SatCore.MapEditor.Object
                             if (temp.IndexOf("AddAnimationPart(") > -1) code += temp + "\n";
                         }
                         Script<object> script = CSharpScript.Create(code, options: options, globalsType: typeof(MapObject));
-                        await script.RunAsync(this);
+                        await script.RunAsync(this).ConfigureAwait(awaitable);
                         State = AnimationPart.First().Key;
                     }
                 }
                 catch (Exception e)
                 {
                     Logger.Error(e);
-                    Texture = await TextureManager.LoadTextureAsync("Static/error.png");
+                    Texture = TextureManager.LoadTexture("Static/error.png");
                 }
             }
             else
