@@ -86,7 +86,7 @@ namespace SatCore.MapEditor.Object.MapEvent
                         component.TalkElements.Add(
                             new TalkElement(component.CharacterImages)
                             {
-                                Text = ((TalkComponentIO.TalkElementIO)item).Text,
+                                Text = ((TalkComponentIO.TalkElementIO)item).Text.Replace("\n", "\r\n"),
                                 CharacterImage = component.CharacterImages.First(obj => obj.Name == item.CharacterName),
                             });
                     }
@@ -136,7 +136,7 @@ namespace SatCore.MapEditor.Object.MapEvent
                              return new TalkComponentIO.TalkElementIO()
                              {
                                  CharacterName = talkElement.CharacterImage.Name,
-                                 Text = talkElement.Text
+                                 Text = talkElement.Text.Replace("\r\n", "\n")
                              };
 
                          ChangeDiffElement changeDiffElement = obj as ChangeDiffElement;
