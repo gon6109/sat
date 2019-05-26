@@ -100,7 +100,8 @@ namespace SatUI
         private void ShowProgressDialog(string title, string bindingPath, INotifyPropertyChanged bindingSource)
         {
             var dialog = new ProgressDialog(title, bindingPath, bindingSource);
-            dialog.ShowDialog();
+            dialog.Owner = GetWindow(this);
+            dialog.Show();
         }
 
         private void characterImage_Click(object sender, RoutedEventArgs e)

@@ -54,7 +54,7 @@ namespace SatCore.CharacterImageEditor
         }
 
         [ListInput("差分", "SelectedDiff", "AddDiff")]
-        public new UndoRedoCollection<DiffImage> DiffImages { get; set; }
+        public new UndoRedoCollection<DiffImage> DiffImages { get; }
 
         public DiffImage SelectedDiff
         {
@@ -96,7 +96,6 @@ namespace SatCore.CharacterImageEditor
             var characterImage = await CharacterImageIO.LoadAsync<CharacterImageIO>(path);
             Name = characterImage.Name;
             BaseImagePath = characterImage.BaseImagePath;
-            DiffImages = new UndoRedoCollection<DiffImage>();
             foreach (var item in characterImage.DiffImagePaths.Select(obj =>
             {
                 return new DiffImage()

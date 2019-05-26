@@ -47,20 +47,11 @@ namespace SatPlayer.Game.Object.MapEvent
             characterImage.Texture = await TextureManager.LoadTextureAsync(characterImageIO.BaseImagePath);
             characterImage.Name = characterImageIO.Name;
             characterImage.DiffImages = new Dictionary<string, asd.Texture2D>();
-            List<Task> tasks = new List<Task>();
             foreach (var item in characterImageIO.DiffImagePaths)
             {
-                var task = Task.Run(async () =>
-                {
-                    var texture = await TextureManager.LoadTextureAsync(item.Value);
-                    lock (characterImage)
-                    {
-                        characterImage.DiffImages.Add(item.Key, texture);
-                    }
-                });
-                tasks.Add(task);
+                var texture = await TextureManager.LoadTextureAsync(item.Value);
+                characterImage.DiffImages.Add(item.Key, texture);
             }
-            await Task.WhenAll(tasks);
             if (characterImage.DiffImages.Count > 0) characterImage.SelectedDiff = characterImage.DiffImages.First().Key;
             return characterImage;
         }

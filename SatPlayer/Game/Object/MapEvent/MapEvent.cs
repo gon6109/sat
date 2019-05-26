@@ -94,20 +94,11 @@ namespace SatPlayer.Game.Object.MapEvent
                 }
             }
 
-            var tasks = new List<Task>();
             foreach (var item in mapEventIO.CharacterImagePaths)
             {
-                var task = Task.Run(async () =>
-                {
-                    var characterImage = await CharacterImage.CreateCharacterImageAsync(item);
-                    lock (mapEvent)
-                    {
-                        mapEvent.CharacterImages.Add(characterImage);
-                    }
-                });
-                tasks.Add(task);
+                var characterImage = await CharacterImage.CreateCharacterImageAsync(item);
+                mapEvent.CharacterImages.Add(characterImage);
             }
-            await Task.WhenAll(tasks);
 
             foreach (var item in mapEventIO.Components)
             {
