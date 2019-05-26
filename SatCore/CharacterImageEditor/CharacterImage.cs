@@ -89,23 +89,23 @@ namespace SatCore.CharacterImageEditor
             DiffImages = new UndoRedoCollection<DiffImage>();
             diffObject = new asd.TextureObject2D();
             AddDrawnChild(diffObject, asd.ChildManagementMode.RegistrationToLayer | asd.ChildManagementMode.Disposal, asd.ChildTransformingMode.All, asd.ChildDrawingMode.Nothing);
-
-           
         }
 
         public async Task LoadCharacterImageIOAsync(string path)
         {
-            var characterImage = await CharacterImageIO.LoadCharacterImageIOAsync(path);
+            var characterImage = await CharacterImageIO.LoadAsync<CharacterImageIO>(path);
             Name = characterImage.Name;
             BaseImagePath = characterImage.BaseImagePath;
-            DiffImages = new UndoRedoCollection<DiffImage>(characterImage.DiffImagePaths.Select(obj =>
+            DiffImages = new UndoRedoCollection<DiffImage>();
+            foreach (var item in characterImage.DiffImagePaths.Select(obj =>
             {
                 return new DiffImage()
                 {
                     Path = obj.Value,
                     Name = obj.Key,
                 };
-            }));
+            }))
+                DiffImages.Add(item);
         }
 
         public static explicit operator CharacterImageIO(EditableCharacterImage characterImage)
@@ -115,7 +115,7 @@ namespace SatCore.CharacterImageEditor
             {
                 Name = characterImage.Name,
                 BaseImagePath = characterImage.BaseImagePath,
-                DiffImagePaths = characterImage.DiffImages.ToDictionary(obj => obj.Name, obj => obj.Path),
+                DiffImagePaths = new SatIO.SerializableDictionary<string, string>(characterImage.DiffImages.ToDictionary(obj => obj.Name, obj => obj.Path)),
             };
             return result;
         }

@@ -58,7 +58,7 @@ namespace SatCore.CharacterImageEditor
 
         public void SaveCharacterImage(string path)
         {
-            ((SatIO.MapEventIO.CharacterImageIO)Character).SaveCharacterImageIO(path);
+            ((SatIO.MapEventIO.CharacterImageIO)Character).Save(path);
         }
     }
 }

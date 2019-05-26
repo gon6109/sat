@@ -30,7 +30,7 @@ namespace SatCore.MapEditor.Object.MapEvent
 
         public static async Task<CharacterImage> LoadCharacterImageAsync(string path)
         {
-            CharacterImageIO characterImageIO = await CharacterImageIO.LoadCharacterImageIOAsync(path);
+            CharacterImageIO characterImageIO = await CharacterImageIO.LoadAsync<CharacterImageIO>(path);
             CharacterImage characterImage = (CharacterImage)characterImageIO;
             characterImage.Path = path;
             return characterImage;
@@ -42,7 +42,7 @@ namespace SatCore.MapEditor.Object.MapEvent
             {
                 Name = characterImage.Name,
                 BaseImagePath = characterImage.BaseImagePath,
-                DiffImagePaths = characterImage.DiffImages.ToDictionary(obj => obj.Name, obj => obj.Path),
+                DiffImagePaths = new SatIO.SerializableDictionary<string, string>(characterImage.DiffImages.ToDictionary(obj => obj.Name, obj => obj.Path)),
             };
             return result;
         }
