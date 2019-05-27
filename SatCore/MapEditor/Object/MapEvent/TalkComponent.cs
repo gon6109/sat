@@ -253,7 +253,7 @@ namespace SatCore.MapEditor.Object.MapEvent
             private string _text;
 
             public new string Name => (CharacterImage != null ? CharacterImage.Name : "") + " Speach \""
-                + (Text != null ? Text.Length > 8 ? Text.Substring(0, 8) : Text : "") + "\"";
+                + (Text != null ? Text.Length > 8 ? Text.Replace("\r\n", " ").Substring(0, 8) : Text.Replace("\r\n", " ") : "") + "\"";
 
             [TextAreaInput("表示テキスト")]
             public string Text
