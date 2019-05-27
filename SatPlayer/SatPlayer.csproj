@@ -150,6 +150,7 @@
     <Compile Include="Game\Object\MapEvent\CharacterImage.cs" />
     <Compile Include="Game\Object\MapEvent\MapEvent.cs" />
     <Compile Include="Game\Object\MapEvent\MapEventComponent.cs" />
+    <Compile Include="Game\Object\MapEvent\MapEventResource.cs" />
     <Compile Include="Game\Object\MapEvent\MessageBox.cs" />
     <Compile Include="Game\Object\MapEvent\MoveComponent.cs" />
     <Compile Include="Game\Object\MapEvent\TalkComponent.cs" />
