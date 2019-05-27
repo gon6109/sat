@@ -16,11 +16,6 @@ namespace SatPlayer.Game.Object.MapEvent
     public partial class TalkComponent : MapEventComponent
     {
         /// <summary>
-        /// 全てのオブジェクトが入るレイヤー
-        /// </summary>
-        public asd.Layer2D Layer { get; private set; }
-
-        /// <summary>
         /// テキストボックス
         /// </summary>
         public MessageBox Text { get; private set; }
@@ -93,16 +88,16 @@ namespace SatPlayer.Game.Object.MapEvent
 
         public override IEnumerator Update()
         {
-            Layer = new ScalingLayer2D();
-            asd.Engine.CurrentScene.AddLayer(Layer);
-            Layer.DrawingPriority = 3;
+            var layer = new ScalingLayer2D();
+            asd.Engine.CurrentScene.AddLayer(layer);
+            layer.DrawingPriority = 3;
 
             Text = new MessageBox();
-            Layer.AddObject(Text);
+            layer.AddObject(Text);
             foreach (var item in CharacterImages)
             {
                 item.Position = new asd.Vector2DF(-200, 0);
-                Layer.AddObject(item);
+                layer.AddObject(item);
             }
 
             var messageIterator = Text.Open();
@@ -126,7 +121,7 @@ namespace SatPlayer.Game.Object.MapEvent
                 yield return 0;
             }
 
-            Layer.Dispose(false);
+            layer.Dispose();
             yield return 0;
         }
 
