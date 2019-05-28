@@ -66,6 +66,7 @@ namespace SatCore.MapEditor.Object
                 UndoRedoManager.ChangeProperty(this, value);
                 _texturePath = value;
                 OnPropertyChanged();
+                OnPropertyChanged("Name");
             }
         }
 
@@ -119,7 +120,7 @@ namespace SatCore.MapEditor.Object
             }
         }
 
-        [TextInput("拡大率", false)]
+        [TextInput("移動率", false)]
         public float Zoom
         {
             get => _zoom;
