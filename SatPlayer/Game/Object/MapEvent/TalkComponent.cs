@@ -16,11 +16,6 @@ namespace SatPlayer.Game.Object.MapEvent
     public partial class TalkComponent : MapEventComponent
     {
         /// <summary>
-        /// テキストボックス
-        /// </summary>
-        public MessageBox Text { get; private set; }
-
-        /// <summary>
         /// テキストの要素
         /// </summary>
         public List<BaseTalkElement> TalkElements { get; set; }
@@ -89,35 +84,38 @@ namespace SatPlayer.Game.Object.MapEvent
         public override IEnumerator Update()
         {
             var layer = new ScalingLayer2D();
+            layer.IsFixAspectRatio = true;
+            layer.IsUpdateScalingAuto = true;
             asd.Engine.CurrentScene.AddLayer(layer);
             layer.DrawingPriority = 3;
 
-            Text = new MessageBox();
-            layer.AddObject(Text);
+            var messageBox = new MessageBox();
+            layer.AddObject(messageBox);
             foreach (var item in CharacterImages)
             {
                 item.Position = new asd.Vector2DF(-200, 0);
                 layer.AddObject(item);
             }
+            yield return 0;
 
-            var messageIterator = Text.Open();
+            var messageIterator = messageBox.Open();
             while (messageIterator.MoveNext())
             {
-                CharacterImages.ForEach(obj => obj.Color = new asd.Color(255, 255, 255, (int)Text.Color.A));
+                CharacterImages.ForEach(obj => obj.Color = new asd.Color(255, 255, 255, (int)messageBox.Color.A));
                 yield return 0;
             }
             foreach (var item in TalkElements)
             {
-                var updateIterator = item.Update(this);
+                var updateIterator = item.Update(this, messageBox);
                 while (updateIterator.MoveNext())
                 {
                     yield return 0;
                 }
             }
-            messageIterator = Text.Close();
+            messageIterator = messageBox.Close();
             while (messageIterator.MoveNext())
             {
-                CharacterImages.ForEach(obj => obj.Color = new asd.Color(255, 255, 255, (int)Text.Color.A));
+                CharacterImages.ForEach(obj => obj.Color = new asd.Color(255, 255, 255, (int)messageBox.Color.A));
                 yield return 0;
             }
 
@@ -134,7 +132,7 @@ namespace SatPlayer.Game.Object.MapEvent
 
             }
 
-            public virtual IEnumerator Update(TalkComponent component)
+            public virtual IEnumerator Update(TalkComponent component, MessageBox messageBox)
             {
                 yield return 0;
             }
@@ -152,28 +150,16 @@ namespace SatPlayer.Game.Object.MapEvent
 
             }
 
-            public override IEnumerator Update(TalkComponent component)
+            public override IEnumerator Update(TalkComponent component, MessageBox messageBox)
             {
                 CharacterImage.Position = new asd.Vector2DF(Index < 2 ? -200 : ScalingLayer2D.OriginDisplaySize.X + 200, Index == 1 || Index == 2 ? 100 : 50);
-                component.Text.Index = Index;
-                component.Text.Name = CharacterImage.Name;
-                var targetPosition = new asd.Vector2DF(GetXByIndex(), Index == 1 || Index == 2 ? 100 : 50);
-                while ((targetPosition - CharacterImage.Position).Length > 2)
+                messageBox.Index = Index;
+                messageBox.Name = CharacterImage.Name;
+                var animation = new Animation();
+                animation.MoveTo(new asd.Vector2DF(GetXByIndex(), Index == 1 || Index == 2 ? 100 : 50), 30, Animation.Easing.OutSine);
+                CharacterImage.Animation.AddAnimation(CharacterImage, animation);
+                while (CharacterImage.Animation.IsAnimating)
                 {
-                    asd.Vector2DF velocity = new asd.Vector2DF();
-
-                    velocity.X = GetVelocity((targetPosition - CharacterImage.Position).X);
-                    velocity.Y = GetVelocity((targetPosition - CharacterImage.Position).Y);
-
-                    CharacterImage.Position += velocity;
-
-                    if (component.Text.NameOutput.Color.A < 255)
-                    {
-                        var temp = component.Text.NameOutput.Color;
-                        int v = temp.A > 235 ? 255 : temp.A + 20;
-                        temp.A = (byte)v;
-                        component.Text.NameOutput.Color = temp;
-                    }
                     yield return 0;
                 }
                 component.Index[Index] = CharacterImage;
@@ -186,12 +172,6 @@ namespace SatPlayer.Game.Object.MapEvent
                 else if (Index == 1) return 560;
                 else if (Index == 2) return 960;
                 else return 1320;
-            }
-
-            float GetVelocity(float distance)
-            {
-                if (Math.Abs(distance) < 1.5f) return 0;
-                return Math.Abs(distance * 0.1f) > 1.0f ? distance * 0.1f : Math.Sign(distance) * 1.0f;
             }
         }
 
@@ -206,39 +186,39 @@ namespace SatPlayer.Game.Object.MapEvent
             {
             }
 
-            public override IEnumerator Update(TalkComponent component)
+            public override IEnumerator Update(TalkComponent component, MessageBox messageBox)
             {
-                component.Text.SetMessage(Text);
+                messageBox.SetMessage(Text);
                 if (component.Index.Any(obj => obj.Value == CharacterImage))
                 {
-                    component.Text.Name = CharacterImage.Name;
-                    component.Text.Index = component.Index.First(obj => obj.Value == CharacterImage).Key;
+                    messageBox.Name = CharacterImage.Name;
+                    messageBox.Index = component.Index.First(obj => obj.Value == CharacterImage).Key;
                 }
                 else
                 {
-                    component.Text.Name = new string('?', CharacterImage.Name.Length);
-                    component.Text.Index = 3;
+                    messageBox.Name = new string('?', CharacterImage.Name.Length);
+                    messageBox.Index = 3;
                 }
-                var iterator = component.Text.ShowText();
+                var iterator = messageBox.ShowText();
                 while (iterator.MoveNext())
                 {
-                    if (component.Text.NameOutput.Color.A < 255)
+                    if (messageBox.NameOutput.Color.A < 255)
                     {
-                        var temp = component.Text.NameOutput.Color;
+                        var temp = messageBox.NameOutput.Color;
                         int v = temp.A > 235 ? 255 : temp.A + 20;
                         temp.A = (byte)v;
-                        component.Text.NameOutput.Color = temp;
+                        messageBox.NameOutput.Color = temp;
                     }
                     yield return 0;
                 }
                 while (Input.GetInputState(Inputs.A) != 1)
                 {
-                    if (component.Text.NameOutput.Color.A < 255)
+                    if (messageBox.NameOutput.Color.A < 255)
                     {
-                        var temp = component.Text.NameOutput.Color;
+                        var temp = messageBox.NameOutput.Color;
                         int v = temp.A > 235 ? 255 : temp.A + 20;
                         temp.A = (byte)v;
-                        component.Text.NameOutput.Color = temp;
+                        messageBox.NameOutput.Color = temp;
                     }
                     yield return 0;
                 }
@@ -257,7 +237,7 @@ namespace SatPlayer.Game.Object.MapEvent
             {
             }
 
-            public override IEnumerator Update(TalkComponent component)
+            public override IEnumerator Update(TalkComponent component, MessageBox messageBox)
             {
                 CharacterImage.SelectedDiff = DiffImage;
                 yield return 0;
@@ -273,38 +253,22 @@ namespace SatPlayer.Game.Object.MapEvent
             {
             }
 
-            public override IEnumerator Update(TalkComponent component)
+            public override IEnumerator Update(TalkComponent component, MessageBox messageBox)
             {
                 if (component.Index.ContainsValue(CharacterImage))
                 {
                     int index = component.Index.First(obj => obj.Value == CharacterImage).Key;
                     var targetPosition = new asd.Vector2DF(index < 2 ? -200 : ScalingLayer2D.OriginDisplaySize.X + 200, index == 1 || index == 2 ? 100 : 50);
-                    while ((targetPosition - CharacterImage.Position).Length > 2)
+                    var animation = new Animation();
+                    animation.MoveTo(targetPosition, 30, Animation.Easing.OutSine);
+                    CharacterImage.Animation.AddAnimation(CharacterImage, animation);
+                    while (CharacterImage.Animation.IsAnimating)
                     {
-                        asd.Vector2DF velocity = new asd.Vector2DF();
-
-                        velocity.X = GetVelocity((targetPosition - CharacterImage.Position).X);
-                        velocity.Y = GetVelocity((targetPosition - CharacterImage.Position).Y);
-                        CharacterImage.Position += velocity;
-
-                        if (component.Text.NameOutput.Color.A > 0)
-                        {
-                            var temp = component.Text.NameOutput.Color;
-                            int v = temp.A < 20 ? 0 : temp.A - 20;
-                            temp.A = (byte)v;
-                            component.Text.NameOutput.Color = temp;
-                        }
                         yield return 0;
                     }
                     component.Index.Remove(index);
                 }
                 yield return 0;
-            }
-
-            float GetVelocity(float distance)
-            {
-                if (Math.Abs(distance) < 1.5f) return 0;
-                return Math.Abs(distance * 0.1f) > 1.0f ? distance * 0.1f : Math.Sign(distance) * 1.0f;
             }
         }
     }

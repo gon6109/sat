@@ -20,6 +20,8 @@ namespace SatPlayer.Game.Object.MapEvent
 
         public Dictionary<string, asd.Texture2D> DiffImages { get; set; }
 
+        public AnimationComponent Animation => GetComponent("animation") as AnimationComponent;
+
         public string SelectedDiff
         {
             get => _selectedDiff;
@@ -36,8 +38,9 @@ namespace SatPlayer.Game.Object.MapEvent
         {
             diffObject = new asd.TextureObject2D();
             diffObject.DrawingPriority = 2;
-            AddDrawnChild(diffObject, asd.ChildManagementMode.RegistrationToLayer | asd.ChildManagementMode.Disposal, asd.ChildTransformingMode.All, asd.ChildDrawingMode.Nothing);
+            AddDrawnChild(diffObject, asd.ChildManagementMode.RegistrationToLayer | asd.ChildManagementMode.Disposal, asd.ChildTransformingMode.All, asd.ChildDrawingMode.Color);
             DiffImages = new Dictionary<string, asd.Texture2D>();
+            AddComponent(new AnimationComponent(), "animation");
         }
 
         public static async Task<CharacterImage> CreateCharacterImageAsync(string path)

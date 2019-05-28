@@ -56,11 +56,16 @@ namespace SatPlayer.Game.Object.MapEvent
             NameBoxTexture = TextureManager.LoadTexture("Static/nameBox.png");
             MessageFont = asd.Engine.Graphics.CreateFont("Static/messageFont.aff");
             if (MessageFont == null)
+            {
                 Logger.Warning("MessageFont doesn't exist.");
-            MessageFont = asd.Engine.Graphics.CreateFont("Static/nameFont.aff");
+                MessageFont = asd.Engine.Graphics.CreateDynamicFont("", 25, new asd.Color(255,255,255), 0, new asd.Color());
+            }
+            NameFont = asd.Engine.Graphics.CreateFont("Static/nameFont.aff");
             if (NameFont == null)
+            {
                 Logger.Warning("NameFont doesn't exist.");
+                NameFont = asd.Engine.Graphics.CreateDynamicFont("", 30, new asd.Color(255, 255, 255), 0, new asd.Color());
+            }
         }
-
     }
 }

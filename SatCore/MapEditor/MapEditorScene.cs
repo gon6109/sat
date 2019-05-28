@@ -353,14 +353,17 @@ namespace SatCore.MapEditor
                     var newScene = new SatPlayer.Game.GameScene("temp.map", SatPlayer.Game.GameScene.Players.Where(obj => PlayerNames.Any(obj2 => obj.Path == obj2.Name)).ToList(), PlayerPosition, isPreviewMode: true);
                     newScene.OnGameOver += (() =>
                     {
+                        SatPlayer.Game.GameScene.EndEvents.Clear();
                         asd.Engine.ChangeScene(RefMapEditor);
                     });
                     newScene.OnChangeMap += (path, initPlayers, playerPosition, doorID, savePointID) =>
                     {
+                        SatPlayer.Game.GameScene.EndEvents.Clear();
                         asd.Engine.ChangeScene(RefMapEditor);
                     };
                     newScene.OnEnd += () =>
                     {
+                        SatPlayer.Game.GameScene.EndEvents.Clear();
                         asd.Engine.ChangeScene(RefMapEditor);
                     };
 

@@ -15,6 +15,8 @@ namespace SatPlayer.Game.Object.MapEvent
         /// </summary>
         public class MessageBox : asd.TextureObject2D
         {
+            public static asd.Vector2DF Size => new asd.Vector2DF(1700f, 300f);
+
             /// <summary>
             /// テキストを表示するスピード
             /// </summary>
@@ -53,6 +55,8 @@ namespace SatPlayer.Game.Object.MapEvent
             /// </summary>
             public NameArea NameOutput { get; private set; }
 
+            public AnimationComponent Animation => GetComponent("animation") as AnimationComponent;
+
             List<TextLine> texts;
 
             public MessageBox()
@@ -61,14 +65,16 @@ namespace SatPlayer.Game.Object.MapEvent
                 texts = new List<TextLine>();
                 DrawingPriority = 3;
                 Position = new asd.Vector2DF(110, 780);
-                Texture = TextureManager.LoadTexture("Static/textbox.png");
-                Font = asd.Engine.Graphics.CreateDynamicFont(Base.MainFont, 30, new asd.Color(255, 255, 255), 0, new asd.Color());
+                Texture = MapEventResource.Instance.MessageBoxTexture;
+                Font = MapEventResource.Instance.MessageFont;
+                Scale = new asd.Vector2DF(Size.X / Texture.Size.X, Size.Y / Texture.Size.Y);
                 TextSpeed = 2;
                 Margin = 10;
                 NameOutput = new NameArea();
-                AddChild(NameOutput,
+                AddComponent(new AnimationComponent(), "animation");
+                AddDrawnChild(NameOutput,
                     asd.ChildManagementMode.IsUpdated | asd.ChildManagementMode.RegistrationToLayer | asd.ChildManagementMode.Disposal,
-                    asd.ChildTransformingMode.Nothing);
+                    asd.ChildTransformingMode.Nothing, asd.ChildDrawingMode.Color);
             }
 
             protected override void OnUpdate()
@@ -78,25 +84,25 @@ namespace SatPlayer.Game.Object.MapEvent
 
             public IEnumerator Open()
             {
-                for (int i = 0; i < 15; i++)
+                var animation = new Animation();
+                animation.Alpha(0, 255, 30);
+                Animation.AddAnimation(this, animation);
+                Animation.AddAnimation(NameOutput, animation, 1);
+                while (Animation.IsAnimating)
                 {
-                    var temp = Color;
-                    temp.A = (byte)(temp.A > 235 ? 255 : temp.A + 20);
-                    Color = temp;
-                    NameOutput.Color = new asd.Color(NameOutput.Color.R, NameOutput.Color.G, NameOutput.Color.B, Color.A);
-                    yield return 0;
+                    yield return null;
                 }
             }
 
             public IEnumerator Close()
             {
-                for (int i = 0; i < 15; i++)
+                var animation = new Animation();
+                animation.Alpha(255, 0, 30);
+                Animation.AddAnimation(this, animation);
+                Animation.AddAnimation(NameOutput, animation, 1);
+                while (Animation.IsAnimating)
                 {
-                    var temp = Color;
-                    temp.A = (byte)(temp.A < 20 ? 0 : temp.A - 20);
-                    Color = temp;
-                    NameOutput.Color = new asd.Color(NameOutput.Color.R, NameOutput.Color.G, NameOutput.Color.B, Color.A);
-                    yield return 0;
+                    yield return null;
                 }
             }
 
@@ -152,7 +158,7 @@ namespace SatPlayer.Game.Object.MapEvent
                         temp = "";
                         texts.Add(textObject);
                     }
-                    else if (Font.CalcTextureSize(temp + item, asd.WritingDirection.Horizontal).X < Texture.Size.X - Margin * 2)
+                    else if (Font.CalcTextureSize(temp + item, asd.WritingDirection.Horizontal).X < Size.X - Margin * 2)
                         temp += item;
                     else
                     {
@@ -175,14 +181,20 @@ namespace SatPlayer.Game.Object.MapEvent
                 texts.Add(textObject);
                 foreach (var item in texts)
                 {
-                    Layer.AddObject(item);
+                    AddDrawnChild(item,
+                    asd.ChildManagementMode.IsUpdated | asd.ChildManagementMode.RegistrationToLayer | asd.ChildManagementMode.Disposal,
+                    asd.ChildTransformingMode.Nothing, asd.ChildDrawingMode.Color);
                 }
             }
 
             public class NameArea : asd.TextureObject2D
             {
+                public static asd.Vector2DF Size => new asd.Vector2DF(300f, 50f);
+
                 private int _index;
                 private asd.TextObject2D name;
+
+                public AnimationComponent Animation => GetComponent("animation") as AnimationComponent;
 
                 public int Index
                 {
@@ -192,6 +204,9 @@ namespace SatPlayer.Game.Object.MapEvent
                         if (value > -1 && value < 4)
                         {
                             _index = value;
+                            var animation = new Animation();
+                            animation.MoveTo(Target[_index], 20, BaseComponent.Animation.Easing.OutSine);
+                            Animation.AddAnimation(this, animation);
                         }
                     }
                 }
@@ -202,54 +217,32 @@ namespace SatPlayer.Game.Object.MapEvent
                     set => name.Text = value;
                 }
 
-                asd.Vector2DF Target0 => new asd.Vector2DF(275, 730);
-                asd.Vector2DF Target1 => new asd.Vector2DF(635, 730);
-                asd.Vector2DF Target2 => new asd.Vector2DF(1035, 730);
-                asd.Vector2DF Target3 => new asd.Vector2DF(1395, 730);
+                asd.Vector2DF[] Target { get; } = new[]
+                {
+                    new asd.Vector2DF(275, 730),
+                    new asd.Vector2DF(635, 730),
+                    new asd.Vector2DF(1035, 730),
+                    new asd.Vector2DF(1395, 730)
+                };
 
                 public NameArea()
                 {
                     Position = new asd.Vector2DF(275, 730);
                     DrawingPriority = 3;
                     name = new asd.TextObject2D();
-                    Texture = TextureManager.LoadTexture("Static/namebox.png");
-                    name.Font = asd.Engine.Graphics.CreateDynamicFont(Base.MainFont, 30, new asd.Color(255, 255, 255), 0, new asd.Color());
-                    AddChild(name, (asd.ChildManagementMode)0b1111, asd.ChildTransformingMode.Nothing);
+                    Texture = MapEventResource.Instance.NameBoxTexture;
+                    name.Font = MapEventResource.Instance.NameFont;
+                    Scale = new asd.Vector2DF(Size.X / Texture.Size.X, Size.Y / Texture.Size.Y);
+                    AddDrawnChild(name, (asd.ChildManagementMode)0b1111, asd.ChildTransformingMode.Nothing, asd.ChildDrawingMode.Color);
                     name.DrawingPriority = 4;
+                    AddComponent(new AnimationComponent(), "animation");
                 }
 
                 asd.Vector2DF velocity = new asd.Vector2DF();
                 protected override void OnUpdate()
                 {
-                    switch (Index)
-                    {
-                        case 0:
-                            velocity.X = GetVelocity(Target0.X - Position.X);
-                            velocity.Y = GetVelocity(Target0.Y - Position.Y);
-                            break;
-                        case 1:
-                            velocity.X = GetVelocity(Target1.X - Position.X);
-                            velocity.Y = GetVelocity(Target1.Y - Position.Y);
-                            break;
-                        case 2:
-                            velocity.X = GetVelocity(Target2.X - Position.X);
-                            velocity.Y = GetVelocity(Target2.Y - Position.Y);
-                            break;
-                        case 3:
-                            velocity.X = GetVelocity(Target3.X - Position.X);
-                            velocity.Y = GetVelocity(Target3.Y - Position.Y);
-                            break;
-                    }
-                    Position += velocity;
-                    name.Position = Position + Texture.Size.To2DF() / 2 - name.Font.CalcTextureSize(Name, asd.WritingDirection.Horizontal).To2DF() / 2;
-                    name.Color = new asd.Color(name.Color.R, name.Color.G, name.Color.B, Color.A);
                     base.OnUpdate();
-                }
-
-                float GetVelocity(float distance)
-                {
-                    if (Math.Abs(distance) < 1.5f) return 0;
-                    return Math.Abs(distance * 0.1f) > 1.0f ? distance * 0.1f : Math.Sign(distance) * 1.0f;
+                    name.Position = Position + Size / 2 - name.Font.CalcTextureSize(Name, asd.WritingDirection.Horizontal).To2DF() / 2;
                 }
             }
 
