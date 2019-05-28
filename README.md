@@ -37,7 +37,7 @@ sat.slnを開いて、ビルドしてください。
 
 ### バイナリをダウンロードする場合
 
-[ここ](https://github.com/gon6109/sat/releases)から
-一番上の `{数字}.zip` をダウンロードしてください。
+下のリンクからダウンロード後、展開してください。
+[Download](https://github.com/gon6109/sat/releases/latest/download/sat.zip)
 
 [![Build status](https://dev.azure.com/gooooon/sat-ci/_apis/build/status/sat-ci-.NET%20Desktop-CI-windows)](https://dev.azure.com/gooooon/sat-ci/_build/latest?definitionId=1)
