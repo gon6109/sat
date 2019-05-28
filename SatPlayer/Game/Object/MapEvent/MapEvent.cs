@@ -67,7 +67,7 @@ namespace SatPlayer.Game.Object.MapEvent
             var mapEvent = new MapEvent(camera);
             mapEvent.ID = mapEventIO.ID;
             mapEvent.Shape.DrawingArea = new asd.RectF(mapEventIO.Position, mapEventIO.Size);
-            mapEvent.InitCameraPosition = mapEventIO.Camera.InitPosition + new asd.Vector2DF(400, 300);
+            mapEvent.InitCameraPosition = mapEventIO.Camera.InitPosition + ScalingLayer2D.OriginDisplaySize / 2f;
             mapEvent.ToMapPath = mapEventIO.ToMapPath;
             mapEvent.MoveToPosition = mapEventIO.MoveToPosition;
             mapEvent.DoorID = mapEventIO.DoorID;
