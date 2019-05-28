@@ -91,7 +91,7 @@ namespace SatUI
             SatCore.Mouse.Position = new asd.Vector2DF(pos.X / (float)source.CompositionTarget.TransformToDevice.M11,
                 pos.Y / (float)source.CompositionTarget.TransformToDevice.M22);
             SatCore.Mouse.MouseWheel = 0;
-            if (!new System.Drawing.Rectangle(new System.Drawing.Point(), MainWindow.EditorPanel.Child.Size).Contains(pos) || !MainWindow.EditorPanel.IsFocused)
+            if (!new System.Drawing.Rectangle(new System.Drawing.Point(), MainWindow.EditorPanel.Child.Size).Contains(pos) || !MainWindow.EditorPanel.IsFocused || !MainWindow.IsActive)
             {
                 SatCore.Mouse.IsLeftButton = false;
                 SatCore.Mouse.IsRightButton = false;
