@@ -132,7 +132,7 @@ namespace SatScript.MapObject
         void CreateChild(string name, Vector position);
 
         /// <summary>
-        /// エフェクトをロードする
+        /// アニメーションエフェクトをロードする
         /// </summary>
         /// <param name="animationGroup">ファイル名</param>
         /// <param name="extension">拡張子</param>
@@ -140,6 +140,13 @@ namespace SatScript.MapObject
         /// <param name="name">エフェクト名</param>
         /// <param name="interval">1枚当たりのフレーム数</param>
         void LoadEffect(string animationGroup, string extension, int sheets, string name, int interval);
+
+        /// <summary>
+        /// Effekseerエフェクトを読み込む
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="name"></param>
+        void LoadEffect(string path, string name);
 
         /// <summary>
         /// エフェクトを配置する
