@@ -392,7 +392,7 @@ namespace SatPlayer.Game.Object
                 case asd.Effect asdEffect:
                     var effectObject = new EffekseerEffectObject2D();
                     effectObject.Effect = asdEffect;
-                    effectObject.Position = position;
+                    effectObject.Position = Position + position;
                     Layer.AddObject(effectObject);
                     break;
                 default:
