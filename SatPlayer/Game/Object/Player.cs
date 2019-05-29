@@ -61,7 +61,7 @@ namespace SatPlayer.Game.Object
 
         public PhysicalRectangleShape CollisionShape { protected set; get; }
 
-        public Dictionary<string, Effect> Effects { get; private set; }
+        public Dictionary<string, object> Effects { get; private set; }
 
         /// <summary>
         /// 地面と接しているか
@@ -145,7 +145,7 @@ namespace SatPlayer.Game.Object
         {
             GroundCollision = new asd.RectangleShape();
             base.Position = new asd.Vector2DF();
-            Effects = new Dictionary<string, Effect>();
+            Effects = new Dictionary<string, object>();
             IsCollidedWithGround = false;
             DamageRequests = new Queue<DamageRect>();
             DirectDamageRequests = new Queue<DirectDamage>();
@@ -238,16 +238,19 @@ namespace SatPlayer.Game.Object
         }
 
         /// <summary>
-        /// エフェクトを配置する
+        /// Effekseerエフェクトをロードする
         /// </summary>
-        /// <param name="name">エフェクト名</param>
-        /// <param name="position">座標</param>
-        public void SetEffect(string name, asd.Vector2DF position)
+        /// <param name="path"></param>
+        /// <param name="name"></param>
+        public void LoadEffect(string path, string name)
         {
-            if (!Effects.ContainsKey(name)) return;
-            Effect effect = (Effect)Effects[name].Clone();
-            effect.Position = Position + position;
-            Layer.AddObject(effect);
+            asd.Effect effect = asd.Engine.Graphics.CreateEffect(path);
+            if (effect == null)
+            {
+                Logger.Error(path + " not found.");
+                return;
+            }
+            Effects.Add(name, effect);
         }
 
         /// <summary>
@@ -255,8 +258,35 @@ namespace SatPlayer.Game.Object
         /// </summary>
         /// <param name="name">エフェクト名</param>
         /// <param name="position">座標</param>
-        public void SetEffect(string name, Vector positon)
-            => SetEffect(name, positon.ToAsdVector());
+        public void SetEffect(string name, asd.Vector2DF position)
+        {
+            if (!Effects.ContainsKey(name)) return;
+            switch (Effects[name])
+            {
+                case Effect effect:
+                    var newEffect = (Effect)effect.Clone();
+                    effect.Position = Position + position;
+                    Layer.AddObject(effect);
+                    break;
+                case asd.Effect asdEffect:
+                    var effectObject = new EffekseerEffectObject2D();
+                    effectObject.Effect = asdEffect;
+                    effectObject.Position = position;
+                    Layer.AddObject(effectObject);
+                    break;
+                default:
+                    Logger.Error("Undefined Effect Type.");
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// エフェクトを配置する
+        /// </summary>
+        /// <param name="name">エフェクト名</param>
+        /// <param name="position">座標</param>
+        public void SetEffect(string name, Vector position)
+            => SetEffect(name, position.ToAsdVector());
 
         /// <summary>
         /// 入力状態を得る

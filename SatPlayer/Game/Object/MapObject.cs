@@ -99,7 +99,7 @@ namespace SatPlayer.Game.Object
         /// <summary>
         /// エフェクト一覧
         /// </summary>
-        public Dictionary<string, Effect> Effects { get; protected set; }
+        public Dictionary<string, object> Effects { get; protected set; }
 
         /// <summary>
         /// OnUpdate時に呼び出されるイベント
@@ -226,7 +226,7 @@ namespace SatPlayer.Game.Object
             HP = 100;
             DamageRequests = new Queue<DamageRect>();
             sensors = new Dictionary<string, Sensor>();
-            Effects = new Dictionary<string, Effect>();
+            Effects = new Dictionary<string, object>();
             childMapObjectData = new Dictionary<string, MapObject>();
             collision = new asd.RectangleShape();
             DirectDamageRequests = new Queue<DirectDamage>();
@@ -322,7 +322,7 @@ namespace SatPlayer.Game.Object
         {
             clone.sensors = CopySensors(clone, isPreview);
             clone.childMapObjectData = new Dictionary<string, MapObject>(childMapObjectData);
-            clone.Effects = new Dictionary<string, Effect>(Effects);
+            clone.Effects = new Dictionary<string, object>(Effects);
             clone.Update = Update;
             clone.State = State;
             clone.Tag = Tag;
@@ -344,7 +344,7 @@ namespace SatPlayer.Game.Object
         }
 
         /// <summary>
-        /// エフェクトをロードする
+        /// アニメーションエフェクトをロードする
         /// </summary>
         /// <param name="animationGroup">ファイル名</param>
         /// <param name="extension">拡張子</param>
@@ -359,6 +359,22 @@ namespace SatPlayer.Game.Object
         }
 
         /// <summary>
+        /// Effekseerエフェクトをロードする
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="name"></param>
+        public void LoadEffect(string path, string name)
+        {
+            asd.Effect effect = asd.Engine.Graphics.CreateEffect(path);
+            if (effect == null)
+            {
+                Logger.Error(path + " not found.");
+                return;
+            }
+            Effects.Add(name, effect);
+        }
+
+        /// <summary>
         /// エフェクトを配置する
         /// </summary>
         /// <param name="name">エフェクト名</param>
@@ -366,9 +382,23 @@ namespace SatPlayer.Game.Object
         public void SetEffect(string name, asd.Vector2DF position)
         {
             if (!Effects.ContainsKey(name)) return;
-            Effect effect = (Effect)Effects[name].Clone();
-            effect.Position = Position + position;
-            Layer.AddObject(effect);
+            switch (Effects[name])
+            {
+                case Effect effect:
+                    var newEffect = (Effect)effect.Clone();
+                    effect.Position = Position + position;
+                    Layer.AddObject(effect);
+                    break;
+                case asd.Effect asdEffect:
+                    var effectObject = new EffekseerEffectObject2D();
+                    effectObject.Effect = asdEffect;
+                    effectObject.Position = position;
+                    Layer.AddObject(effectObject);
+                    break;
+                default:
+                    Logger.Error("Undefined Effect Type.");
+                    break;
+            }
         }
 
         /// <summary>
@@ -435,7 +465,7 @@ namespace SatPlayer.Game.Object
         }
 
         public void SetSensor(string name, Vector position, float diameter = 3)
-            => 
+            =>
             sensors.Add(name, new Sensor(this, position.ToAsdVector(), diameter));
 
         public static async Task<MapObject> CreateMapObjectAsync(MapObjectIO mapObjectIO)
@@ -474,7 +504,7 @@ namespace SatPlayer.Game.Object
         protected virtual void Reset()
         {
             sensors = new Dictionary<string, Sensor>();
-            Effects = new Dictionary<string, Effect>();
+            Effects = new Dictionary<string, object>();
             childMapObjectData = new Dictionary<string, MapObject>();
             Update = delegate { };
         }

@@ -13,12 +13,12 @@ namespace SatPlayer.Game
     public interface IEffectManeger
     {
         /// <summary>
-        /// 再生中のエフェクト
+        /// エフェクト
         /// </summary>
-        Dictionary<string, Effect> Effects { get; }
+        Dictionary<string, object> Effects { get; }
 
         /// <summary>
-        /// エフェクトを読み込む
+        /// アニメーションエフェクトを読み込む
         /// </summary>
         /// <param name="animationGroup">エフェクトへのパス</param>
         /// <param name="extension">拡張子</param>
@@ -26,6 +26,13 @@ namespace SatPlayer.Game
         /// <param name="name">エフェクト名</param>
         /// <param name="interval">1コマあたりのフレーム数</param>
         void LoadEffect(string animationGroup, string extension, int sheets, string name, int interval);
+
+        /// <summary>
+        /// Effekseerエフェクトを読み込む
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="name"></param>
+        void LoadEffect(string path, string name);
 
         /// <summary>
         /// エフェクトを配置する
