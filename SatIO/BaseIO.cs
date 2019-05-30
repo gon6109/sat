@@ -132,7 +132,7 @@ namespace SatIO
                 var stream = await IO.GetStreamAsync(path);
                 using (stream)
                 {
-                    data = (T)serializer.Deserialize(stream);
+                    data = await Task.Run(() => (T)serializer.Deserialize(stream));
                 }
                 data.Path = System.IO.Path.GetDirectoryName(path);
                 return data;
