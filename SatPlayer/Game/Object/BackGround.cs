@@ -17,6 +17,8 @@ namespace SatPlayer.Game.Object
     /// </summary>
     public class BackGround : MultiAnimationObject2D, IBackGround, ICloneable
     {
+        List<Task> LoadTextureTasks { get; }
+
         public float Zoom { get; set; }
 
         /// <summary>
@@ -46,6 +48,7 @@ namespace SatPlayer.Game.Object
 
         public BackGround()
         {
+            LoadTextureTasks = new List<Task>();
             Zoom = 1;
             UpdatePriority = 10;
             DrawingPriority = -1;
@@ -65,6 +68,11 @@ namespace SatPlayer.Game.Object
             }
             Update(this);
             base.OnUpdate();
+        }
+
+        void IBackGround.AddAnimationPart(string animationGroup, string extension, int sheets, string partName, int interval)
+        {
+            LoadTextureTasks.Add(AddAnimationPartAsync(animationGroup, extension, sheets, partName, interval));
         }
 
         public new object Clone()
@@ -97,6 +105,8 @@ namespace SatPlayer.Game.Object
                         var script = ScriptOption.ScriptOptions["BackGround"].CreateScript<object>(Encoding.UTF8.GetString(stream.ToArray()));
                         await Task.Run(() => script.Compile());
                         await script.RunAsync(backGround);
+                        await Task.WhenAll(backGround.LoadTextureTasks);
+                        backGround.LoadTextureTasks.Clear();
                     }
                 }
                 catch (Exception e)

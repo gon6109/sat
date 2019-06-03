@@ -50,7 +50,10 @@ namespace SatPlayer.Game.Object
             set
             {
                 base.State = value;
-                CenterPosition = Texture != null ? Texture.Size.To2DF() / 2.0f : AnimationPart.First(obj => obj.Value.Textures.Count > 0).Value.Textures.First().Size.To2DF();
+                CenterPosition = Texture != null ? 
+                    Texture.Size.To2DF() / 2.0f : 
+                    AnimationPart.FirstOrDefault(obj => obj.Value.Textures.Count > 0).Value?.
+                    Textures.FirstOrDefault()?.Size.To2DF() ?? default;
             }
         }
 
@@ -138,6 +141,7 @@ namespace SatPlayer.Game.Object
 
         public asd.RectangleShape GroundCollision { get; }
         Color IPlayer.Color { get => Color.ToScriptColor(); set => Color = value.ToAsdColor(); }
+        protected List<Task> LoadTextureTasks { get; } = new List<Task>();
 
         private int hP;
 
@@ -333,6 +337,11 @@ namespace SatPlayer.Game.Object
             GroundCollision.DrawingArea = new asd.RectF(CollisionShape.DrawingArea.X + 3, CollisionShape.DrawingArea.Vertexes[2].Y, CollisionShape.DrawingArea.Width - 3, 5);
         }
 
+        void IPlayer.AddAnimationPart(string animationGroup, string extension, int sheets, string partName, int interval)
+        {
+            LoadTextureTasks.Add(AddAnimationPartAsync(animationGroup, extension, sheets, partName, interval));
+        }
+
         public static async Task<Player> CreatePlayerAsync(string playerDataPath, int playerGroup = 0)
         {
             try
@@ -345,6 +354,8 @@ namespace SatPlayer.Game.Object
                 {
                     var script = ScriptOption.ScriptOptions["Player"].CreateScript<object>(Encoding.UTF8.GetString(stream.ToArray()));
                     await script.RunAsync(player);
+                    await Task.WhenAll(player.LoadTextureTasks);
+                    player.LoadTextureTasks.Clear();
                 }
                 return player;
             }

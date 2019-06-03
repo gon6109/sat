@@ -208,6 +208,8 @@ namespace SatPlayer.Game.Object
             }
         }
 
+        protected List<Task> LoadTextureTasks { get; } = new List<Task>();
+
         Dictionary<string, Sensor> sensors;
         Dictionary<string, MapObject> childMapObjectData;
         private int hP;
@@ -468,6 +470,11 @@ namespace SatPlayer.Game.Object
             =>
             sensors.Add(name, new Sensor(this, position.ToAsdVector(), diameter));
 
+        void IMapObject.AddAnimationPart(string animationGroup, string extension, int sheets, string partName, int interval)
+        {
+            LoadTextureTasks.Add(AddAnimationPartAsync(animationGroup, extension, sheets, partName, interval));
+        }
+
         public static async Task<MapObject> CreateMapObjectAsync(MapObjectIO mapObjectIO)
         {
             var mapObject = new MapObject();
@@ -480,6 +487,8 @@ namespace SatPlayer.Game.Object
                         var script = ScriptOption.ScriptOptions["MapObject"]?.CreateScript<object>(Encoding.UTF8.GetString(stream.ToArray()));
                         await Task.Run(() => script.Compile());
                         await script.RunAsync(mapObject);
+                        await Task.WhenAll(mapObject.LoadTextureTasks);
+                        mapObject.LoadTextureTasks.Clear();
                     }
                 }
                 catch (Exception e)
