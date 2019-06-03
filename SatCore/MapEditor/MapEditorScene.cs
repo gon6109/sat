@@ -244,17 +244,31 @@ namespace SatCore.MapEditor
             Path = path;
             try
             {
+                Debug.PrintCount("Update");
+
+                Debug.PrintTime();
                 var mapdata = await SatIO.BaseIO.LoadAsync<SatIO.MapIO>(path);
                 MapName = mapdata.MapName;
+                Logger.Debug("File Loaded");
+                Debug.PrintCount("Update");
+                Debug.PrintTime();
+
                 if (mapdata.BackGrounds != null)
                 {
                     foreach (var item in mapdata.BackGrounds)
                     {
+                        Debug.SetFlag("Timer", true);
                         BackGrounds.Add(await BackGround.CreateBackGroudAsync(item));
+                        Debug.SetFlag("Timer", false);
+                        Logger.Debug("BackGround Loaded");
+                        Debug.PrintCount("Update");
+                        Debug.PrintTime();
                     }
                 }
+
                 await Map.LoadMapDataAsync(mapdata);
                 BGMPath = mapdata.BGMPath;
+                Debug.PrintTime();
             }
             catch (Exception e)
             {

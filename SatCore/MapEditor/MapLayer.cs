@@ -192,6 +192,7 @@ namespace SatCore.MapEditor
         {
             WorldSize = mapData.Size;
 
+            Debug.PrintCount("Update");
             if (mapData.MapObjects != null)
             {
                 foreach (var item in mapData.MapObjects)
@@ -200,6 +201,7 @@ namespace SatCore.MapEditor
                     AddObject(temp);
                 }
             }
+            Debug.PrintCount("Update");
 
             eventObjects = new List<EventObject>();
             if (mapData.EventObjects != null)
@@ -214,6 +216,8 @@ namespace SatCore.MapEditor
                     }
                 }
             }
+            Logger.Debug("EventObject Loaded");
+            Debug.PrintCount("Update");
 
             if (mapData.MapEvents != null)
             {
@@ -224,6 +228,8 @@ namespace SatCore.MapEditor
                     AddObject(mapEvent);
                 }
             }
+            Logger.Debug("MapEvent Loaded");
+            Debug.PrintCount("Update");
 
             if (mapData.Doors != null)
             {
@@ -240,6 +246,8 @@ namespace SatCore.MapEditor
                     }
                 }
             }
+            Logger.Debug("Door Loaded");
+            Debug.PrintCount("Update");
 
             if (mapData.CollisionBoxes != null)
             {
@@ -249,6 +257,8 @@ namespace SatCore.MapEditor
                     AddObject(temp);
                 }
             }
+            Logger.Debug("CollisionBox Loaded");
+            Debug.PrintCount("Update");
 
             if (mapData.CollisionTriangles != null)
             {
@@ -258,6 +268,8 @@ namespace SatCore.MapEditor
                     AddObject(temp);
                 }
             }
+            Logger.Debug("CollisionTriangle Loaded");
+            Debug.PrintCount("Update");
 
             if (mapData.CameraRestrictions != null)
             {
@@ -267,6 +279,8 @@ namespace SatCore.MapEditor
                     AddObject(temp);
                 }
             }
+            Logger.Debug("CameraRestriction Loaded");
+            Debug.PrintCount("Update");
 
             if (mapData.SavePoints != null)
             {
@@ -276,6 +290,8 @@ namespace SatCore.MapEditor
                     AddObject(temp);
                 }
             }
+            Logger.Debug("SavePoint Loaded");
+            Debug.PrintCount("Update");
         }
 
         async Task<IActor> SearchActorAsync(MapEventIO.ActorIO actorIO)

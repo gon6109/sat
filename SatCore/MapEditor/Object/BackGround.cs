@@ -35,6 +35,8 @@ namespace SatCore.MapEditor.Object
         asd.Vector2DF prePosition;
         private Vector2DF _position;
 
+        List<Task> LoadTextureTasks { get; }
+
         /// <summary>
         /// 動かすか
         /// </summary>
@@ -95,6 +97,8 @@ namespace SatCore.MapEditor.Object
                         }
                         Script<object> script = CSharpScript.Create(code, options: options, globalsType: typeof(BackGround));
                         await script.RunAsync(this).ConfigureAwait(awaitable);
+                        await Task.WhenAll(LoadTextureTasks).ConfigureAwait(awaitable);
+                        LoadTextureTasks.Clear();
                         State = AnimationPart.First().Key;
                     }
                 }
@@ -150,6 +154,7 @@ namespace SatCore.MapEditor.Object
 
         public BackGround()
         {
+            LoadTextureTasks = new List<Task>();
             _zoom = 1;
             UpdatePriority = 10;
             DrawingPriority = -1;
@@ -190,6 +195,11 @@ namespace SatCore.MapEditor.Object
                     || Mouse.LeftButton == asd.ButtonState.Push) IsMove = false;
             }
             base.OnUpdate();
+        }
+
+        public new void AddAnimationPart(string animationGroup, string extension, int sheets, string partName, int interval)
+        {
+            LoadTextureTasks.Add(AddAnimationPartAsync(animationGroup, extension, sheets, partName, interval));
         }
 
         public ICopyPasteObject Copy()

@@ -63,6 +63,7 @@ namespace SatUI
 #endif
             while (asd.Engine.DoEvents())
             {
+                SatCore.Debug.PrintTimeWithFlag("asd.Engine.DoEvents ");
                 KeyInput();
                 MouseInput();
                 Input.UpdateInput();
@@ -71,7 +72,11 @@ namespace SatUI
                 if (closed) break;
 
                 asd.Engine.WindowSize = new asd.Vector2DI((int)MainWindow.EditorPanel.RenderSize.Width, (int)MainWindow.EditorPanel.RenderSize.Height);
+                SatCore.Debug.ResetTime();
                 asd.Engine.Update();
+                SatCore.Debug.PrintTimeWithFlag("asd.Engine.Update ");
+                SatCore.Debug.AddCount("Update");
+                SatCore.Debug.ResetTime();
             }
 
             Logger.Save("latest.log");

@@ -85,6 +85,8 @@ namespace SatCore.MapEditor.Object
                         }
                         Script<object> script = CSharpScript.Create(code, options: options, globalsType: typeof(MapObject));
                         await script.RunAsync(this).ConfigureAwait(awaitable);
+                        await Task.WhenAll(LoadTextureTasks);
+                        LoadTextureTasks.Clear();
                         State = AnimationPart.First().Key;
                     }
                 }
@@ -107,6 +109,8 @@ namespace SatCore.MapEditor.Object
         public asd.RectangleShape CollisionShape { get; }
 
         public asd.Vector2DF BottomRight => Position + CenterPosition;
+
+        protected List<Task> LoadTextureTasks { get; } = new List<Task>();
 
         public MapObject()
         {
@@ -152,6 +156,11 @@ namespace SatCore.MapEditor.Object
                 Position = Position,
             };
             return result;
+        }
+
+        public new void AddAnimationPart(string animationGroup, string extension, int sheets, string partName, int interval)
+        {
+            LoadTextureTasks.Add(AddAnimationPartAsync(animationGroup, extension, sheets, partName, interval));
         }
 
         public static async Task<MapObject> CreateMapObjectAsync(MapObjectIO mapObjectIO)
