@@ -16,7 +16,7 @@ namespace SatCore.MapEditor
     /// <summary>
     /// マップ編集シーン
     /// </summary>
-    public class MapEditorScene : UndoRedoScene, INotifyPropertyChanged
+    public class MapEditorScene : BaseEditorScene, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -26,8 +26,6 @@ namespace SatCore.MapEditor
         private string _bGMPath;
 
         public MapLayer Map { get; }
-
-        public string Path { get; set; }
 
         [TextInput("マップ名")]
         public string MapName
@@ -276,8 +274,9 @@ namespace SatCore.MapEditor
             }
         }
 
-        public void SaveMapData(string path)
+        public override void SaveImp(string path)
         {
+            base.SaveImp(path);
             var mapdata = new SatIO.MapIO()
             {
                 BGMPath = BGMPath,
@@ -361,7 +360,7 @@ namespace SatCore.MapEditor
                     IsCancel = false;
                     IsRequireProgressDialog = true;
 
-                    RefMapEditor.SaveMapData("temp.map");
+                    RefMapEditor.SaveImp("temp.map");
                     await SatPlayer.Game.GameScene.LoadPlayersDataAsync();
                     var newScene = new SatPlayer.Game.GameScene("temp.map", SatPlayer.Game.GameScene.Players.Where(obj => PlayerNames.Any(obj2 => obj.Path == obj2.Name)).ToList(), PlayerPosition, isPreviewMode: true);
                     newScene.OnGameOver += (() =>

@@ -189,7 +189,7 @@
     <Compile Include="Attribute\TextOutputAttribute.cs" />
     <Compile Include="UndoRedoCollection.cs" />
     <Compile Include="UndoRedoManager.cs" />
-    <Compile Include="UndoRedoScene.cs" />
+    <Compile Include="BaseEditorScene.cs" />
     <Compile Include="Attribute\VectorInputAttribute.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -13,7 +13,7 @@ namespace SatCore.ScriptEditor
     /// <summary>
     /// スクリプト編集シーン
     /// </summary>
-    public class ScriptEditor : UndoRedoScene
+    public class ScriptEditor : BaseEditorScene
     {
         public IScriptObject ScriptObject { get; private set; }
 
@@ -137,8 +137,9 @@ namespace SatCore.ScriptEditor
             MainLayer.AddObject(obj);
         }
 
-        public void SaveScript(string path)
+        public override void SaveImp(string path)
         {
+            base.SaveImp(path);
             StreamWriter writer = new StreamWriter(path, false);
             writer.Write(ScriptObject.Code);
             writer.Close();

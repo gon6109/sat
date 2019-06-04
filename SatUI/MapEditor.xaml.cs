@@ -82,6 +82,12 @@ namespace SatUI
 
         private void map_Click(object sender, RoutedEventArgs e)
         {
+            if (asd.Engine.CurrentScene is SatCore.BaseEditorScene scene)
+                if (scene.ConfirmSave() == SatCore.BaseEditorScene.ConfirmSaveDialogResult.Cancel)
+                    return;
+                else
+                    scene.RemoveEvent();
+
             var newFile = new SatCore.MapEditor.MapEditorScene();
             newFile.OnRequestShowProgressDialog += ShowProgressDialog;
             newFile.Map.OnChangeSelectedObject += OnChangeSelectedObject;
@@ -90,6 +96,8 @@ namespace SatUI
             newFile.Map.FocusToEditorPanel += () => EditorPanel.Focus();
             newFile.Map.RequireOpenFileDialog += OpenCharacterImageFileDialog;
             newFile.OnCopyObjectChanged += OnCopyObjectChanged;
+            newFile.OnSave += SaveMap;
+            newFile.RequireConfirmSaveDialog += OpenConfirmSaveDialog;
             asd.Engine.ChangeScene(newFile);
             Reset(PropertyPanel.ResetMode.General);
 
@@ -106,9 +114,17 @@ namespace SatUI
 
         private void characterImage_Click(object sender, RoutedEventArgs e)
         {
+            if (asd.Engine.CurrentScene is SatCore.BaseEditorScene scene)
+                if (scene.ConfirmSave() == SatCore.BaseEditorScene.ConfirmSaveDialogResult.Cancel)
+                    return;
+                else
+                    scene.RemoveEvent();
+
             Reset(PropertyPanel.ResetMode.General);
 
             var loadFile = new SatCore.CharacterImageEditor.CharacterImageEditor();
+            loadFile.OnSave += SaveCharacterImage;
+            loadFile.RequireConfirmSaveDialog += OpenConfirmSaveDialog;
             asd.Engine.ChangeScene(loadFile);
             Property mapProperty = new Property("Chracter Image", loadFile.Character);
             propertyPanel.AddProperty(mapProperty);
@@ -116,9 +132,17 @@ namespace SatUI
 
         private void CreateMapObject_Click(object sender, RoutedEventArgs e)
         {
+            if (asd.Engine.CurrentScene is SatCore.BaseEditorScene scene)
+                if (scene.ConfirmSave() == SatCore.BaseEditorScene.ConfirmSaveDialogResult.Cancel)
+                    return;
+                else
+                    scene.RemoveEvent();
+
             Reset(PropertyPanel.ResetMode.General);
 
             var loadFile = new SatCore.ScriptEditor.ScriptEditor(SatCore.ScriptEditor.ScriptEditor.ScriptType.MapObject);
+            loadFile.OnSave += SaveScript;
+            loadFile.RequireConfirmSaveDialog += OpenConfirmSaveDialog;
             asd.Engine.ChangeScene(loadFile);
             Property mapProperty = new Property("Map Object", new object[] { loadFile, loadFile.ScriptObject });
             propertyPanel.AddProperty(mapProperty);
@@ -129,9 +153,17 @@ namespace SatUI
 
         private void CreateEventObject_Click(object sender, RoutedEventArgs e)
         {
+            if (asd.Engine.CurrentScene is SatCore.BaseEditorScene scene)
+                if (scene.ConfirmSave() == SatCore.BaseEditorScene.ConfirmSaveDialogResult.Cancel)
+                    return;
+                else
+                    scene.RemoveEvent();
+
             Reset(PropertyPanel.ResetMode.General);
 
             var loadFile = new SatCore.ScriptEditor.ScriptEditor(SatCore.ScriptEditor.ScriptEditor.ScriptType.EventObject);
+            loadFile.OnSave += SaveScript;
+            loadFile.RequireConfirmSaveDialog += OpenConfirmSaveDialog;
             asd.Engine.ChangeScene(loadFile);
             Property mapProperty = new Property("Map Object", new object[] { loadFile, loadFile.ScriptObject });
             propertyPanel.AddProperty(mapProperty);
@@ -142,9 +174,17 @@ namespace SatUI
 
         private void CreatePlayer_Click(object sender, RoutedEventArgs e)
         {
+            if (asd.Engine.CurrentScene is SatCore.BaseEditorScene scene)
+                if (scene.ConfirmSave() == SatCore.BaseEditorScene.ConfirmSaveDialogResult.Cancel)
+                    return;
+                else
+                    scene.RemoveEvent();
+
             Reset(PropertyPanel.ResetMode.General);
 
             var loadFile = new SatCore.ScriptEditor.ScriptEditor(SatCore.ScriptEditor.ScriptEditor.ScriptType.Player);
+            loadFile.OnSave += SaveScript;
+            loadFile.RequireConfirmSaveDialog += OpenConfirmSaveDialog;
             asd.Engine.ChangeScene(loadFile);
             Property mapProperty = new Property("Map Object", new object[] { loadFile, loadFile.ScriptObject });
             propertyPanel.AddProperty(mapProperty);
@@ -155,9 +195,17 @@ namespace SatUI
 
         private void CreateBackGround_Click(object sender, RoutedEventArgs e)
         {
+            if (asd.Engine.CurrentScene is SatCore.BaseEditorScene scene)
+                if (scene.ConfirmSave() == SatCore.BaseEditorScene.ConfirmSaveDialogResult.Cancel)
+                    return;
+                else
+                    scene.RemoveEvent();
+
             Reset(PropertyPanel.ResetMode.General);
 
             var loadFile = new SatCore.ScriptEditor.ScriptEditor(SatCore.ScriptEditor.ScriptEditor.ScriptType.BackGround);
+            loadFile.OnSave += SaveScript;
+            loadFile.RequireConfirmSaveDialog += OpenConfirmSaveDialog;
             asd.Engine.ChangeScene(loadFile);
             Property mapProperty = new Property("Map Object", new object[] { loadFile, loadFile.ScriptObject });
             propertyPanel.AddProperty(mapProperty);
@@ -168,6 +216,12 @@ namespace SatUI
 
         private async void OpenFile_Click(object sender, RoutedEventArgs e)
         {
+            if (asd.Engine.CurrentScene is SatCore.BaseEditorScene scene)
+                if (scene.ConfirmSave() == SatCore.BaseEditorScene.ConfirmSaveDialogResult.Cancel)
+                    return;
+                else
+                    scene.RemoveEvent();
+
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.FileName = "";
             openFileDialog.InitialDirectory = "";
@@ -197,6 +251,8 @@ namespace SatUI
                 loadFile.Map.FocusToEditorPanel += () => EditorPanel.Focus();
                 loadFile.Map.RequireOpenFileDialog += OpenCharacterImageFileDialog;
                 loadFile.OnCopyObjectChanged += OnCopyObjectChanged;
+                loadFile.OnSave += SaveMap;
+                loadFile.RequireConfirmSaveDialog += OpenConfirmSaveDialog;
                 await loadFile.LoadMapData(fileName);
                 asd.Engine.ChangeScene(loadFile);
                 Property mapProperty = new Property("Map", new object[] { loadFile.Map, loadFile });
@@ -215,6 +271,8 @@ namespace SatUI
         void OpenCharacterImageFile(string fileName)
         {
             var loadFile = new SatCore.CharacterImageEditor.CharacterImageEditor(fileName);
+            loadFile.OnSave += SaveCharacterImage;
+            loadFile.RequireConfirmSaveDialog += OpenConfirmSaveDialog;
             asd.Engine.ChangeScene(loadFile);
             Property mapProperty = new Property("Chracter Image", loadFile.Character);
             propertyPanel.AddProperty(mapProperty);
@@ -235,6 +293,8 @@ namespace SatUI
             }
 
             var loadFile = new SatCore.ScriptEditor.ScriptEditor(scriptType, fileName);
+            loadFile.OnSave += SaveScript;
+            loadFile.RequireConfirmSaveDialog += OpenConfirmSaveDialog;
             asd.Engine.ChangeScene(loadFile);
             Property mapProperty = new Property("Script", new object[] { loadFile, loadFile.ScriptObject });
             propertyPanel.AddProperty(mapProperty);
@@ -404,7 +464,7 @@ namespace SatUI
                 if (saveFileDialog.ShowDialog() != true) return;
                 ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Path = saveFileDialog.FileName;
             }
-            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).SaveMapData(((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Path);
+            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).SaveImp(((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Path);
         }
 
         void SaveCharacterImage()
@@ -420,7 +480,7 @@ namespace SatUI
                 if (saveFileDialog.ShowDialog() != true) return;
                 ((SatCore.CharacterImageEditor.CharacterImageEditor)asd.Engine.CurrentScene).Path = saveFileDialog.FileName;
             }
-            ((SatCore.CharacterImageEditor.CharacterImageEditor)asd.Engine.CurrentScene).SaveCharacterImage(((SatCore.CharacterImageEditor.CharacterImageEditor)asd.Engine.CurrentScene).Path);
+            ((SatCore.CharacterImageEditor.CharacterImageEditor)asd.Engine.CurrentScene).SaveImp(((SatCore.CharacterImageEditor.CharacterImageEditor)asd.Engine.CurrentScene).Path);
         }
 
         void SaveScript()
@@ -432,7 +492,7 @@ namespace SatUI
                 if (saveFileDialog.ShowDialog() != true) return;
                 ((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Path = saveFileDialog.FileName;
             }
-            ((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).SaveScript(((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Path);
+            ((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).SaveImp(((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Path);
         }
 
         SaveFileDialog GetSaveFileDialog(SatCore.ScriptEditor.ScriptEditor.ScriptType scriptType)
@@ -484,7 +544,7 @@ namespace SatUI
             if (saveFileDialog.ShowDialog() != true) return;
             ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Path = saveFileDialog.FileName;
 
-            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).SaveMapData(((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Path);
+            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).SaveImp(((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Path);
         }
 
         void SaveAsCharacterImage()
@@ -498,7 +558,7 @@ namespace SatUI
             if (saveFileDialog.ShowDialog() != true) return;
             ((SatCore.CharacterImageEditor.CharacterImageEditor)asd.Engine.CurrentScene).Path = saveFileDialog.FileName;
 
-            ((SatCore.CharacterImageEditor.CharacterImageEditor)asd.Engine.CurrentScene).SaveCharacterImage(((SatCore.CharacterImageEditor.CharacterImageEditor)asd.Engine.CurrentScene).Path);
+            ((SatCore.CharacterImageEditor.CharacterImageEditor)asd.Engine.CurrentScene).SaveImp(((SatCore.CharacterImageEditor.CharacterImageEditor)asd.Engine.CurrentScene).Path);
         }
 
         void SaveAsScript()
@@ -506,7 +566,7 @@ namespace SatUI
             SaveFileDialog saveFileDialog = GetSaveFileDialog(((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Script);
             if (saveFileDialog.ShowDialog() != true) return;
             ((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Path = saveFileDialog.FileName;
-            ((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).SaveScript(((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Path);
+            ((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).SaveImp(((SatCore.ScriptEditor.ScriptEditor)asd.Engine.CurrentScene).Path);
         }
 
         private void EditorPanel_Click(object sender, EventArgs e)
@@ -640,5 +700,30 @@ namespace SatUI
             paste.IsEnabled = isCanPaste;
         }
 
+        SatCore.BaseEditorScene.ConfirmSaveDialogResult OpenConfirmSaveDialog()
+        {
+            var result = System.Windows.MessageBox.Show("保存しますか？", "保存しますか？", MessageBoxButton.YesNoCancel, MessageBoxImage.Exclamation);
+
+            switch (result)
+            {
+                case MessageBoxResult.Cancel:
+                    return SatCore.BaseEditorScene.ConfirmSaveDialogResult.Cancel;
+                case MessageBoxResult.Yes:
+                    return SatCore.BaseEditorScene.ConfirmSaveDialogResult.Save;
+                case MessageBoxResult.No:
+                    return SatCore.BaseEditorScene.ConfirmSaveDialogResult.NotSave;
+                default:
+                    return SatCore.BaseEditorScene.ConfirmSaveDialogResult.NotSave;
+            }
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            if (asd.Engine.CurrentScene is SatCore.BaseEditorScene scene)
+                if (scene.ConfirmSave() == SatCore.BaseEditorScene.ConfirmSaveDialogResult.Cancel)
+                    e.Cancel = true;
+                else
+                    scene.RemoveEvent();
+        }
     }
 }

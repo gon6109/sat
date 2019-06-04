@@ -9,7 +9,7 @@ namespace SatCore.CharacterImageEditor
     /// <summary>
     /// キャラクタグラフィック編集シーン
     /// </summary>
-    public class CharacterImageEditor : UndoRedoScene
+    public class CharacterImageEditor : BaseEditorScene
     {
         static asd.Vector2DI ImageSize = new asd.Vector2DI(400, 800);
 
@@ -21,8 +21,6 @@ namespace SatCore.CharacterImageEditor
         asd.Layer2D MainLayer { get; set; }
 
         asd.CameraObject2D MainCamera { get; set; }
-
-        public string Path { get; set; }
 
         public CharacterImageEditor(string path = "")
         {
@@ -56,8 +54,9 @@ namespace SatCore.CharacterImageEditor
             base.OnUpdated();
         }
 
-        public void SaveCharacterImage(string path)
+        public override void SaveImp(string path)
         {
+            base.SaveImp(path);
             ((SatIO.MapEventIO.CharacterImageIO)Character).Save(path);
         }
     }

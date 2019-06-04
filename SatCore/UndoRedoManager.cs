@@ -21,7 +21,7 @@ namespace SatCore
         static Stack<UndoRedoCommand> RedoStack { get; set; }
             = new Stack<UndoRedoCommand>();
         
-        public static OnUpdate OnUpdateData { get; set; } = () => { };
+        public static event OnUpdate OnUpdateData = delegate { };
 
         static bool isAction = false;
 
