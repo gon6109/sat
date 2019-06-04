@@ -13,8 +13,6 @@ namespace SatIO
     [Serializable]
     public abstract class BaseIO
     {
-        public string Path;
-
         /// <summary>
         /// バイナリで保存
         /// </summary>
@@ -57,7 +55,6 @@ namespace SatIO
                 {
                     data = (T)serializer.Deserialize(stream);
                 }
-                data.Path = System.IO.Path.GetDirectoryName(path);
                 return data;
             }
             catch (Exception e)
@@ -82,7 +79,6 @@ namespace SatIO
                 {
                     data = (T)serializer.Deserialize(stream);
                 }
-                data.Path = System.IO.Path.GetDirectoryName(path);
                 return data;
             }
             catch (Exception e)
@@ -108,7 +104,6 @@ namespace SatIO
                 {
                     data = (T)serializer.Deserialize(stream);
                 }
-                data.Path = System.IO.Path.GetDirectoryName(path);
                 return data;
             }
             catch (Exception e)
@@ -134,7 +129,6 @@ namespace SatIO
                 {
                     data = await Task.Run(() => (T)serializer.Deserialize(stream));
                 }
-                data.Path = System.IO.Path.GetDirectoryName(path);
                 return data;
             }
             catch (Exception e)

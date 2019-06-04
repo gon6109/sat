@@ -281,7 +281,6 @@ namespace SatCore.MapEditor
             var mapdata = new SatIO.MapIO()
             {
                 BGMPath = BGMPath,
-                Path = Path,
                 BackGrounds = BackGrounds.Select(obj => obj.ToIO()).ToList(),
                 MapName = MapName,
             };
