@@ -142,6 +142,7 @@ namespace SatCore.MapEditor
 
         [Group("マップヴューア")]
         public MapViewer Viewer { get; set; }
+        public bool IsRemoveBackGround { get; private set; }
 
         public MapEditorScene()
         {
@@ -196,14 +197,26 @@ namespace SatCore.MapEditor
                     ((BackGround)e.OldItems[0]).Dispose();
                     break;
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Replace:
+                    RemoveBackGround();
                     break;
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Move:
+                    RemoveBackGround();
                     break;
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
+                    RemoveBackGround();
                     break;
                 default:
                     break;
             }
+        }
+
+        void RemoveBackGround()
+        {
+            foreach (var item in Map.Objects.OfType<BackGround>())
+            {
+                Map.RemoveObject(item);
+            }
+            IsRemoveBackGround = true;
         }
 
         protected override void OnUpdated()
@@ -215,6 +228,13 @@ namespace SatCore.MapEditor
             {
                 OnRequestShowProgressDialog("Loading Map", "Progress", Viewer);
                 Viewer.IsRequireProgressDialog = false;
+            }
+
+            if (IsRemoveBackGround)
+            {
+                foreach (var item in BackGrounds)
+                    Map.AddObject(item);
+                IsRemoveBackGround = false;
             }
 
             base.OnUpdated();
