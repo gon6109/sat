@@ -176,7 +176,7 @@ namespace SatCore.MapEditor
             ScrollCamera.Dst = new asd.RectI(0, 0, asd.Engine.WindowSize.X, asd.Engine.WindowSize.Y);
             dotObjects = new List<asd.GeometryObject2D>();
             polygonObject = new asd.GeometryObject2D();
-            PhysicalWorld = new PhysicalWorld(new asd.RectF(-200, -200, 20400, 5400), new asd.Vector2DF(0, 2000));
+            PhysicalWorld = new PhysicalWorld(new asd.RectF(-200, -200, 20400, 5400), new asd.Vector2DF(0, 8000));
             Zoom = 1.0f;
             WorldBoxObject = new RectangleLineShapeObject2D();
             WorldBoxObject.Thickness = 2 * Zoom;

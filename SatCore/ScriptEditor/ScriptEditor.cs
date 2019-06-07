@@ -96,7 +96,6 @@ namespace SatCore.ScriptEditor
 
         protected override void OnUpdating()
         {
-            PhysicalWorld.Update();
             base.OnUpdating();
         }
 
