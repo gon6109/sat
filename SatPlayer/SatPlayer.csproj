@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SatPlayer</RootNamespace>
     <AssemblyName>SatPlayer</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -46,9 +47,6 @@
     </Reference>
     <Reference Include="OpenCvSharp.Blob">
       <HintPath>..\runtime\OpenCvSharp.Blob.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenCvSharp.Extensions">
-      <HintPath>..\runtime\OpenCvSharp.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="PhysicAltseed">
       <HintPath>..\runtime\PhysicAltseed.dll</HintPath>
