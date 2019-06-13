@@ -12,6 +12,6 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Label x:Name="ItemName" Content="Item Name" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Padding="5,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0"/>
-        <TextBox x:Name="Text" Margin="2,0,8,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Padding="0,2" VerticalContentAlignment="Center" Grid.Column="1"/>
+        <TextBox x:Name="Text" Margin="2,0,8,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Padding="0,2" VerticalContentAlignment="Center" Grid.Column="1" KeyboardNavigation.DirectionalNavigation="None"/>
     </Grid>
 </UserControl>

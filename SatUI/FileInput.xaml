@@ -17,7 +17,7 @@
         </Grid.ColumnDefinitions>
 
         <Label x:Name="ItemName" Content="Item Name" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Padding="5,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-        <TextBox x:Name="Path" Margin="2,0" TextWrapping="Wrap" Text="TextBox" Grid.Column="1" VerticalAlignment="Center" Padding="0,2" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="Path" Margin="2,0" TextWrapping="Wrap" Text="TextBox" Grid.Column="1" VerticalAlignment="Center" Padding="0,2" VerticalContentAlignment="Center" KeyboardNavigation.DirectionalNavigation="None" />
         <Button x:Name="Dialog" Content="..." HorizontalAlignment="Center" Margin="4,0,8,0" VerticalAlignment="Center" Width="20" Click="Dialog_Click" Grid.Column="2" Padding="0,2"/>
 
     </Grid>

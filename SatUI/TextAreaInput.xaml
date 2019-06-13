@@ -15,6 +15,6 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Label x:Name="ItemName" Content="Item Name" FontSize="14" Padding="5,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0" HorizontalAlignment="Left"/>
-        <TextBox x:Name="Text" Margin="5,0" TextWrapping="Wrap" Text="TextBox" Padding="0,2" VerticalContentAlignment="Center" Grid.Row="1" AcceptsReturn="True" MaxHeight="100" VerticalScrollBarVisibility="Auto"/>
+        <TextBox x:Name="Text" Margin="5,0" TextWrapping="Wrap" Text="TextBox" Padding="0,2" VerticalContentAlignment="Center" Grid.Row="1" AcceptsReturn="True" MaxHeight="100" VerticalScrollBarVisibility="Auto"  KeyboardNavigation.DirectionalNavigation="None"/>
     </Grid>
 </UserControl>

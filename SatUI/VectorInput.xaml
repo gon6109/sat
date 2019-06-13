@@ -19,8 +19,8 @@
         </Grid.ColumnDefinitions>
 
         <Label x:Name="ItemName" Content="Item Name" VerticalAlignment="Center" FontSize="14" VerticalContentAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Padding="5,0"/>
-        <TextBox x:Name="XInput" Margin="3,0" TextWrapping="Wrap" Background="White" TextChanged="XInput_TextChanged" Grid.Column="2" VerticalAlignment="Center" VerticalContentAlignment="Center" Padding="0,2" Unloaded="XInput_Unloaded"/>
-        <TextBox x:Name="YInput" Margin="3,0" TextWrapping="Wrap" VerticalAlignment="Center" TextChanged="YInput_TextChanged" Grid.Column="4" VerticalContentAlignment="Center" Padding="0,2"/>
+        <TextBox x:Name="XInput" Margin="3,0" TextWrapping="Wrap" Background="White" TextChanged="XInput_TextChanged" Grid.Column="2" VerticalAlignment="Center" VerticalContentAlignment="Center" Padding="0,2" Unloaded="XInput_Unloaded" KeyboardNavigation.DirectionalNavigation="None"/>
+        <TextBox x:Name="YInput" Margin="3,0" TextWrapping="Wrap" VerticalAlignment="Center" TextChanged="YInput_TextChanged" Grid.Column="4" VerticalContentAlignment="Center" Padding="0,2" KeyboardNavigation.DirectionalNavigation="None"/>
         <Label x:Name="X" Content="X" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" RenderTransformOrigin="0.517,1.315" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="0" Width="14" Height="20"/>
         <Label x:Name="Y" Content="Y" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Grid.Column="3" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="0"/>
 
