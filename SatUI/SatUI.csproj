@@ -228,7 +228,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(SolutionDir)\runtime\*.dll .
+    <PostBuildEvent>copy "$(SolutionDir)runtime\*.dll" .
 mkdir dll
 move *.dll dll/.
 move SatPlayer.xml dll/.
