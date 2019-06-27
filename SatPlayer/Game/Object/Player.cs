@@ -99,8 +99,6 @@ namespace SatPlayer.Game.Object
 
         public Queue<DamageRect> DamageRequests { get; private set; }
 
-        public DamageRect.OwnerType OwnerType => DamageRect.OwnerType.Player;
-
         asd.Shape IDamageControler.CollisionShape => CollisionShape;
 
         public Queue<DirectDamage> DirectDamageRequests { get; private set; }
@@ -142,6 +140,8 @@ namespace SatPlayer.Game.Object
         public asd.RectangleShape GroundCollision { get; }
         Color IPlayer.Color { get => Color.ToScriptColor(); set => Color = value.ToAsdColor(); }
         protected List<Task> LoadTextureTasks { get; } = new List<Task>();
+
+        public int DamageGroup { get; set; }
 
         private int hP;
 

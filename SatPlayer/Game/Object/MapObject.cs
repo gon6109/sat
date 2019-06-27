@@ -130,11 +130,6 @@ namespace SatPlayer.Game.Object
         /// </summary>
         public Queue<DamageRect> DamageRequests { get; private set; }
 
-        /// <summary>
-        /// 陣営
-        /// </summary>
-        public DamageRect.OwnerType OwnerType { get; set; }
-
         asd.Shape IDamageControler.CollisionShape => collision;
 
         public Queue<DirectDamage> DirectDamageRequests { get; private set; }
@@ -209,6 +204,8 @@ namespace SatPlayer.Game.Object
         }
 
         protected List<Task> LoadTextureTasks { get; } = new List<Task>();
+
+        public int DamageGroup { get; set; }
 
         Dictionary<string, Sensor> sensors;
         Dictionary<string, MapObject> childMapObjectData;

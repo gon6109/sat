@@ -388,7 +388,7 @@ namespace SatPlayer.Game
             }
 
             List<DamageRect> removeRect = new List<DamageRect>();
-            foreach (var item in Damages.Where(obj => obj.Owner == DamageRect.OwnerType.Enemy))
+            foreach (var item in Damages.Where(obj => obj.Group != Player.DamageGroup))
             {
                 if (Player.CollisionShape.GetIsCollidedWith(item))
                 {
@@ -397,13 +397,13 @@ namespace SatPlayer.Game
                 }
             }
 
-            foreach (var item in Damages.Where(obj => obj.Owner == DamageRect.OwnerType.Player))
+            foreach (var item in Damages.Where(obj => obj.Group == Player.DamageGroup))
             {
                 foreach (IDamageControler item2 in Objects.Where(obj =>
-                    obj is IDamageControler &&
-                    ((IDamageControler)obj).IsReceiveDamage &&
-                    ((IDamageControler)obj).OwnerType == DamageRect.OwnerType.Enemy &&
-                    ((IDamageControler)obj).CollisionShape.GetIsCollidedWith(item)))
+                    obj is IDamageControler damageControler &&
+                    damageControler.IsReceiveDamage &&
+                    damageControler.DamageGroup != Player.DamageGroup &&
+                    damageControler.CollisionShape.GetIsCollidedWith(item)))
                 {
                     item2.HP -= item.Damage;
                     if (!item.Sastainable) removeRect.Add(item);
