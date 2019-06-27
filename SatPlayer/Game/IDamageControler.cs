@@ -6,52 +6,39 @@ using System.Threading.Tasks;
 
 namespace SatPlayer.Game
 {
+    /// <summary>
+    /// 攻撃をする・ダメージを受けるオブジェクト
+    /// </summary>
     public interface IDamageControler
     {
+        /// <summary>
+        /// HP
+        /// </summary>
         int HP { get; set; }
+
+        /// <summary>
+        /// ダメージを受けるか
+        /// </summary>
         bool IsReceiveDamage { get; set; }
+
+        /// <summary>
+        /// ダメージ要求
+        /// </summary>
         Queue<DamageRect> DamageRequests { get; }
+
+        /// <summary>
+        /// 直接攻撃要求
+        /// </summary>
         Queue<DirectDamage> DirectDamageRequests { get; }
-        DamageRect.OwnerType OwnerType { get; }
+
+        /// <summary>
+        /// 陣営
+        /// </summary>
+        int DamageGroup { get; }
+
+        /// <summary>
+        /// 当たり判定
+        /// </summary>
         asd.Shape CollisionShape { get; }
-    }
-
-    public class DamageRect : asd.RectangleShape
-    {
-        public OwnerType Owner { get; private set; }
-        public int Frame { get; set; }
-        public bool Sastainable { get; private set; }
-        public int Damage { get; private set; }
-        public int KnockBack { get; private set; }
-
-        public DamageRect(OwnerType owner, asd.RectF rect, int damage, int frame, bool sastainable, int knockBack)
-        {
-            Damage = damage;
-            Owner = owner;
-            DrawingArea = rect;
-            Frame = frame;
-            Sastainable = sastainable;
-            KnockBack = knockBack;
-        }
-
-        public enum OwnerType
-        {
-            Player,
-            Enemy
-        }
-    }
-
-    public class DirectDamage
-    {
-        public IDamageControler RecieveTo { get; private set; }
-        public int Damage { get; private set; }
-        public int KnockBack { get; private set; }
-
-        public DirectDamage(IDamageControler recieveTo, int damage, int knockBack)
-        {
-            RecieveTo = recieveTo;
-            Damage = damage;
-            KnockBack = knockBack;
-        }
     }
 }
