@@ -12,6 +12,7 @@ using SatScript.MapObject;
 using AltseedScript.Common;
 using SatScript.Collision;
 using System.Threading.Tasks;
+using SatScript.Damage;
 
 namespace SatPlayer.Game.Object
 {
@@ -133,6 +134,8 @@ namespace SatPlayer.Game.Object
         asd.Shape IDamageControler.CollisionShape => collision;
 
         public Queue<DirectDamage> DirectDamageRequests { get; private set; }
+
+        public IDamage Damage { get; internal set; }
 
         /// <summary>
         /// 衝突情報

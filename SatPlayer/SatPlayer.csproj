@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Game\DamageInfo.cs" />
     <Compile Include="Game\DamageRect.cs" />
     <Compile Include="Game\DirectDamage.cs" />
     <Compile Include="Game\EffekseerEffectObject2D.cs" />

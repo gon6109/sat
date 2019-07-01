@@ -1,5 +1,6 @@
 ﻿using AltseedScript.Common;
 using SatScript.Collision;
+using SatScript.Damage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -112,7 +113,15 @@ namespace SatScript.MapObject
         /// </summary>
         bool IsReceiveDamage { get; set; }
 
-        //TODO: Camp
+        /// <summary>
+        /// 陣営
+        /// </summary>
+        int DamageGroup { get; set; }
+
+        /// <summary>
+        /// ダメージ情報
+        /// </summary>
+        IDamage Damage { get; }
 
         /// <summary>
         /// 子MapObjectを設定する

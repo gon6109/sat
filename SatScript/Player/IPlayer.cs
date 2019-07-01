@@ -1,5 +1,6 @@
 ﻿using AltseedScript.Common;
 using SatScript.Collision;
+using SatScript.Damage;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -115,5 +116,10 @@ namespace SatScript.Player
         /// イベント時か
         /// </summary>
         bool IsEvent { get; }
+
+        /// <summary>
+        /// ダメージ情報
+        /// </summary>
+        IDamage Damage { get; }
     }
 }

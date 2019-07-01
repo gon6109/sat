@@ -10,6 +10,7 @@ using SatScript.Player;
 using AltseedScript.Common;
 using SatScript.Collision;
 using System.Threading.Tasks;
+using SatScript.Damage;
 
 namespace SatPlayer.Game.Object
 {
@@ -102,6 +103,8 @@ namespace SatPlayer.Game.Object
         asd.Shape IDamageControler.CollisionShape => CollisionShape;
 
         public Queue<DirectDamage> DirectDamageRequests { get; private set; }
+
+        public IDamage Damage { get; internal set; }
 
         public Queue<Dictionary<BaseComponent.Inputs, bool>> MoveCommands { get; private set; }
         Dictionary<BaseComponent.Inputs, int> inputState;

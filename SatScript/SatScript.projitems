@@ -13,6 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Collision\ICollision.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Game.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\ScriptDataContainer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Damage\IDamage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MapObject\IEventObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MapObject\IMapObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MapObject\MapObject.cs" />
