@@ -222,7 +222,7 @@ namespace SatPlayer.Game
                     {
                         Logger.Error(e);
                     }
-                loader.ProgressInfo = (loader.ProgressInfo.taskCount, loader.ProgressInfo.progress + 1);
+                    loader.ProgressInfo = (loader.ProgressInfo.taskCount, loader.ProgressInfo.progress + 1);
                 }
             }
 
@@ -273,7 +273,7 @@ namespace SatPlayer.Game
 
             UpdateOtherPlayers();
 
-            if (!SavePoints.Any(obj => obj.IsActive)) 
+            if (!SavePoints.Any(obj => obj.IsActive))
                 PhysicalWorld?.Update();
 
             UpdateCollision();
@@ -286,7 +286,7 @@ namespace SatPlayer.Game
             {
                 foreach (var item in MapEvents)
                 {
-                    if (Player.CollisionShape.GetIsCollidedWith(item.Shape)) 
+                    if (Player.CollisionShape.GetIsCollidedWith(item.Shape))
                         item.IsUpdated = true;
                 }
             }
@@ -373,6 +373,22 @@ namespace SatPlayer.Game
 
         void UpdateDamage()
         {
+            foreach (var item in Objects.Where(obj => obj is IDamageControler))
+            {
+                switch (item)
+                {
+                    case Player player:
+                        player.Damage = null;
+                        break;
+                    case MapObject mapObject:
+                        mapObject.Damage = null;
+                        break;
+                    default:
+                        Logger.Error("Invalid Type");
+                        break;
+                }
+            }
+
             foreach (IDamageControler item in Objects.Where(obj => obj is IDamageControler))
             {
                 while (item.DamageRequests.Count > 0)
@@ -393,6 +409,16 @@ namespace SatPlayer.Game
                 if (Player.CollisionShape.GetIsCollidedWith(item))
                 {
                     Player.HP -= item.Damage;
+
+                    if (Player.Damage == null)
+                        Player.Damage = new DamageInfo(item.Damage, item.KnockBack, item.TakeDown);
+                    else if (Player.Damage is DamageInfo info)
+                    {
+                        info.RecieveDamage += item.Damage;
+                        info.KnockBack = info.KnockBack < item.KnockBack ? item.KnockBack : info.KnockBack;
+                        info.TakeDown = info.TakeDown < item.TakeDown ? item.TakeDown : info.TakeDown;
+                    }
+
                     if (!item.Sastainable) removeRect.Add(item);
                 }
             }
@@ -406,6 +432,16 @@ namespace SatPlayer.Game
                     damageControler.CollisionShape.GetIsCollidedWith(item)))
                 {
                     item2.HP -= item.Damage;
+
+                    if (item2 is MapObject mapObject && mapObject.Damage == null)
+                        mapObject.Damage = new DamageInfo(item.Damage, item.KnockBack, item.TakeDown);
+                    else if (item2 is MapObject mapObject2 && mapObject2.Damage is DamageInfo info)
+                    {
+                        info.RecieveDamage += item.Damage;
+                        info.KnockBack = info.KnockBack < item.KnockBack ? item.KnockBack : info.KnockBack;
+                        info.TakeDown = info.TakeDown < item.TakeDown ? item.TakeDown : info.TakeDown;
+                    }
+
                     if (!item.Sastainable) removeRect.Add(item);
                 }
             }

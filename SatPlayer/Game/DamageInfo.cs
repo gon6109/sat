@@ -10,22 +10,22 @@ namespace SatPlayer.Game
     /// <summary>
     /// ダメージ情報
     /// </summary>
-    class DamageInfo : IDamage
+    public class DamageInfo : IDamage
     {
         /// <summary>
         /// ダメージ量
         /// </summary>
-        public int RecieveDamage { get; }
+        public int RecieveDamage { get; set; }
 
         /// <summary>
         /// ノックバック率
         /// </summary>
-        public float KnockBack { get; }
+        public float KnockBack { get; set; }
 
         /// <summary>
         /// ダウン時間
         /// </summary>
-        public int TakeDown { get; }
+        public int TakeDown { get; set; }
 
         public DamageInfo(int recieveDamage, float knockBack, int takeDown)
         {
