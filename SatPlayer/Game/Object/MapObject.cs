@@ -518,6 +518,23 @@ namespace SatPlayer.Game.Object
             Update = delegate { };
         }
 
+        public void Attack(Vector position, Vector size, int damage, int frame, bool isSastainable = false, int knockBack = 0, int takeDown = 0)
+        {
+            DamageRequests.Enqueue(new DamageRect(DamageGroup, new asd.RectF(Position + position.ToAsdVector(), size.ToAsdVector()), damage, frame, isSastainable, knockBack, takeDown));
+        }
+
+        public void DirectAttackToMapObject(Vector position, Vector size, SatScript.MapObject.MapObject to, int damage, int frame, bool isSastainable = false, int knockBack = 0, int takeDown = 0)
+        {
+            if (to.Core is IDamageControler controler)
+                DirectDamageRequests.Enqueue(new DirectDamage(controler, DamageGroup, new asd.RectF(Position + position.ToAsdVector(), size.ToAsdVector()), damage, frame, isSastainable, knockBack, takeDown));
+        }
+
+        public void DirectAttackToPlayer(Vector position, Vector size, int damage, int frame, bool isSastainable = false, int knockBack = 0, int takeDown = 0)
+        {
+            if (Layer is MapLayer layer)
+                DirectDamageRequests.Enqueue(new DirectDamage(layer.Player, DamageGroup, new asd.RectF(Position + position.ToAsdVector(), size.ToAsdVector()), damage, frame, isSastainable, knockBack, takeDown));
+        }
+
         /// <summary>
         /// センサー
         /// </summary>

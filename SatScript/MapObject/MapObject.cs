@@ -31,6 +31,8 @@ namespace SatScript.MapObject
 
         IMapObject _mapObjectImp;
 
+        internal IMapObject Core => _mapObjectImp;
+
         /// <summary>
         /// オブジェクトにつけられたユーザー定義のタグ
         /// </summary>

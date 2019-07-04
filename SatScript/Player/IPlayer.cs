@@ -113,6 +113,43 @@ namespace SatScript.Player
         void SetEffect(string name, Vector positon);
 
         /// <summary>
+        /// 攻撃
+        /// </summary>
+        /// <param name="position">攻撃範囲左上相対座標</param>
+        /// <param name="size">攻撃範囲サイズ</param>
+        /// <param name="damage">ダメージ量</param>
+        /// <param name="frame">フレーム数</param>
+        /// <param name="isSastainable">持続するか</param>
+        /// <param name="knockBack">ノックバック率</param>
+        /// <param name="takeDown">ダウン時間</param>
+        void Attack(Vector position, Vector size, int damage, int frame, bool isSastainable = false, int knockBack = 0, int takeDown = 0);
+
+        /// <summary>
+        /// 直接攻撃
+        /// </summary>
+        /// <param name="position">攻撃範囲左上相対座標</param>
+        /// <param name="size">攻撃範囲サイズ</param>
+        /// <param name="to">相手</param>
+        /// <param name="damage">ダメージ量</param>
+        /// <param name="frame">フレーム数</param>
+        /// <param name="isSastainable">持続するか</param>
+        /// <param name="knockBack">ノックバック率</param>
+        /// <param name="takeDown">ダウン時間</param>
+        void DirectAttackToMapObject(Vector position, Vector size, MapObject.MapObject to, int damage, int frame, bool isSastainable = false, int knockBack = 0, int takeDown = 0);
+
+        /// <summary>
+        /// プレイヤー直接攻撃
+        /// </summary>
+        /// <param name="position">攻撃範囲左上相対座標</param>
+        /// <param name="size">攻撃範囲サイズ</param>
+        /// <param name="damage">ダメージ量</param>
+        /// <param name="frame">フレーム数</param>
+        /// <param name="isSastainable">持続するか</param>
+        /// <param name="knockBack">ノックバック率</param>
+        /// <param name="takeDown">ダウン時間</param>
+        void DirectAttackToPlayer(Vector position, Vector size, int damage, int frame, bool isSastainable = false, int knockBack = 0, int takeDown = 0);
+
+        /// <summary>
         /// イベント時か
         /// </summary>
         bool IsEvent { get; }
