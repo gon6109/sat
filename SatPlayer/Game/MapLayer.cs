@@ -66,17 +66,24 @@ namespace SatPlayer.Game
         /// </summary>
         public List<DamageRect> Damages { get; private set; }
 
+        /// <summary>
+        /// ダメージ領域
+        /// </summary>
+        Dictionary<DamageRect, asd.GeometryObject2D> DamageRects { get; }
+
         public MapLayer(Player player)
         {
             Player = player;
             Obstacles = new List<PhysicalShape>();
             Damages = new List<DamageRect>();
+            DamageRects = new Dictionary<DamageRect, asd.GeometryObject2D>();
         }
 
         public MapLayer()
         {
             Obstacles = new List<PhysicalShape>();
             Damages = new List<DamageRect>();
+            DamageRects = new Dictionary<DamageRect, asd.GeometryObject2D>();
         }
 
         /// <summary>
@@ -455,6 +462,26 @@ namespace SatPlayer.Game
             foreach (var item in removeRect)
             {
                 Damages.Remove(item);
+            }
+
+            if (Scene is GameScene gameScene && gameScene.IsPreviewMode)
+            {
+                foreach (var item in Damages)
+                {
+                    if (!DamageRects.ContainsKey(item))
+                    {
+                        DamageRects.Add(item, new asd.GeometryObject2D()
+                        {
+                            Shape = item,
+                            Color = new asd.Color(255, 0, 0, 100),
+                        });
+                    }
+                }
+
+                foreach (var item in DamageRects.Where(obj => !Damages.Contains(obj.Key)).Select(obj => obj.Key))
+                {
+                    DamageRects.Remove(item);
+                }
             }
         }
 
