@@ -411,45 +411,49 @@ namespace SatPlayer.Game
             }
 
             List<DamageRect> removeRect = new List<DamageRect>();
-            foreach (var item in Damages.Where(obj => obj.Group != Player.DamageGroup))
+
+            if (Player != null)
             {
-                if (Player.CollisionShape.GetIsCollidedWith(item))
+                foreach (var item in Damages.Where(obj => obj.Group != Player.DamageGroup))
                 {
-                    Player.HP -= item.Damage;
-
-                    if (Player.Damage == null)
-                        Player.Damage = new DamageInfo(item.Damage, item.KnockBack, item.TakeDown);
-                    else if (Player.Damage is DamageInfo info)
+                    if (Player.CollisionShape.GetIsCollidedWith(item))
                     {
-                        info.RecieveDamage += item.Damage;
-                        info.KnockBack = info.KnockBack < item.KnockBack ? item.KnockBack : info.KnockBack;
-                        info.TakeDown = info.TakeDown < item.TakeDown ? item.TakeDown : info.TakeDown;
-                    }
+                        Player.HP -= item.Damage;
 
-                    if (!item.Sastainable) removeRect.Add(item);
+                        if (Player.Damage == null)
+                            Player.Damage = new DamageInfo(item.Damage, item.KnockBack, item.TakeDown);
+                        else if (Player.Damage is DamageInfo info)
+                        {
+                            info.RecieveDamage += item.Damage;
+                            info.KnockBack = info.KnockBack < item.KnockBack ? item.KnockBack : info.KnockBack;
+                            info.TakeDown = info.TakeDown < item.TakeDown ? item.TakeDown : info.TakeDown;
+                        }
+
+                        if (!item.Sastainable) removeRect.Add(item);
+                    }
                 }
-            }
 
-            foreach (var item in Damages.Where(obj => obj.Group == Player.DamageGroup))
-            {
-                foreach (IDamageControler item2 in Objects.Where(obj =>
-                    obj is IDamageControler damageControler &&
-                    damageControler.IsReceiveDamage &&
-                    damageControler.DamageGroup != Player.DamageGroup &&
-                    damageControler.CollisionShape.GetIsCollidedWith(item)))
+                foreach (var item in Damages.Where(obj => obj.Group == Player.DamageGroup))
                 {
-                    item2.HP -= item.Damage;
-
-                    if (item2 is MapObject mapObject && mapObject.Damage == null)
-                        mapObject.Damage = new DamageInfo(item.Damage, item.KnockBack, item.TakeDown);
-                    else if (item2 is MapObject mapObject2 && mapObject2.Damage is DamageInfo info)
+                    foreach (IDamageControler item2 in Objects.Where(obj =>
+                        obj is IDamageControler damageControler &&
+                        damageControler.IsReceiveDamage &&
+                        damageControler.DamageGroup != Player.DamageGroup &&
+                        damageControler.CollisionShape.GetIsCollidedWith(item)))
                     {
-                        info.RecieveDamage += item.Damage;
-                        info.KnockBack = info.KnockBack < item.KnockBack ? item.KnockBack : info.KnockBack;
-                        info.TakeDown = info.TakeDown < item.TakeDown ? item.TakeDown : info.TakeDown;
-                    }
+                        item2.HP -= item.Damage;
 
-                    if (!item.Sastainable) removeRect.Add(item);
+                        if (item2 is MapObject mapObject && mapObject.Damage == null)
+                            mapObject.Damage = new DamageInfo(item.Damage, item.KnockBack, item.TakeDown);
+                        else if (item2 is MapObject mapObject2 && mapObject2.Damage is DamageInfo info)
+                        {
+                            info.RecieveDamage += item.Damage;
+                            info.KnockBack = info.KnockBack < item.KnockBack ? item.KnockBack : info.KnockBack;
+                            info.TakeDown = info.TakeDown < item.TakeDown ? item.TakeDown : info.TakeDown;
+                        }
+
+                        if (!item.Sastainable) removeRect.Add(item);
+                    }
                 }
             }
 
@@ -464,22 +468,25 @@ namespace SatPlayer.Game
                 Damages.Remove(item);
             }
 
-            if (Scene is GameScene gameScene && gameScene.IsPreviewMode)
+            if (!(Scene is GameScene) || (Scene is GameScene gameScene && gameScene.IsPreviewMode))
             {
                 foreach (var item in Damages)
                 {
                     if (!DamageRects.ContainsKey(item))
                     {
-                        DamageRects.Add(item, new asd.GeometryObject2D()
+                        var rect = new asd.GeometryObject2D()
                         {
                             Shape = item,
-                            Color = new asd.Color(255, 0, 0, 100),
-                        });
+                            Color = item.Group == 1 ? new asd.Color(255, 0, 0, 100) : new asd.Color(0, 0, 255, 100),
+                        };
+                        AddObject(rect);
+                        DamageRects.Add(item, rect);
                     }
                 }
 
-                foreach (var item in DamageRects.Where(obj => !Damages.Contains(obj.Key)).Select(obj => obj.Key))
+                foreach (var item in DamageRects.Where(obj => !Damages.Contains(obj.Key)).Select(obj => obj.Key).ToList())
                 {
+                    DamageRects[item].Dispose();
                     DamageRects.Remove(item);
                 }
             }

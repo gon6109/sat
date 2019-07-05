@@ -208,7 +208,7 @@ namespace SatPlayer.Game.Object
 
         protected List<Task> LoadTextureTasks { get; } = new List<Task>();
 
-        public int DamageGroup { get; set; }
+        public int DamageGroup { get; set; } = 1;
 
         Dictionary<string, Sensor> sensors;
         Dictionary<string, MapObject> childMapObjectData;

@@ -144,7 +144,7 @@ namespace SatPlayer.Game.Object
         Color IPlayer.Color { get => Color.ToScriptColor(); set => Color = value.ToAsdColor(); }
         protected List<Task> LoadTextureTasks { get; } = new List<Task>();
 
-        public int DamageGroup { get; set; }
+        public int DamageGroup { get; set; } = 0;
 
         private int hP;
 
