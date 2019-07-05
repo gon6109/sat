@@ -106,7 +106,7 @@ namespace SatCore.ScriptEditor
                 if (ScriptObject.Clone() is asd.Object2D obj) SetObject(obj);
             }
 
-            foreach (asd.GeometryObject2D item in MainLayer.Objects.Where(obj => obj is asd.GeometryObject2D))
+            foreach (asd.GeometryObject2D item in MainLayer.Objects.Where(obj => obj is asd.GeometryObject2D geo && geo.Shape is PhysicAltseed.PhysicalShape))
             {
                 item.Color = ScriptObject.IsSuccessBuild ? new asd.Color(0, 255, 0) : new asd.Color(255, 0, 0);
             }
