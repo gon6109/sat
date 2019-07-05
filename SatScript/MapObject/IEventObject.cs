@@ -48,6 +48,11 @@ namespace SatScript.MapObject
         void AddAnimationPart(string animationGroup, string extension, int sheets, string partName, int interval);
 
         /// <summary>
+        /// 現在のアニメーションを最初のフレームにする
+        /// </summary>
+        void ResetCurrentStateAnimation();
+
+        /// <summary>
         /// MapObjectのタイプ
         /// </summary>
         MapObjectType MapObjectType { get; set; }

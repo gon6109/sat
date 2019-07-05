@@ -53,6 +53,11 @@ namespace SatScript.Player
         void AddAnimationPart(string animationGroup, string extension, int sheets, string partName, int interval);
 
         /// <summary>
+        /// 現在のアニメーションを最初のフレームにする
+        /// </summary>
+        void ResetCurrentStateAnimation();
+
+        /// <summary>
         /// 地面と接しているか
         /// </summary>
         bool IsCollidedWithGround { get; }

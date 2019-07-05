@@ -39,5 +39,10 @@ namespace SatScript.BackGround
         /// <param name="partName">パート名</param>
         /// <param name="interval">1コマあたりのフレーム数</param>
         void AddAnimationPart(string animationGroup, string extension, int sheets, string partName, int interval);
+
+        /// <summary>
+        /// 現在のアニメーションを最初のフレームにする
+        /// </summary>
+        void ResetCurrentStateAnimation();
     }
 }
