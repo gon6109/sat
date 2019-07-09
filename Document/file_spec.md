@@ -4,7 +4,7 @@
 |:---:|:----:|:----:|
 | Map | マップデータ | .map |
 | BackGround | 背景 | .bg |
-| MapObject | マップ上の動的オブジェクト | .obj |
+| MapObject | マップ上の動的オブジェクト | .mobj |
 | CharacterImage | イベント時に表示するキャラクターグラフィック | .ci |
 | Player | プレイヤー | .pc |
 | EventObject | イベント用MapObject拡張 | .eobj |

@@ -225,8 +225,8 @@ namespace SatUI
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.FileName = "";
             openFileDialog.InitialDirectory = "";
-            openFileDialog.Filter = "All Readable File|*.map;*.pc;*.ci;*.bg;*.obj;*.eobj" +
-                "|Map File|*.map|Player Script|*.pc|Character Image File|*.ci|Map Object Script|*.obj|Event Object Script|*.eobj|Back Ground Script|*.bg|All File|*.*";
+            openFileDialog.Filter = "All Readable File|*.map;*.pc;*.ci;*.bg;*.mobj;*.eobj" +
+                "|Map File|*.map|Player Script|*.pc|Character Image File|*.ci|Map Object Script|*.mobj|Event Object Script|*.eobj|Back Ground Script|*.bg|All File|*.*";
             openFileDialog.FilterIndex = 1;
             openFileDialog.RestoreDirectory = true;
 
@@ -282,7 +282,7 @@ namespace SatUI
         {
             SatCore.ScriptEditor.ScriptEditor.ScriptType scriptType = new SatCore.ScriptEditor.ScriptEditor.ScriptType();
 
-            if (fileName.Contains(".obj")) scriptType = SatCore.ScriptEditor.ScriptEditor.ScriptType.MapObject;
+            if (fileName.Contains(".mobj")) scriptType = SatCore.ScriptEditor.ScriptEditor.ScriptType.MapObject;
             else if (fileName.Contains(".eobj")) scriptType = SatCore.ScriptEditor.ScriptEditor.ScriptType.EventObject;
             else if (fileName.Contains(".pc")) scriptType = SatCore.ScriptEditor.ScriptEditor.ScriptType.Player;
             else if (fileName.Contains(".bg")) scriptType = SatCore.ScriptEditor.ScriptEditor.ScriptType.BackGround;
@@ -504,8 +504,8 @@ namespace SatUI
             switch (scriptType)
             {
                 case SatCore.ScriptEditor.ScriptEditor.ScriptType.MapObject:
-                    dialog.FileName = "new.obj";
-                    dialog.Filter = "Map Object Script|*.obj";
+                    dialog.FileName = "new.mobj";
+                    dialog.Filter = "Map Object Script|*.mobj";
                     break;
                 case SatCore.ScriptEditor.ScriptEditor.ScriptType.EventObject:
                     dialog.FileName = "new.eobj";
