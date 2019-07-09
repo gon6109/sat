@@ -516,6 +516,12 @@ namespace SatPlayer.Game.Object
             Effects = new Dictionary<string, object>();
             childMapObjectData = new Dictionary<string, MapObject>();
             Update = delegate { };
+            HP = 100;
+            DamageRequests = new Queue<DamageRect>();
+            childMapObjectData = new Dictionary<string, MapObject>();
+            collision = new asd.RectangleShape();
+            DirectDamageRequests = new Queue<DirectDamage>();
+            MapObjectType = MapObjectType.Passive;
         }
 
         public void Attack(Vector position, Vector size, int damage, int frame, bool isSastainable = false, int knockBack = 0, int takeDown = 0)
