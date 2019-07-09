@@ -15,7 +15,7 @@ namespace SatCore.MapEditor
         [TextInput("名前")]
         public string Name { get; set; }
 
-        [FileInput("スクリプト", "Object File|*.obj;*.eobj|All File|*.*")]
+        [FileInput("スクリプト", "Object File|*.mobj;*.eobj|All File|*.*")]
         public string ScriptPath { get; set; }
 
         public MapObjectTemplate()
