@@ -15,7 +15,7 @@ namespace SatScript.MapObject
     public class MapObject
     {
         public static IEnumerable<MapObject> MapObjects
-            => (asd.Engine.CurrentScene as SatPlayer.Game.GameScene)?
+            => asd.Engine.CurrentScene?
             .Layers.OfType<MapLayer>()
             .FirstOrDefault()?
             .Objects.OfType<IMapObject>()

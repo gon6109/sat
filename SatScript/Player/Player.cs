@@ -19,7 +19,7 @@ namespace SatScript.Player
            .Select(obj => obj.Name);
 
         public static Player CurrentPlayer
-            => ToScript((asd.Engine.CurrentScene as SatPlayer.Game.GameScene)?
+            => ToScript(asd.Engine.CurrentScene?
             .Layers.OfType<MapLayer>()
             .FirstOrDefault()?
             .Player);

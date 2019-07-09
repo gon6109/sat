@@ -85,7 +85,6 @@ namespace SatCore.MapEditor.Object
                         }
                         Script<object> script = CSharpScript.Create(code, options: options, globalsType: typeof(MapObject));
                         await script.RunAsync(this).ConfigureAwait(awaitable);
-                        await Task.WhenAll(LoadTextureTasks);
                         LoadTextureTasks.Clear();
                         State = AnimationPart.First().Key;
                     }
