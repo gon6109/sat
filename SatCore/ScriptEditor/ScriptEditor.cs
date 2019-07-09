@@ -15,6 +15,8 @@ namespace SatCore.ScriptEditor
     /// </summary>
     public class ScriptEditor : BaseEditorScene
     {
+        private string playerPath;
+
         public IScriptObject ScriptObject { get; private set; }
 
         PhysicAltseed.PhysicalWorld PhysicalWorld { get; set; }
@@ -24,12 +26,32 @@ namespace SatCore.ScriptEditor
 
         public string Path { get; set; }
 
+        [FileInput("テスト用プレイヤー", "Player Script|*.pc|All File|*.*")]
+        public string PlayerPath
+        {
+            get => playerPath;
+            set
+            {
+                playerPath = value;
+                Config.Instance.ScriptPlayerPath = playerPath;
+                if (MainLayer.IsPreparePlayer && MainLayer.Player != null)
+                {
+                    using (var stream = IO.GetStream(playerPath))
+                    {
+                        MainLayer.Player.Code = Encoding.UTF8.GetString(stream.ToArray());
+                    }
+                    _ = MainLayer.Player.Run();
+                    MainLayer.Player.Position = ScalingLayer2D.OriginDisplaySize / 2;
+                }
+            }
+        }
+
         [Button("オブジェクトをクリア")]
         public void ClearScriptObject()
         {
             if (ScriptObject.IsSingle) return;
 
-            foreach (var item in MainLayer.Objects.Where(obj => obj is IScriptObject || obj is MultiAnimationObject2D))
+            foreach (var item in MainLayer.Objects.Where(obj => (obj is IScriptObject || obj is MultiAnimationObject2D) && obj != MainLayer.Player))
             {
                 item.Dispose();
             }
@@ -65,6 +87,8 @@ namespace SatCore.ScriptEditor
                 MainLayer.AddObject(new asd.GeometryObject2D() { Shape = groundShape, Color = new asd.Color(255, 255, 255) });
                 MainLayer.Obstacles.Add(groundShape);
             }
+
+            PlayerPath = Config.Instance.ScriptPlayerPath;
 
             if (ScriptObject.IsSingle && ScriptObject is asd.Object2D obj) MainLayer.AddObject(obj);
             AddLayer(MainLayer);
@@ -110,7 +134,7 @@ namespace SatCore.ScriptEditor
             {
                 item.Color = ScriptObject.IsSuccessBuild ? new asd.Color(0, 255, 0) : new asd.Color(255, 0, 0);
             }
-            
+
             base.OnUpdated();
         }
 

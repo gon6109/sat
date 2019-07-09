@@ -11,6 +11,12 @@ namespace SatCore.ScriptEditor
     {
         public bool IsPreparePlayer { get; set; }
 
+        public new EditablePlayer Player
+        {
+            get => base.Player as EditablePlayer;
+            protected set => base.Player = value;
+        }
+
         public MapLayer()
         {
             PhysicalWorld = new PhysicAltseed.PhysicalWorld(new asd.RectF(new asd.Vector2DF(), OriginDisplaySize), new asd.Vector2DF(0, 8000));
@@ -18,14 +24,20 @@ namespace SatCore.ScriptEditor
 
         protected override void OnAdded()
         {
-            //TODO: デフォルトリソース
-            //if (IsPreparePlayer)
-            //{
-            //    Player = new SatPlayer.Player("Player/yuki.pd");
-            //    Player.Position = Base.ScreenSize.To2DF() / 2;
-            //    Player.CollisionShape = new PhysicAltseed.PhysicalRectangleShape(PhysicAltseed.PhysicalShapeType.Dynamic, PhysicalWorld);
-            //    AddObject(Player);
-            //}
+            if (IsPreparePlayer)
+            {
+                Player = new EditablePlayer();
+                AddObject(Player);
+            }
+            if (IsPreparePlayer && Scene is ScriptEditor scene && scene.PlayerPath != null)
+            {
+                using (var stream = IO.GetStream(scene.PlayerPath))
+                {
+                    Player.Code = Encoding.UTF8.GetString(stream.ToArray());
+                }
+                _ = Player.Run();
+                Player.Position = OriginDisplaySize / 2;
+            }
         }
 
         protected override void OnUpdated()
