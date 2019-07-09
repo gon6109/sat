@@ -206,7 +206,7 @@ namespace SatPlayer.Game.Object
             }
         }
 
-        protected List<Task> LoadTextureTasks { get; } = new List<Task>();
+        protected List<(string animationGroup, string extension, int sheets, string partName, int interval)> LoadTextureTasks { get; } = new List<(string animationGroup, string extension, int sheets, string partName, int interval)>();
 
         public int DamageGroup { get; set; } = 1;
 
@@ -472,7 +472,7 @@ namespace SatPlayer.Game.Object
 
         void IMapObject.AddAnimationPart(string animationGroup, string extension, int sheets, string partName, int interval)
         {
-            LoadTextureTasks.Add(AddAnimationPartAsync(animationGroup, extension, sheets, partName, interval));
+            LoadTextureTasks.Add((animationGroup, extension, sheets, partName, interval));
         }
 
         public static async Task<MapObject> CreateMapObjectAsync(MapObjectIO mapObjectIO)
@@ -487,7 +487,11 @@ namespace SatPlayer.Game.Object
                         var script = ScriptOption.ScriptOptions["MapObject"]?.CreateScript<object>(Encoding.UTF8.GetString(stream.ToArray()));
                         await Task.Run(() => script.Compile());
                         await script.RunAsync(mapObject);
-                        await Task.WhenAll(mapObject.LoadTextureTasks);
+                        foreach (var item in mapObject.LoadTextureTasks)
+                        {
+                            await mapObject.AddAnimationPartAsync(item.animationGroup, item.extension, item.sheets, item.partName, item.interval);
+                        }
+                        mapObject.State = mapObject.State;
                         mapObject.LoadTextureTasks.Clear();
                     }
                 }

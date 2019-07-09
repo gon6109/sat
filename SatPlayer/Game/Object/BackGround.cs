@@ -17,7 +17,7 @@ namespace SatPlayer.Game.Object
     /// </summary>
     public class BackGround : MultiAnimationObject2D, IBackGround, ICloneable
     {
-        List<Task> LoadTextureTasks { get; }
+        protected List<(string animationGroup, string extension, int sheets, string partName, int interval)> LoadTextureTasks { get; }
 
         public float Zoom { get; set; }
 
@@ -48,7 +48,7 @@ namespace SatPlayer.Game.Object
 
         public BackGround()
         {
-            LoadTextureTasks = new List<Task>();
+            LoadTextureTasks = new List<(string animationGroup, string extension, int sheets, string partName, int interval)>();
             Zoom = 1;
             UpdatePriority = 10;
             DrawingPriority = -1;
@@ -72,7 +72,7 @@ namespace SatPlayer.Game.Object
 
         void IBackGround.AddAnimationPart(string animationGroup, string extension, int sheets, string partName, int interval)
         {
-            LoadTextureTasks.Add(AddAnimationPartAsync(animationGroup, extension, sheets, partName, interval));
+            LoadTextureTasks.Add((animationGroup, extension, sheets, partName, interval));
         }
 
         public new object Clone()
@@ -105,7 +105,11 @@ namespace SatPlayer.Game.Object
                         var script = ScriptOption.ScriptOptions["BackGround"].CreateScript<object>(Encoding.UTF8.GetString(stream.ToArray()));
                         await Task.Run(() => script.Compile());
                         await script.RunAsync(backGround);
-                        await Task.WhenAll(backGround.LoadTextureTasks);
+                        foreach (var item in backGround.LoadTextureTasks)
+                        {
+                            await backGround.AddAnimationPartAsync(item.animationGroup, item.extension, item.sheets, item.partName, item.interval);
+                        }
+                        backGround.State = backGround.State;
                         backGround.LoadTextureTasks.Clear();
                     }
                 }

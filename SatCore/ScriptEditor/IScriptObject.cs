@@ -16,7 +16,7 @@ namespace SatCore.ScriptEditor
         bool IsSingle { get; }
         bool IsPreparePlayer { get; }
 
-        void Run();
+        Task Run();
         object Clone();
     }
 }

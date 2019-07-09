@@ -150,7 +150,7 @@ namespace SatPlayer.Game.Object
         }
         void IEventObject.AddAnimationPart(string animationGroup, string extension, int sheets, string partName, int interval)
         {
-            LoadTextureTasks.Add(AddAnimationPartAsync(animationGroup, extension, sheets, partName, interval));
+            LoadTextureTasks.Add((animationGroup, extension, sheets, partName, interval));
         }
 
         public static async Task<EventObject> CreateEventObjectAsync(EventObjectIO eventObjectIO)
@@ -165,7 +165,11 @@ namespace SatPlayer.Game.Object
                         var script = ScriptOption.ScriptOptions["EventObject"]?.CreateScript<object>(Encoding.UTF8.GetString(stream.ToArray()));
                         await Task.Run(() => script.Compile());
                         await script.RunAsync(eventObject);
-                        await Task.WhenAll(eventObject.LoadTextureTasks);
+                        foreach (var item in eventObject.LoadTextureTasks)
+                        {
+                            await eventObject.AddAnimationPartAsync(item.animationGroup, item.extension, item.sheets, item.partName, item.interval);
+                        }
+                        eventObject.State = eventObject.State;
                         eventObject.LoadTextureTasks.Clear();
                     }
                 }

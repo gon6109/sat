@@ -142,7 +142,7 @@ namespace SatPlayer.Game.Object
 
         public asd.RectangleShape GroundCollision { get; }
         Color IPlayer.Color { get => Color.ToScriptColor(); set => Color = value.ToAsdColor(); }
-        protected List<Task> LoadTextureTasks { get; } = new List<Task>();
+        protected List<(string animationGroup, string extension, int sheets, string partName, int interval)> LoadTextureTasks { get; } = new List<(string animationGroup, string extension, int sheets, string partName, int interval)>();
 
         public int DamageGroup { get; set; } = 0;
 
@@ -342,7 +342,7 @@ namespace SatPlayer.Game.Object
 
         void IPlayer.AddAnimationPart(string animationGroup, string extension, int sheets, string partName, int interval)
         {
-            LoadTextureTasks.Add(AddAnimationPartAsync(animationGroup, extension, sheets, partName, interval));
+            LoadTextureTasks.Add((animationGroup, extension, sheets, partName, interval));
         }
 
         public void Attack(Vector position, Vector size, int damage, int frame, bool isSastainable = false, int knockBack = 0, int takeDown = 0)
@@ -374,7 +374,11 @@ namespace SatPlayer.Game.Object
                 {
                     var script = ScriptOption.ScriptOptions["Player"].CreateScript<object>(Encoding.UTF8.GetString(stream.ToArray()));
                     await script.RunAsync(player);
-                    await Task.WhenAll(player.LoadTextureTasks);
+                    foreach (var item in player.LoadTextureTasks)
+                    {
+                        await player.AddAnimationPartAsync(item.animationGroup, item.extension, item.sheets, item.partName, item.interval);
+                    }
+                    player.State = player.State;
                     player.LoadTextureTasks.Clear();
                 }
                 return player;

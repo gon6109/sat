@@ -54,7 +54,7 @@ namespace SatCore.ScriptEditor
         public string ScriptOptionName => "MapObject";
 
         [Button("Run")]
-        public void Run()
+        public async Task Run()
         {
             if (isEdited)
             {
@@ -63,8 +63,13 @@ namespace SatCore.ScriptEditor
                 {
                     Reset();
                     Script<object> script = ScriptOption.ScriptOptions[ScriptOptionName]?.CreateScript<object>(Code);
-                    var thread = script.RunAsync(this);
-                    thread.Wait();
+                    await script.RunAsync(this);
+                    foreach (var item in LoadTextureTasks)
+                    {
+                        AddAnimationPart(item.animationGroup, item.extension, item.sheets, item.partName, item.interval);
+                    }
+                    State = State;
+                    LoadTextureTasks.Clear();
                 }
                 catch (Exception e)
                 {

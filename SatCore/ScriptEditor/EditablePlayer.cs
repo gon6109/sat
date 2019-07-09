@@ -68,7 +68,7 @@ namespace SatCore.ScriptEditor
         }
 
         [Button("ビルド")]
-        public void Run()
+        public async Task Run()
         {
             if (isEdited)
             {
@@ -77,8 +77,12 @@ namespace SatCore.ScriptEditor
                 {
                     Reset();
                     Script<object> script = ScriptOption.ScriptOptions[ScriptOptionName]?.CreateScript<object>(Code);
-                    var thread = script.RunAsync(this);
-                    thread.Wait();
+                    await script.RunAsync(this);
+                    foreach (var item in LoadTextureTasks)
+                    {
+                        AddAnimationPart(item.animationGroup, item.extension, item.sheets, item.partName, item.interval);
+                    }
+                    State = State;
                     if (CollisionShape != null)
                     {
                         CollisionShape.DrawingArea = new asd.RectF(Position - CenterPosition + new asd.Vector2DF(5, 0), Texture.Size.To2DF() - new asd.Vector2DF(10, 0));
