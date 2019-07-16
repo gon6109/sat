@@ -85,6 +85,13 @@ namespace SatCore.MapEditor.Object
                         }
                         Script<object> script = CSharpScript.Create(code, options: options, globalsType: typeof(MapObject));
                         await script.RunAsync(this).ConfigureAwait(awaitable);
+                        foreach (var item in LoadTextureTasks)
+                        {
+                            if (awaitable)
+                                await AddAnimationPartAsync(item.animationGroup, item.extension, item.sheets, item.partName, item.interval);
+                            else
+                                AddAnimationPart(item.animationGroup, item.extension, item.sheets, item.partName, item.interval);
+                        }
                         LoadTextureTasks.Clear();
                         State = AnimationPart.First().Key;
                     }
@@ -109,7 +116,7 @@ namespace SatCore.MapEditor.Object
 
         public asd.Vector2DF BottomRight => Position + CenterPosition;
 
-        protected List<Task> LoadTextureTasks { get; } = new List<Task>();
+        protected List<(string animationGroup, string extension, int sheets, string partName, int interval)> LoadTextureTasks { get; } = new List<(string animationGroup, string extension, int sheets, string partName, int interval)>();
 
         public MapObject()
         {
@@ -159,7 +166,7 @@ namespace SatCore.MapEditor.Object
 
         public new void AddAnimationPart(string animationGroup, string extension, int sheets, string partName, int interval)
         {
-            LoadTextureTasks.Add(AddAnimationPartAsync(animationGroup, extension, sheets, partName, interval));
+            LoadTextureTasks.Add((animationGroup, extension, sheets, partName, interval));
         }
 
         public static async Task<MapObject> CreateMapObjectAsync(MapObjectIO mapObjectIO)
