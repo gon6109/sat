@@ -89,7 +89,7 @@ namespace SatPlayer.Game.Object
                 {
                     //TODO: ダメージ
                 }
-                hP = value;
+                hP = value > 0 ? value : 0;
             }
         }
 
