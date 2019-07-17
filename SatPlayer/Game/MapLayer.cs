@@ -278,6 +278,16 @@ namespace SatPlayer.Game
         {
             base.OnUpdating();
 
+            foreach (var item in Objects.Where(obj => obj is MapObject mapObject && (mapObject.Position - Player.Position).Length > 1500 && mapObject.IsUpdated))
+            {
+                item.IsUpdated = false;
+            }
+
+            foreach (var item in Objects.Where(obj => obj is MapObject mapObject && (mapObject.Position - Player.Position).Length <= 1500 && !mapObject.IsUpdated))
+            {
+                item.IsUpdated = true;
+            }
+
             UpdateOtherPlayers();
 
             if (!SavePoints.Any(obj => obj.IsActive))
