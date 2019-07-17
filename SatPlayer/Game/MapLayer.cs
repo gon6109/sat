@@ -278,14 +278,18 @@ namespace SatPlayer.Game
         {
             base.OnUpdating();
 
-            foreach (var item in Objects.Where(obj => obj is MapObject mapObject && (mapObject.Position - Player.Position).Length > 1500 && mapObject.IsUpdated))
+            foreach (MapObject item in Objects.Where(obj => obj is MapObject mapObject && (mapObject.Position - Player.Position).Length > 2500 && mapObject.IsUpdated))
             {
                 item.IsUpdated = false;
+                if (item.CollisionShape is PhysicalRectangleShape shape)
+                    shape.IsActive = false;
             }
 
-            foreach (var item in Objects.Where(obj => obj is MapObject mapObject && (mapObject.Position - Player.Position).Length <= 1500 && !mapObject.IsUpdated))
+            foreach (MapObject item in Objects.Where(obj => obj is MapObject mapObject && (mapObject.Position - Player.Position).Length <= 2500 && !mapObject.IsUpdated))
             {
                 item.IsUpdated = true;
+                if (item.CollisionShape is PhysicalRectangleShape shape)
+                    shape.IsActive = true;
             }
 
             UpdateOtherPlayers();
