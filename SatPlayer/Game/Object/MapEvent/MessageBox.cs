@@ -92,6 +92,13 @@ namespace SatPlayer.Game.Object.MapEvent
                 {
                     yield return null;
                 }
+                var color = Color;
+                color.A = 255;
+                Color = color;
+
+                color = NameOutput.Color;
+                color.A = 255;
+                NameOutput.Color = color;
             }
 
             public IEnumerator Close()
@@ -238,7 +245,6 @@ namespace SatPlayer.Game.Object.MapEvent
                     AddComponent(new AnimationComponent(), "animation");
                 }
 
-                asd.Vector2DF velocity = new asd.Vector2DF();
                 protected override void OnUpdate()
                 {
                     base.OnUpdate();

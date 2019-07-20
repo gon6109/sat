@@ -196,7 +196,7 @@ namespace SatPlayer.Game.Object.MapEvent
             {
                 item.IsUpdated = false;
                 if (item.CollisionShape is PhysicalRectangleShape shape)
-                    shape.IsActive = true;
+                    shape.IsActive = false;
             }
             foreach (var item in Actors)
             {
