@@ -63,7 +63,15 @@ namespace SatCore.ScriptEditor
 
         protected override void OnUpdate()
         {
-            Update(this);
+            try
+            {
+                Update(this);
+            }
+            catch (Exception e)
+            {
+                Update = delegate { };
+                Logger.Error(e);
+            }
             base.OnUpdate();
         }
 
