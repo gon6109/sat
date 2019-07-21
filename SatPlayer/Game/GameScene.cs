@@ -146,23 +146,10 @@ namespace SatPlayer.Game
             base.OnStartUpdating();
         }
 
-        protected override void OnTransitionBegin()
-        {
-            base.OnTransitionBegin();
-        }
-
         protected override void OnStopUpdating()
         {
             asd.Engine.Sound.StopAll();
-            OnGameOver = delegate { };
-            OnEnd = delegate { };
-            OnChangeMap = delegate { };
             base.OnStopUpdating();
-        }
-
-        protected override void OnUpdating()
-        {
-            base.OnUpdating();
         }
 
         protected override void OnUpdated()
@@ -173,7 +160,7 @@ namespace SatPlayer.Game
             base.OnUpdated();
         }
 
-        protected override void OnUnregistered()
+        protected override void OnDispose()
         {
             OnGameOver = delegate { };
             OnChangeMap = delegate { };
@@ -182,7 +169,7 @@ namespace SatPlayer.Game
             {
                 Map.RemoveObject(item);
             }
-            base.OnUnregistered();
+            base.OnDispose();
         }
 
         public SaveDataIO ToSaveData()
