@@ -48,5 +48,10 @@ namespace SatScript.Common
             /// </summary>
             public static string Name => (asd.Engine.CurrentScene as SatPlayer.Game.GameScene)?.MapName;
         }
+
+        /// <summary>
+        /// 共通データ
+        /// </summary>
+        public static ScriptDataContainer<string, object> Data => (asd.Engine.CurrentScene as SatPlayer.Game.GameScene)?.GameData;
     }
 }

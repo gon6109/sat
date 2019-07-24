@@ -84,6 +84,11 @@ namespace SatPlayer.Game
         int InitSavePointID { get; }
 
         /// <summary>
+        /// 共通データ
+        /// </summary>
+        public SatScript.Common.ScriptDataContainer<string, object> GameData { get; } = new SatScript.Common.ScriptDataContainer<string, object>();
+
+        /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="path">マップへのパス</param>
