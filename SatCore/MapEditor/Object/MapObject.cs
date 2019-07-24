@@ -90,7 +90,7 @@ namespace SatCore.MapEditor.Object
                             if (awaitable)
                                 await AddAnimationPartAsync(item.animationGroup, item.extension, item.sheets, item.partName, item.interval);
                             else
-                                AddAnimationPart(item.animationGroup, item.extension, item.sheets, item.partName, item.interval);
+                                base.AddAnimationPart(item.animationGroup, item.extension, item.sheets, item.partName, item.interval);
                         }
                         LoadTextureTasks.Clear();
                         State = AnimationPart.First().Key;
