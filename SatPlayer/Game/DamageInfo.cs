@@ -27,11 +27,17 @@ namespace SatPlayer.Game
         /// </summary>
         public int TakeDown { get; set; }
 
-        public DamageInfo(int recieveDamage, float knockBack, int takeDown)
+        /// <summary>
+        /// 優先度
+        /// </summary>
+        public int Priority { get; set; }
+
+        public DamageInfo(int recieveDamage, float knockBack, int takeDown, int priority)
         {
             RecieveDamage = recieveDamage;
             KnockBack = knockBack;
             TakeDown = takeDown;
+            Priority = priority;
         }
     }
 }

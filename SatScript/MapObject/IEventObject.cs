@@ -187,7 +187,8 @@ namespace SatScript.MapObject
         /// <param name="isSastainable">持続するか</param>
         /// <param name="knockBack">ノックバック率</param>
         /// <param name="takeDown">ダウン時間</param>
-        void Attack(Vector position, Vector size, int damage, int frame, bool isSastainable = false, int knockBack = 0, int takeDown = 0);
+        /// <param name="priority">優先度</param>
+        void Attack(Vector position, Vector size, int damage, int frame, bool isSastainable = false, int knockBack = 0, int takeDown = 0, int priority = 0);
 
         /// <summary>
         /// 直接攻撃
@@ -200,7 +201,8 @@ namespace SatScript.MapObject
         /// <param name="isSastainable">持続するか</param>
         /// <param name="knockBack">ノックバック率</param>
         /// <param name="takeDown">ダウン時間</param>
-        void DirectAttackToMapObject(Vector position, Vector size, MapObject to, int damage, int frame, bool isSastainable = false, int knockBack = 0, int takeDown = 0);
+        /// <param name="priority">優先度</param>
+        void DirectAttackToMapObject(Vector position, Vector size, MapObject to, int damage, int frame, bool isSastainable = false, int knockBack = 0, int takeDown = 0, int priority = 0);
 
         /// <summary>
         /// プレイヤー直接攻撃
@@ -212,7 +214,8 @@ namespace SatScript.MapObject
         /// <param name="isSastainable">持続するか</param>
         /// <param name="knockBack">ノックバック率</param>
         /// <param name="takeDown">ダウン時間</param>
-        void DirectAttackToPlayer(Vector position, Vector size, int damage, int frame, bool isSastainable = false, int knockBack = 0, int takeDown = 0);
+        /// <param name="priority">優先度</param>
+        void DirectAttackToPlayer(Vector position, Vector size, int damage, int frame, bool isSastainable = false, int knockBack = 0, int takeDown = 0, int priority = 0);
 
         /// <summary>
         /// オブジェクトを消去する

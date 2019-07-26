@@ -423,7 +423,20 @@ namespace SatPlayer.Game
                 while (item.DirectDamageRequests.Count > 0)
                 {
                     var damage = item.DirectDamageRequests.Dequeue();
-                    damage.RecieveTo.HP -= damage.Damage;
+                    if (item.Damage == null)
+                    {
+                        if (item is Player player)
+                            player.Damage = new DamageInfo(damage.Damage, damage.KnockBack, damage.TakeDown, damage.Priority);
+                        else if (item is MapObject mapObject)
+                            mapObject.Damage = new DamageInfo(damage.Damage, damage.KnockBack, damage.TakeDown, damage.Priority);
+                    }
+                    else if (Player.Damage is DamageInfo info)
+                    {
+                        info.RecieveDamage += damage.Damage;
+                        info.KnockBack = info.KnockBack < damage.KnockBack ? damage.KnockBack : info.KnockBack;
+                        info.TakeDown = info.TakeDown < damage.TakeDown ? damage.TakeDown : info.TakeDown;
+                        info.Priority = info.Priority < damage.Priority ? damage.Priority : info.Priority;
+                    }
                 }
             }
 
@@ -435,15 +448,14 @@ namespace SatPlayer.Game
                 {
                     if (Player.CollisionShape.GetIsCollidedWith(item))
                     {
-                        Player.HP -= item.Damage;
-
                         if (Player.Damage == null)
-                            Player.Damage = new DamageInfo(item.Damage, item.KnockBack, item.TakeDown);
+                            Player.Damage = new DamageInfo(item.Damage, item.KnockBack, item.TakeDown, item.Priority);
                         else if (Player.Damage is DamageInfo info)
                         {
                             info.RecieveDamage += item.Damage;
                             info.KnockBack = info.KnockBack < item.KnockBack ? item.KnockBack : info.KnockBack;
                             info.TakeDown = info.TakeDown < item.TakeDown ? item.TakeDown : info.TakeDown;
+                            info.Priority = info.Priority < item.Priority ? item.Priority : info.Priority;
                         }
 
                         if (!item.Sastainable) removeRect.Add(item);
@@ -458,15 +470,14 @@ namespace SatPlayer.Game
                         damageControler.DamageGroup != Player.DamageGroup &&
                         damageControler.CollisionShape.GetIsCollidedWith(item)))
                     {
-                        item2.HP -= item.Damage;
-
                         if (item2 is MapObject mapObject && mapObject.Damage == null)
-                            mapObject.Damage = new DamageInfo(item.Damage, item.KnockBack, item.TakeDown);
+                            mapObject.Damage = new DamageInfo(item.Damage, item.KnockBack, item.TakeDown, item.Priority);
                         else if (item2 is MapObject mapObject2 && mapObject2.Damage is DamageInfo info)
                         {
                             info.RecieveDamage += item.Damage;
                             info.KnockBack = info.KnockBack < item.KnockBack ? item.KnockBack : info.KnockBack;
                             info.TakeDown = info.TakeDown < item.TakeDown ? item.TakeDown : info.TakeDown;
+                            info.Priority = info.Priority < item.Priority ? item.Priority : info.Priority;
                         }
 
                         if (!item.Sastainable) removeRect.Add(item);

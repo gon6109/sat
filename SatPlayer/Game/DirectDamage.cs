@@ -12,7 +12,7 @@ namespace SatPlayer.Game
     /// </summary>
     public class DirectDamage : DamageRect
     {
-        public DirectDamage(IDamageControler recieveTo, int group, RectF rect, int damage, int frame, bool sastainable, int knockBack, int takeDown) : base(group, rect, damage, frame, sastainable, knockBack, takeDown)
+        public DirectDamage(IDamageControler recieveTo, int group, RectF rect, int damage, int frame, bool sastainable, int knockBack, int takeDown, int priority) : base(group, rect, damage, frame, sastainable, knockBack, takeDown, priority)
         {
             RecieveTo = recieveTo;
         }

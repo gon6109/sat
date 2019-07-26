@@ -33,6 +33,11 @@ namespace SatPlayer.Game
         Queue<DirectDamage> DirectDamageRequests { get; }
 
         /// <summary>
+        /// ダメージ情報
+        /// </summary>
+        IDamage Damage { get; }
+
+        /// <summary>
         /// 陣営
         /// </summary>
         int DamageGroup { get; }

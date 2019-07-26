@@ -41,7 +41,12 @@ namespace SatPlayer.Game
         /// </summary>
         public int TakeDown { get; }
 
-        public DamageRect(int group, asd.RectF rect, int damage, int frame, bool sastainable, int knockBack, int takeDown)
+        /// <summary>
+        /// 優先度
+        /// </summary>
+        public int Priority { get; }
+
+        public DamageRect(int group, asd.RectF rect, int damage, int frame, bool sastainable, int knockBack, int takeDown, int priority)
         {
             Damage = damage;
             Group = group;
@@ -50,6 +55,7 @@ namespace SatPlayer.Game
             Sastainable = sastainable;
             KnockBack = knockBack;
             TakeDown = takeDown;
+            Priority = priority;
         }
     }
 }
