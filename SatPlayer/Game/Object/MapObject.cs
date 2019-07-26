@@ -116,8 +116,6 @@ namespace SatPlayer.Game.Object
             set
             {
                 hP = value > 0 ? value : 0;
-                //TODO: ダメージ食らった時のイベント
-                if (HP == 0) Dispose();
             }
         }
 
