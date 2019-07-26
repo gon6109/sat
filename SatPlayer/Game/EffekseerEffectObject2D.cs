@@ -13,6 +13,7 @@ namespace SatPlayer.Game
     {
         protected override void OnAdded()
         {
+            DrawingPriority = 3;
             base.OnAdded();
             Play();
         }
