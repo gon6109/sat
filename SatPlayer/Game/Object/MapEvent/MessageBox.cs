@@ -193,7 +193,7 @@ namespace SatPlayer.Game.Object.MapEvent
 
             public class NameArea : asd.TextureObject2D
             {
-                public static asd.Vector2DF Size => new asd.Vector2DF(330f, 60f);
+                public static asd.Vector2DF Size => new asd.Vector2DF(330f, 76);
 
                 private int _index;
                 private asd.TextObject2D name;
@@ -245,7 +245,7 @@ namespace SatPlayer.Game.Object.MapEvent
                 protected override void OnUpdate()
                 {
                     base.OnUpdate();
-                    name.Position = Position + Size / 2 - name.Font.CalcTextureSize(Name, asd.WritingDirection.Horizontal).To2DF() / 2;
+                    name.Position = Position + Size / 2 - name.Font.CalcTextureSize(Name, asd.WritingDirection.Horizontal).To2DF() / 2 + new asd.Vector2DF(0, 15);
                 }
             }
 
