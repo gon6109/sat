@@ -152,12 +152,11 @@ namespace SatPlayer.Game.Object.MapEvent
 
             public override IEnumerator Update(TalkComponent component, MessageBox messageBox)
             {
-                CharacterImage.Position = new asd.Vector2DF(Index < 2 ? -200 : ScalingLayer2D.OriginDisplaySize.X + 200, Index == 1 || Index == 2 ? 100 : 50);
                 messageBox.Index = Index;
                 messageBox.Name = CharacterImage.Name;
                 var animation = new Animation();
-                animation.Move(new asd.Vector2DF(Index < 2 ? -500 : ScalingLayer2D.OriginDisplaySize.X + 500, Index == 1 || Index == 2 ? 100 : 50), 
-                    new asd.Vector2DF(GetXByIndex(), Index == 1 || Index == 2 ? 100 : 50), 30, Animation.Easing.OutSine);
+                animation.Move(new asd.Vector2DF(Index < 2 ? -500 : ScalingLayer2D.OriginDisplaySize.X + 500, 280), 
+                    new asd.Vector2DF(GetXByIndex(), 280), 30, Animation.Easing.OutSine);
                 CharacterImage.Animation.AddAnimation(CharacterImage, animation);
                 while (CharacterImage.Animation.IsAnimating)
                 {
@@ -169,7 +168,7 @@ namespace SatPlayer.Game.Object.MapEvent
 
             float GetXByIndex()
             {
-                if (Index == 0) return 200;
+                if (Index == 0) return 0;
                 else if (Index == 1) return 560;
                 else if (Index == 2) return 960;
                 else return 1320;
@@ -259,7 +258,7 @@ namespace SatPlayer.Game.Object.MapEvent
                 if (component.Index.ContainsValue(CharacterImage))
                 {
                     int index = component.Index.First(obj => obj.Value == CharacterImage).Key;
-                    var targetPosition = new asd.Vector2DF(index < 2 ? -500 : ScalingLayer2D.OriginDisplaySize.X + 500, index == 1 || index == 2 ? 100 : 50);
+                    var targetPosition = new asd.Vector2DF(index < 2 ? -500 : ScalingLayer2D.OriginDisplaySize.X + 500, 280);
                     var animation = new Animation();
                     animation.MoveTo(targetPosition, 30, Animation.Easing.OutSine);
                     CharacterImage.Animation.AddAnimation(CharacterImage, animation);

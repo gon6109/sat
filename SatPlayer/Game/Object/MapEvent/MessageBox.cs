@@ -15,7 +15,7 @@ namespace SatPlayer.Game.Object.MapEvent
         /// </summary>
         public class MessageBox : asd.TextureObject2D
         {
-            public static asd.Vector2DF Size => new asd.Vector2DF(1700f, 300f);
+            public static asd.Vector2DF Size => new asd.Vector2DF(1600f, 330f);
 
             /// <summary>
             /// テキストを表示するスピード
@@ -25,7 +25,7 @@ namespace SatPlayer.Game.Object.MapEvent
             /// <summary>
             /// テキストとボックスの間隔
             /// </summary>
-            public float Margin { get; set; }
+            public asd.Vector2DF Margin { get; set; }
 
             /// <summary>
             /// フォント
@@ -64,12 +64,12 @@ namespace SatPlayer.Game.Object.MapEvent
                 Color = new asd.Color(255, 255, 255, 0);
                 texts = new List<TextLine>();
                 DrawingPriority = 3;
-                Position = new asd.Vector2DF(110, 780);
+                Position = new asd.Vector2DF(160, 720);
                 Texture = MapEventResource.Instance.MessageBoxTexture;
                 Font = MapEventResource.Instance.MessageFont;
                 Scale = new asd.Vector2DF(Size.X / Texture.Size.X, Size.Y / Texture.Size.Y);
                 TextSpeed = 2;
-                Margin = 10;
+                Margin = new asd.Vector2DF(170, 60);
                 NameOutput = new NameArea();
                 AddComponent(new AnimationComponent(), "animation");
                 AddDrawnChild(NameOutput,
@@ -158,22 +158,20 @@ namespace SatPlayer.Game.Object.MapEvent
                     {
                         textObject = new TextLine();
                         textObject.Font = Font;
-                        textObject.Position = Position +
-                            new asd.Vector2DF(Margin,
-                            Margin + Font.CalcTextureSize(" ", asd.WritingDirection.Horizontal).Y * 1.2f * (l++));
+                        textObject.Position = Position + Margin +
+                            new asd.Vector2DF(0, Font.CalcTextureSize(" ", asd.WritingDirection.Horizontal).Y * 1.2f * (l++));
                         textObject.Line = temp;
                         temp = "";
                         texts.Add(textObject);
                     }
-                    else if (Font.CalcTextureSize(temp + item, asd.WritingDirection.Horizontal).X < Size.X - Margin * 2)
+                    else if (Font.CalcTextureSize(temp + item, asd.WritingDirection.Horizontal).X < Size.X - Margin.X * 2)
                         temp += item;
                     else
                     {
                         textObject = new TextLine();
                         textObject.Font = Font;
-                        textObject.Position = Position +
-                            new asd.Vector2DF(Margin,
-                           Margin + Font.CalcTextureSize(" ", asd.WritingDirection.Horizontal).Y * 1.2f * (l++));
+                        textObject.Position = Position + Margin +
+                            new asd.Vector2DF(0, Font.CalcTextureSize(" ", asd.WritingDirection.Horizontal).Y * 1.2f * (l++));
                         textObject.Line = temp;
                         temp = item.ToString();
                         texts.Add(textObject);
@@ -181,9 +179,8 @@ namespace SatPlayer.Game.Object.MapEvent
                 }
                 textObject = new TextLine();
                 textObject.Font = Font;
-                textObject.Position = Position +
-                    new asd.Vector2DF(Margin,
-                    Margin + Font.CalcTextureSize(" ", asd.WritingDirection.Horizontal).Y * 1.2f * (l++));
+                textObject.Position = Position + Margin +
+                    new asd.Vector2DF(0, Font.CalcTextureSize(" ", asd.WritingDirection.Horizontal).Y * 1.2f * (l++));
                 textObject.Line = temp;
                 texts.Add(textObject);
                 foreach (var item in texts)
@@ -196,7 +193,7 @@ namespace SatPlayer.Game.Object.MapEvent
 
             public class NameArea : asd.TextureObject2D
             {
-                public static asd.Vector2DF Size => new asd.Vector2DF(300f, 50f);
+                public static asd.Vector2DF Size => new asd.Vector2DF(330f, 60f);
 
                 private int _index;
                 private asd.TextObject2D name;
@@ -226,15 +223,15 @@ namespace SatPlayer.Game.Object.MapEvent
 
                 asd.Vector2DF[] Target { get; } = new[]
                 {
-                    new asd.Vector2DF(275, 730),
-                    new asd.Vector2DF(635, 730),
-                    new asd.Vector2DF(1035, 730),
-                    new asd.Vector2DF(1395, 730)
+                    new asd.Vector2DF(320, 685),
+                    new asd.Vector2DF(320, 685),
+                    new asd.Vector2DF(320, 685),
+                    new asd.Vector2DF(320, 685)
                 };
 
                 public NameArea()
                 {
-                    Position = new asd.Vector2DF(275, 730);
+                    Position = new asd.Vector2DF(320, 685);
                     DrawingPriority = 3;
                     name = new asd.TextObject2D();
                     Texture = MapEventResource.Instance.NameBoxTexture;
