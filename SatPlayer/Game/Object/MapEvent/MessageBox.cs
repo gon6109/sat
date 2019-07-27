@@ -239,6 +239,7 @@ namespace SatPlayer.Game.Object.MapEvent
                     Scale = new asd.Vector2DF(Size.X / Texture.Size.X, Size.Y / Texture.Size.Y);
                     AddDrawnChild(name, (asd.ChildManagementMode)0b1111, asd.ChildTransformingMode.Nothing, asd.ChildDrawingMode.Color);
                     name.DrawingPriority = 4;
+                    name.Color = new asd.Color(242, 236, 216);
                     AddComponent(new AnimationComponent(), "animation");
                 }
 
@@ -256,6 +257,7 @@ namespace SatPlayer.Game.Object.MapEvent
                 public TextLine()
                 {
                     DrawingPriority = 4;
+                    Color = new asd.Color(242, 236, 216);
                 }
             }
         }
