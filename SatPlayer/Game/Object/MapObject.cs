@@ -386,8 +386,8 @@ namespace SatPlayer.Game.Object
             {
                 case Effect effect:
                     var newEffect = (Effect)effect.Clone();
-                    effect.Position = Position + position;
-                    Layer.AddObject(effect);
+                    newEffect.Position = Position + position;
+                    Layer.AddObject(newEffect);
                     break;
                 case asd.Effect asdEffect:
                     var effectObject = new EffekseerEffectObject2D();
