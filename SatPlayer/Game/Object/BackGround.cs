@@ -119,7 +119,7 @@ namespace SatPlayer.Game.Object
                 }
             }
             else backGround.Texture = await TextureManager.LoadTextureAsync(backGroundIO.TexturePath);
-            if (backGround.Zoom > 1) backGround.DrawingPriority = 3;
+            if (backGround.Zoom > 1) backGround.DrawingPriority = 4;
             else backGround.DrawingPriority = -1;
             return backGround;
         }
