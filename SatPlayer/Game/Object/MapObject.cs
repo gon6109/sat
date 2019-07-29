@@ -272,6 +272,8 @@ namespace SatPlayer.Game.Object
                 if (Math.Abs(shape.Angle) > 1.0f && !IsAllowRotation) shape.AngularVelocity = -shape.Angle * 30.0f;
                 if (IsAllowRotation) Angle = shape.Angle;
             }
+            else if (collision is asd.RectangleShape)
+                collision.DrawingArea = new asd.RectF(base.Position - collision.DrawingArea.Size / 2, collision.DrawingArea.Size);
         }
 
         /// <summary>
