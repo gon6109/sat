@@ -41,7 +41,7 @@ namespace SatPlayer.Game.Object
                     if (collision is PhysicalRectangleShape physicalRectangleShape)
                         physicalRectangleShape.DrawingArea = new asd.RectF(Position - physicalRectangleShape.DrawingArea.Size / 2, physicalRectangleShape.DrawingArea.Size);
                     else
-                        collision.DrawingArea = new asd.RectF(value - collision.DrawingArea.Size / 2, collision.DrawingArea.Size);
+                        collision.DrawingArea = new asd.RectF(base.GetGlobalPosition() - collision.DrawingArea.Size / 2, collision.DrawingArea.Size);
                 }
             }
         }
@@ -273,7 +273,7 @@ namespace SatPlayer.Game.Object
                 if (IsAllowRotation) Angle = shape.Angle;
             }
             else if (collision is asd.RectangleShape)
-                collision.DrawingArea = new asd.RectF(base.Position - collision.DrawingArea.Size / 2, collision.DrawingArea.Size);
+                collision.DrawingArea = new asd.RectF(base.GetGlobalPosition() - collision.DrawingArea.Size / 2, collision.DrawingArea.Size);
         }
 
         /// <summary>
