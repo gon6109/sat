@@ -441,13 +441,15 @@ namespace SatPlayer.Game.Object
             {
                 if (collision is PhysicalShape shape)
                     shape.Dispose();
+
+                asd.Vector2DF size = AnimationPart.FirstOrDefault().Value?.Textures.FirstOrDefault()?.Size.To2DF() ?? default;
                 switch (MapObjectType)
                 {
                     case MapObjectType.Active:
                         collision = new PhysicalRectangleShape(PhysicalShapeType.Dynamic, map.PhysicalWorld);
                         if (collision is PhysicalRectangleShape physicalRectangleShape)
                         {
-                            physicalRectangleShape.DrawingArea = new asd.RectF(Position - physicalRectangleShape.DrawingArea.Size / 2, AnimationPart.FirstOrDefault().Value?.Textures.FirstOrDefault()?.Size.To2DF() ?? default);
+                            physicalRectangleShape.DrawingArea = new asd.RectF(Position - size / 2, size);
                             CenterPosition = physicalRectangleShape.DrawingArea.Size / 2;
                             physicalRectangleShape.GroupIndex = CollisionGroup;
                             physicalRectangleShape.CategoryBits = CollisionCategory;
@@ -456,6 +458,7 @@ namespace SatPlayer.Game.Object
                         break;
                     case MapObjectType.Passive:
                         collision = new asd.RectangleShape();
+                        collision.DrawingArea = new asd.RectF(Position - size / 2, size);
                         break;
                     default:
                         collision = new asd.RectangleShape();
