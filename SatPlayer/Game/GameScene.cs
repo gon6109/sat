@@ -147,7 +147,6 @@ namespace SatPlayer.Game
 
         protected override void OnStartUpdating()
         {
-            Sound.StopBgm(0.5f);
             base.OnStartUpdating();
         }
 
