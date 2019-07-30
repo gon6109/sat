@@ -281,15 +281,13 @@ namespace SatPlayer.Game.Object
         /// </summary>
         /// <param name="name">Object名</param>
         /// <param name="scriptPath">スクリプトパス</param>
-        public void SetChild(string name, string scriptPath)
+        public async Task SetChild(string name, string scriptPath)
         {
             var task = MapObject.CreateMapObjectAsync(new MapObjectIO()
             {
                 ScriptPath = scriptPath
             });
-            task.Wait();
-            MapObject temp = task.Result;
-            childMapObjectData.Add(name, temp);
+            childMapObjectData.Add(name, await task);
         }
 
         /// <summary>

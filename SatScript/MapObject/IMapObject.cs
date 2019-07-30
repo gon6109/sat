@@ -133,7 +133,7 @@ namespace SatScript.MapObject
         /// </summary>
         /// <param name="name">Object名</param>
         /// <param name="mapObjectPath">MapObjectファイルへのパス</param>
-        void SetChild(string name, string mapObjectPath);
+        Task SetChild(string name, string mapObjectPath);
 
         /// <summary>
         /// 子MapObjectを配置する
