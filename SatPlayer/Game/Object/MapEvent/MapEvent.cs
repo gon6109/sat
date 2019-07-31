@@ -154,8 +154,12 @@ namespace SatPlayer.Game.Object.MapEvent
             {
                 foreach (MapObject item in Layer.Objects.Where(obj => obj is MapObject))
                 {
-                    if (item.Color.A == 255) continue;
-                    item.Color = new asd.Color(255, 255, 255, item.Color.A + 8);
+                    if (item.Color.A > 245)
+                    {
+                        item.Color = new asd.Color(255, 255, 255, 255);
+                        continue;
+                    }
+                    item.Color = new asd.Color(255, 255, 255, item.Color.A + 5);
                 }
                 foreach (var item in Actors)
                 {
@@ -218,8 +222,12 @@ namespace SatPlayer.Game.Object.MapEvent
             {
                 foreach (MapObject item in Layer.Objects.Where(obj => obj is MapObject))
                 {
-                    if (item.Color.A == 0) continue;
-                    item.Color = new asd.Color(255, 255, 255, item.Color.A - 1);
+                    if (item.Color.A < 10)
+                    {
+                        item.Color = new asd.Color(255, 255, 255, 0);
+                        continue;
+                    }
+                    item.Color = new asd.Color(255, 255, 255, item.Color.A - 5);
                 }
                 foreach (var item in Actors)
                 {
