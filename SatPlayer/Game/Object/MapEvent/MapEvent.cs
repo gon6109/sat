@@ -236,7 +236,7 @@ namespace SatPlayer.Game.Object.MapEvent
                     if (item.ActorObject is Player)
                     {
                         var command = new Dictionary<Inputs, bool>();
-                        if ((item.ActorObject.Position - item.InitPosition).Length < 50) { }
+                        if (item.ActorObject.Position.X - item.InitPosition.X < 50) { }
                         else if (item.ActorObject.Position.X > item.InitPosition.X) command.Add(Inputs.Left, true);
                         else if (item.ActorObject.Position.X < item.InitPosition.X) command.Add(Inputs.Right, true);
                         item.ActorObject.MoveCommands.Enqueue(command);
