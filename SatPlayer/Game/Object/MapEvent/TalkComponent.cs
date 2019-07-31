@@ -93,7 +93,7 @@ namespace SatPlayer.Game.Object.MapEvent
             layer.AddObject(messageBox);
             foreach (var item in CharacterImages)
             {
-                item.Position = new asd.Vector2DF(-800, 0);
+                item.Position = new asd.Vector2DF(-800 - item.Texture.Size.X, 0);
                 layer.AddObject(item);
             }
             yield return 0;
@@ -155,7 +155,7 @@ namespace SatPlayer.Game.Object.MapEvent
                 messageBox.Index = Index;
                 messageBox.Name = CharacterImage.Name;
                 var animation = new Animation();
-                animation.Move(new asd.Vector2DF(Index < 2 ? -500 : ScalingLayer2D.OriginDisplaySize.X + 500, 280), 
+                animation.Move(new asd.Vector2DF(Index < 2 ? -500 - CharacterImage.Texture.Size.X : ScalingLayer2D.OriginDisplaySize.X + 500, 280),
                     new asd.Vector2DF(GetXByIndex(), 280), 30, Animation.Easing.OutSine);
                 CharacterImage.Animation.AddAnimation(CharacterImage, animation);
                 while (CharacterImage.Animation.IsAnimating)
@@ -258,7 +258,7 @@ namespace SatPlayer.Game.Object.MapEvent
                 if (component.Index.ContainsValue(CharacterImage))
                 {
                     int index = component.Index.First(obj => obj.Value == CharacterImage).Key;
-                    var targetPosition = new asd.Vector2DF(index < 2 ? -500 : ScalingLayer2D.OriginDisplaySize.X + 500, 280);
+                    var targetPosition = new asd.Vector2DF(index < 2 ? -500 - CharacterImage.Texture.Size.X : ScalingLayer2D.OriginDisplaySize.X + 500, 280);
                     var animation = new Animation();
                     animation.MoveTo(targetPosition, 30, Animation.Easing.OutSine);
                     CharacterImage.Animation.AddAnimation(CharacterImage, animation);
