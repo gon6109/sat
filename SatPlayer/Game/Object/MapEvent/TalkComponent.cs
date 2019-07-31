@@ -171,7 +171,7 @@ namespace SatPlayer.Game.Object.MapEvent
                 if (Index == 0) return 0;
                 else if (Index == 1) return 560;
                 else if (Index == 2) return 960;
-                else return 1320;
+                else return ScalingLayer2D.OriginDisplaySize.X - (CharacterImage.Texture?.Size.X ?? default);
             }
         }
 
