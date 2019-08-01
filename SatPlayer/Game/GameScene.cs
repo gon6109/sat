@@ -126,8 +126,6 @@ namespace SatPlayer.Game
             loader.ProgressInfo = (loader.ProgressInfo.taskCount, 0);
 
             AddLayer(Map);
-            MessageLayer2D.Reset();
-            AddLayer(MessageLayer2D.Instance);
 
             MapIO mapIO = new MapIO();
             mapIO = await BaseIO.LoadAsync<MapIO>(MapPath);
