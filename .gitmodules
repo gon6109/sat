@@ -1,3 +1,6 @@
 [submodule "BaseComponent"]
 	path = BaseComponent
 	url = https://github.com/gon6109/BaseComponent.git
+[submodule "AltseedInspector"]
+	path = AltseedInspector
+	url = https://github.com/gon6109/AltseedInspector.git
