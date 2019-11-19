@@ -1,6 +1,6 @@
 ﻿using BaseComponent;
 using Microsoft.CodeAnalysis.Scripting;
-using SatCore.Attribute;
+using InspectorModel;
 using SatPlayer;
 using SatPlayer.Game.Object;
 using System;

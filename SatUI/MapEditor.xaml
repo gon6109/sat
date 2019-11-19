@@ -1,9 +1,10 @@
-﻿<Window x:Class="SatUI.MapEditor"
+﻿<Window xmlns:AltseedInspector="clr-namespace:AltseedInspector;assembly=SatUI"  x:Class="SatUI.MapEditor"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SatUI"
+        xmlns:AltseedInspector1="clr-namespace:AltseedInspector;assembly=AltseedInspector"
         mc:Ignorable="d"
         Title="MapEditor" Height="450" Width="899.637" Closing="Window_Closing" >
     <Window.InputBindings>
@@ -58,9 +59,8 @@
                 <MenuItem x:Name="copy" Header="コピー" Click="copy_Click" InputGestureText="Ctrl+C" Command="Copy"/>
                 <MenuItem x:Name="paste" Header="貼り付け" Click="paste_Click" InputGestureText="Ctrl+V" Command="Paste"/>
             </MenuItem>
-            <MenuItem Header="選択"/>
         </Menu>
-        <local:PropertyPanel x:Name="propertyPanel" Grid.Column="4" Margin="0" Grid.Row="1"/>
+        <AltseedInspector1:Inspector x:Name="inspector" Grid.Column="4" Margin="0" Grid.Row="1" HorizontalContentAlignment="Stretch"/>
         <ToolBarTray Orientation="Vertical" VerticalAlignment="Top" Margin="0,18,0.286,0" Grid.RowSpan="2">
             <ToolBar x:Name="toolBar" Margin="0" >
                 <Button x:Name="select" Height="40" Width="40" Click="select_Click" >

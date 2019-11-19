@@ -10,7 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using SatCore.Attribute;
+using InspectorModel;
 using asd;
 
 namespace SatCore.MapEditor.Object

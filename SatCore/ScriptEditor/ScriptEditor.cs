@@ -1,5 +1,5 @@
 ﻿using BaseComponent;
-using SatCore.Attribute;
+using InspectorModel;
 using SatPlayer.Game.Object;
 using System;
 using System.Collections.Generic;
@@ -24,7 +24,7 @@ namespace SatCore.ScriptEditor
 
         public ScriptType Script { get; }
 
-        public string Path { get; set; }
+        public new string Path { get; set; }
 
         [FileInput("テスト用プレイヤー", "Player Script|*.pc|All File|*.*")]
         public string PlayerPath

@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using BaseComponent;
-using SatCore.Attribute;
+using InspectorModel;
 using SatCore.MapEditor.Object;
 
 namespace SatCore.MapEditor
@@ -39,7 +39,7 @@ namespace SatCore.MapEditor
             }
         }
 
-        [ListInput("背景", selectedObjectBindingPath: "SelectedBackGround", additionButtonEventMethodName: "AddBackGround")]
+        [ListInput("背景", selectedObjectBindingPath: "SelectedBackGround", addButtonEventMethodName: "AddBackGround")]
         public UndoRedoCollection<BackGround> BackGrounds { get; }
 
         bool isSelectedBackGround;
@@ -320,7 +320,7 @@ namespace SatCore.MapEditor
             private (int taskCount, int progress) progressInfo;
             private bool isCancel;
 
-            [ListInput("プレイヤー", additionButtonEventMethodName: "AddPlayerData")]
+            [ListInput("プレイヤー", addButtonEventMethodName: "AddPlayerData")]
             public ObservableCollection<PlayerName> PlayerNames { get; set; }
 
             public void AddPlayerData()

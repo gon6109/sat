@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 using BaseComponent;
 using SatPlayer;
 using Microsoft.CodeAnalysis.Scripting;
-using SatCore.Attribute;
+using InspectorModel;
 using System.IO;
 using SatScript.MapObject;
 

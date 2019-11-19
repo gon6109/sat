@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SatPlayer.Game.Object;
 using SatPlayer.Game;
-using SatCore.Attribute;
+using InspectorModel;
 
 namespace SatCore.MapEditor.Object.MapEvent
 {
@@ -62,7 +62,7 @@ namespace SatCore.MapEditor.Object.MapEvent
             }
         }
 
-        [ListInput("動かすキャラ", additionButtonEventMethodName: "AddActor")]
+        [ListInput("動かすキャラ", addButtonEventMethodName: "AddActor")]
         public UndoRedoCollection<Actor> Actors { get; set; }
 
         [Group("カメラ")]
@@ -140,7 +140,7 @@ namespace SatCore.MapEditor.Object.MapEvent
             }
         }
 
-        [ListInput("キャラグラフィックデータ", additionButtonEventMethodName: "AddCharacterImageAsync")]
+        [ListInput("キャラグラフィックデータ", addButtonEventMethodName: "AddCharacterImageAsync")]
         public UndoRedoCollection<CharacterImage> CharacterImages { get; set; }
 
         public async Task AddCharacterImageAsync()
@@ -274,7 +274,7 @@ namespace SatCore.MapEditor.Object.MapEvent
             }
         }
 
-        [ListInput("終了時プレイアブルキャラ", additionButtonEventMethodName: "AddPlayerData")]
+        [ListInput("終了時プレイアブルキャラ", addButtonEventMethodName: "AddPlayerData")]
         public UndoRedoCollection<PlayerName> PlayerNames { get; set; }
 
         [BoolInput("ドアIDを遷移に用いるか")]

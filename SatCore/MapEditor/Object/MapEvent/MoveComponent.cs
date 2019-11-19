@@ -1,5 +1,5 @@
 ﻿using BaseComponent;
-using SatCore.Attribute;
+using InspectorModel;
 using SatCore.MapEditor.Object.MapEvent;
 using SatIO.MapEventIO;
 using System;
@@ -38,7 +38,7 @@ namespace SatCore.MapEditor.Object.MapEvent
             }
         }
 
-        [ListInput("登場キャラ", "SelectedActor", isVisibleRemoveButtton: false)]
+        [ListInput("登場キャラ", "SelectedActor")]
         public ObservableCollection<MapEvent.Actor> Actors { get; set; }
 
         public MapEvent.Actor SelectedActor { get; set; }

@@ -1,6 +1,6 @@
 ﻿using asd;
 using BaseComponent;
-using SatCore.Attribute;
+using InspectorModel;
 using SatCore.MapEditor.Object.MapEvent;
 using SatIO.MapEventIO;
 using System;

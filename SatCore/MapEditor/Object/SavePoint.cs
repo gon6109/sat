@@ -1,6 +1,6 @@
 ﻿using asd;
 using BaseComponent;
-using SatCore.Attribute;
+using InspectorModel;
 using SatIO;
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,5 @@
 ﻿using BaseComponent;
+using AltseedInspector;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ namespace SatUI
         public Dictionary<Inputs, asd.ButtonState> InputData { get; set; }
 
         string playerExePath = "";
-        [SatCore.Attribute.DirectoryInput("本体へのパス", false)]
+        [InspectorModel.DirectoryInput("本体へのパス", false)]
         public string PlayerExePath
         {
             get => playerExePath;
@@ -74,7 +75,7 @@ namespace SatUI
             };
             Property mapProperty = new Property("General", this);
 
-            propertyPanel.AddProperty(mapProperty);
+            inspector.AddProperty(mapProperty);
             SatCore.UndoRedoManager.OnUpdateData += OnUpdateUndoRedoData;
             gridSplitter.IsEnabled = false;
             codeColumn.Width = new GridLength(0);
@@ -99,10 +100,10 @@ namespace SatUI
             newFile.OnSave += SaveMap;
             newFile.RequireConfirmSaveDialog += OpenConfirmSaveDialog;
             asd.Engine.ChangeScene(newFile);
-            Reset(PropertyPanel.ResetMode.General);
+            Reset(obj => obj is AltseedInspector.Property property && property.Name != "General");
 
             Property mapProperty = new Property("Map", new object[] { newFile.Map, newFile });
-            propertyPanel.AddProperty(mapProperty);
+            inspector.AddProperty(mapProperty);
         }
 
         private void ShowProgressDialog(string title, string bindingPath, INotifyPropertyChanged bindingSource)
@@ -120,14 +121,14 @@ namespace SatUI
                 else
                     scene.RemoveEvent();
 
-            Reset(PropertyPanel.ResetMode.General);
+            Reset(obj => obj is AltseedInspector.Property property && property.Name != "General");
 
             var loadFile = new SatCore.CharacterImageEditor.CharacterImageEditor();
             loadFile.OnSave += SaveCharacterImage;
             loadFile.RequireConfirmSaveDialog += OpenConfirmSaveDialog;
             asd.Engine.ChangeScene(loadFile);
             Property mapProperty = new Property("Chracter Image", loadFile.Character);
-            propertyPanel.AddProperty(mapProperty);
+            inspector.AddProperty(mapProperty);
         }
 
         private void CreateMapObject_Click(object sender, RoutedEventArgs e)
@@ -138,14 +139,14 @@ namespace SatUI
                 else
                     scene.RemoveEvent();
 
-            Reset(PropertyPanel.ResetMode.General);
+            Reset(obj => obj is AltseedInspector.Property property && property.Name != "General");
 
             var loadFile = new SatCore.ScriptEditor.ScriptEditor(SatCore.ScriptEditor.ScriptEditor.ScriptType.MapObject);
             loadFile.OnSave += SaveScript;
             loadFile.RequireConfirmSaveDialog += OpenConfirmSaveDialog;
             asd.Engine.ChangeScene(loadFile);
             Property mapProperty = new Property("Map Object", new object[] { loadFile, loadFile.ScriptObject });
-            propertyPanel.AddProperty(mapProperty);
+            inspector.AddProperty(mapProperty);
             code.Children.Add(new CodeEditor(loadFile.ScriptObject, "Code"));
             gridSplitter.IsEnabled = true;
             codeColumn.Width = new GridLength(EditorPanel.ActualWidth / 2);
@@ -159,14 +160,14 @@ namespace SatUI
                 else
                     scene.RemoveEvent();
 
-            Reset(PropertyPanel.ResetMode.General);
+            Reset(obj => obj is AltseedInspector.Property property && property.Name != "General");
 
             var loadFile = new SatCore.ScriptEditor.ScriptEditor(SatCore.ScriptEditor.ScriptEditor.ScriptType.EventObject);
             loadFile.OnSave += SaveScript;
             loadFile.RequireConfirmSaveDialog += OpenConfirmSaveDialog;
             asd.Engine.ChangeScene(loadFile);
             Property mapProperty = new Property("Map Object", new object[] { loadFile, loadFile.ScriptObject });
-            propertyPanel.AddProperty(mapProperty);
+            inspector.AddProperty(mapProperty);
             code.Children.Add(new CodeEditor(loadFile.ScriptObject, "Code"));
             gridSplitter.IsEnabled = true;
             codeColumn.Width = new GridLength(EditorPanel.ActualWidth / 2);
@@ -180,14 +181,14 @@ namespace SatUI
                 else
                     scene.RemoveEvent();
 
-            Reset(PropertyPanel.ResetMode.General);
+            Reset(obj => obj is AltseedInspector.Property property && property.Name != "General");
 
             var loadFile = new SatCore.ScriptEditor.ScriptEditor(SatCore.ScriptEditor.ScriptEditor.ScriptType.Player);
             loadFile.OnSave += SaveScript;
             loadFile.RequireConfirmSaveDialog += OpenConfirmSaveDialog;
             asd.Engine.ChangeScene(loadFile);
             Property mapProperty = new Property("Map Object", new object[] { loadFile, loadFile.ScriptObject });
-            propertyPanel.AddProperty(mapProperty);
+            inspector.AddProperty(mapProperty);
             code.Children.Add(new CodeEditor(loadFile.ScriptObject, "Code"));
             gridSplitter.IsEnabled = true;
             codeColumn.Width = new GridLength(EditorPanel.ActualWidth / 2);
@@ -201,14 +202,14 @@ namespace SatUI
                 else
                     scene.RemoveEvent();
 
-            Reset(PropertyPanel.ResetMode.General);
+            Reset(obj => obj is AltseedInspector.Property property && property.Name != "General");
 
             var loadFile = new SatCore.ScriptEditor.ScriptEditor(SatCore.ScriptEditor.ScriptEditor.ScriptType.BackGround);
             loadFile.OnSave += SaveScript;
             loadFile.RequireConfirmSaveDialog += OpenConfirmSaveDialog;
             asd.Engine.ChangeScene(loadFile);
             Property mapProperty = new Property("Map Object", new object[] { loadFile, loadFile.ScriptObject });
-            propertyPanel.AddProperty(mapProperty);
+            inspector.AddProperty(mapProperty);
             code.Children.Add(new CodeEditor(loadFile.ScriptObject, "Code"));
             gridSplitter.IsEnabled = true;
             codeColumn.Width = new GridLength(EditorPanel.ActualWidth / 2);
@@ -232,7 +233,7 @@ namespace SatUI
 
             if (openFileDialog.ShowDialog() != true) return;
 
-            Reset(PropertyPanel.ResetMode.General);
+            Reset(obj => obj is AltseedInspector.Property property && property.Name != "General");
 
             if (openFileDialog.FileName.Contains(".map")) await OpenMapFile(openFileDialog.FileName);
             else if (openFileDialog.FileName.Contains(".ci")) OpenCharacterImageFile(openFileDialog.FileName);
@@ -256,7 +257,7 @@ namespace SatUI
                 await loadFile.LoadMapData(fileName);
                 asd.Engine.ChangeScene(loadFile);
                 Property mapProperty = new Property("Map", new object[] { loadFile.Map, loadFile });
-                propertyPanel.AddProperty(mapProperty);
+                inspector.AddProperty(mapProperty);
             }
             catch (Exception e)
             {
@@ -275,7 +276,7 @@ namespace SatUI
             loadFile.RequireConfirmSaveDialog += OpenConfirmSaveDialog;
             asd.Engine.ChangeScene(loadFile);
             Property mapProperty = new Property("Chracter Image", loadFile.Character);
-            propertyPanel.AddProperty(mapProperty);
+            inspector.AddProperty(mapProperty);
         }
 
         void OpenScriptFile(string fileName)
@@ -297,7 +298,7 @@ namespace SatUI
             loadFile.RequireConfirmSaveDialog += OpenConfirmSaveDialog;
             asd.Engine.ChangeScene(loadFile);
             Property mapProperty = new Property("Script", new object[] { loadFile, loadFile.ScriptObject });
-            propertyPanel.AddProperty(mapProperty);
+            inspector.AddProperty(mapProperty);
             code.Children.Add(new CodeEditor(loadFile.ScriptObject, "Code"));
             gridSplitter.IsEnabled = true;
             codeColumn.Width = new GridLength(EditorPanel.ActualWidth / 2);
@@ -307,42 +308,42 @@ namespace SatUI
         {
             if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
 
-            Reset(PropertyPanel.ResetMode.Map);
+            Reset(obj => obj is AltseedInspector.Property property && property.Name != "General" && property.Name != "Map");
             switch (((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.GetSelectedObjectType())
             {
                 case SatCore.MapEditor.SelectType.None:
                     break;
                 case SatCore.MapEditor.SelectType.Box:
                     Property boxProperty = new Property("Box", ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.SelectedObject);
-                    propertyPanel.AddProperty(boxProperty);
+                    inspector.AddProperty(boxProperty);
                     break;
                 case SatCore.MapEditor.SelectType.Triangle:
                     Property triangleProperty = new Property("Triangle", ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.SelectedObject);
-                    propertyPanel.AddProperty(triangleProperty);
+                    inspector.AddProperty(triangleProperty);
                     break;
                 case SatCore.MapEditor.SelectType.Door:
                     Property doorProperty = new Property("Door", ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.SelectedObject);
-                    propertyPanel.AddProperty(doorProperty);
+                    inspector.AddProperty(doorProperty);
                     break;
                 case SatCore.MapEditor.SelectType.Object:
                     Property mapObjectProperty = new Property("Map Object", ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.SelectedObject);
-                    propertyPanel.AddProperty(mapObjectProperty);
+                    inspector.AddProperty(mapObjectProperty);
                     break;
                 case SatCore.MapEditor.SelectType.EventObject:
                     Property npcMapObjectProperty = new Property("Non-Player Character", ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.SelectedObject);
-                    propertyPanel.AddProperty(npcMapObjectProperty);
+                    inspector.AddProperty(npcMapObjectProperty);
                     break;
                 case SatCore.MapEditor.SelectType.Event:
                     Property mapEventProperty = new Property("Event", ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.SelectedObject);
-                    propertyPanel.AddProperty(mapEventProperty);
+                    inspector.AddProperty(mapEventProperty);
                     break;
                 case SatCore.MapEditor.SelectType.CameraRestriction:
                     Property cameraRestrictionProperty = new Property("カメラ制限", ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.SelectedObject);
-                    propertyPanel.AddProperty(cameraRestrictionProperty);
+                    inspector.AddProperty(cameraRestrictionProperty);
                     break;
                 case SatCore.MapEditor.SelectType.SavePoint:
                     Property savePointProperty = new Property("セーブポイント", ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.SelectedObject);
-                    propertyPanel.AddProperty(savePointProperty);
+                    inspector.AddProperty(savePointProperty);
                     break;
                 default:
                     break;
@@ -351,16 +352,16 @@ namespace SatUI
 
         void OnCreateDoor()
         {
-            Reset(PropertyPanel.ResetMode.Map);
+            Reset(obj => obj is AltseedInspector.Property property && property.Name != "General" && property.Name != "Map");
             Property doorProperty = new Property("Door", ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.SelectedObject);
-            propertyPanel.AddProperty(doorProperty);
+            inspector.AddProperty(doorProperty);
         }
 
         void OnCreateMapObject()
         {
-            Reset(PropertyPanel.ResetMode.Map);
+            Reset(obj => obj is AltseedInspector.Property property && property.Name != "General" && property.Name != "Map");
             Property mapObjectProperty = new Property("Map Object", ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.SelectedObject);
-            propertyPanel.AddProperty(mapObjectProperty);
+            inspector.AddProperty(mapObjectProperty);
         }
 
         private void select_Click(object sender, RoutedEventArgs e)
@@ -369,7 +370,7 @@ namespace SatUI
 
             ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Select;
             EditorPanel.Cursor = Cursors.Arrow;
-            Reset(PropertyPanel.ResetMode.Map);
+            Reset(obj => obj is AltseedInspector.Property property && property.Name != "General" && property.Name != "Map");
         }
 
         private void box_Click(object sender, RoutedEventArgs e)
@@ -378,7 +379,7 @@ namespace SatUI
 
             ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Box;
             EditorPanel.Cursor = Cursors.Cross;
-            Reset(PropertyPanel.ResetMode.Map);
+            Reset(obj => obj is AltseedInspector.Property property && property.Name != "General" && property.Name != "Map");
         }
 
         private void triangle_Click(object sender, RoutedEventArgs e)
@@ -387,7 +388,7 @@ namespace SatUI
 
             ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Triangle;
             EditorPanel.Cursor = Cursors.Cross;
-            Reset(PropertyPanel.ResetMode.Map);
+            Reset(obj => obj is AltseedInspector.Property property && property.Name != "General" && property.Name != "Map");
         }
 
         private void door_Click(object sender, RoutedEventArgs e)
@@ -396,7 +397,7 @@ namespace SatUI
 
             ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Door;
             EditorPanel.Cursor = Cursors.Arrow;
-            Reset(PropertyPanel.ResetMode.Map);
+            Reset(obj => obj is AltseedInspector.Property property && property.Name != "General" && property.Name != "Map");
         }
 
         private void mapObject_Click(object sender, RoutedEventArgs e)
@@ -405,7 +406,7 @@ namespace SatUI
 
             ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Object;
             EditorPanel.Cursor = Cursors.Arrow;
-            Reset(PropertyPanel.ResetMode.Map);
+            Reset(obj => obj is AltseedInspector.Property property && property.Name != "General" && property.Name != "Map");
         }
 
         private void npc_Click(object sender, RoutedEventArgs e)
@@ -414,7 +415,7 @@ namespace SatUI
 
             ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.EventObject;
             EditorPanel.Cursor = Cursors.Arrow;
-            Reset(PropertyPanel.ResetMode.Map);
+            Reset(obj => obj is AltseedInspector.Property property && property.Name != "General" && property.Name != "Map");
         }
 
         private void mapEvent_Click(object sender, RoutedEventArgs e)
@@ -423,7 +424,7 @@ namespace SatUI
 
             ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Event;
             EditorPanel.Cursor = Cursors.Cross;
-            Reset(PropertyPanel.ResetMode.Map);
+            Reset(obj => obj is AltseedInspector.Property property && property.Name != "General" && property.Name != "Map");
         }
 
         private void Camera_Click(object sender, RoutedEventArgs e)
@@ -432,7 +433,7 @@ namespace SatUI
 
             ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.CameraRestriction;
             EditorPanel.Cursor = Cursors.Cross;
-            Reset(PropertyPanel.ResetMode.Map);
+            Reset(obj => obj is AltseedInspector.Property property && property.Name != "General" && property.Name != "Map");
         }
 
         private void SavePoint_Click(object sender, RoutedEventArgs e)
@@ -441,7 +442,7 @@ namespace SatUI
 
             ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.SavePoint;
             EditorPanel.Cursor = Cursors.Cross;
-            Reset(PropertyPanel.ResetMode.Map);
+            Reset(obj => obj is AltseedInspector.Property property && property.Name != "General" && property.Name != "Map");
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
@@ -609,13 +610,13 @@ namespace SatUI
             redo.IsEnabled = SatCore.UndoRedoManager.IsCanRedo;
         }
 
-        void Reset(PropertyPanel.ResetMode mode)
+        void Reset(Func<UIElement, bool> func)
         {
             code.Children.OfType<CodeEditor>().FirstOrDefault()?.Dispose();
             code.Children.Clear();
             gridSplitter.IsEnabled = false;
             codeColumn.Width = new GridLength(0);
-            propertyPanel.ResetProperty(mode);
+            inspector.RemoveProperty(func);
         }
 
         public void DoEvents()

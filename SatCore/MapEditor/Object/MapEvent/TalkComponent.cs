@@ -1,5 +1,5 @@
 ﻿using BaseComponent;
-using SatCore.Attribute;
+using InspectorModel;
 using SatCore.MapEditor.Object.MapEvent;
 using SatIO.MapEventIO;
 using System;
@@ -240,7 +240,7 @@ namespace SatCore.MapEditor.Object.MapEvent
                 }
             }
 
-            [ListInput("キャラ一覧", "CharacterImage", isVisibleRemoveButtton: false)]
+            [ListInput("キャラ一覧", "CharacterImage")]
             public new ObservableCollection<CharacterImage> CharacterImages { get => base.CharacterImages; set => base.CharacterImages = value; }
 
             public ShowCharacterElement(ObservableCollection<CharacterImage> characterImages) : base(characterImages)
@@ -268,7 +268,7 @@ namespace SatCore.MapEditor.Object.MapEvent
                 }
             }
 
-            [ListInput("キャラ一覧", "CharacterImage", isVisibleRemoveButtton: false)]
+            [ListInput("キャラ一覧", "CharacterImage")]
             public new ObservableCollection<CharacterImage> CharacterImages { get => base.CharacterImages; set => base.CharacterImages = value; }
 
             public TalkElement(ObservableCollection<CharacterImage> characterImages) : base(characterImages)
@@ -315,10 +315,10 @@ namespace SatCore.MapEditor.Object.MapEvent
                 }
             }
 
-            [ListInput("差分一覧", "DiffImage", isVisibleRemoveButtton: false)]
+            [ListInput("差分一覧", "DiffImage")]
             public ObservableCollection<CharacterImage.DiffImage> DiffImages { get; private set; }
 
-            [ListInput("キャラ一覧", "CharacterImage", isVisibleRemoveButtton: false)]
+            [ListInput("キャラ一覧", "CharacterImage")]
             public new ObservableCollection<CharacterImage> CharacterImages { get => base.CharacterImages; set => base.CharacterImages = value; }
 
             public ChangeDiffElement(ObservableCollection<CharacterImage> characterImages) : base(characterImages)
@@ -331,7 +331,7 @@ namespace SatCore.MapEditor.Object.MapEvent
         {
             public new string Name => "Hide " + (CharacterImage != null ? CharacterImage.Name : "");
 
-            [ListInput("キャラ一覧", "CharacterImage", isVisibleRemoveButtton: false)]
+            [ListInput("キャラ一覧", "CharacterImage")]
             public new ObservableCollection<CharacterImage> CharacterImages { get => base.CharacterImages; set => base.CharacterImages = value; }
 
             public HideCharacterElement(ObservableCollection<CharacterImage> characterImages) : base(characterImages)
