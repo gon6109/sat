@@ -31,32 +31,12 @@ namespace SatCore.MapEditor.Object
 
         private string _texturePath;
         private float _zoom;
-        private bool _isMove;
-        asd.Vector2DF prePosition;
         private Vector2DF _position;
 
         [RootPathBinding("root")]
         public string RootPath => Config.Instance.RootPath;
 
         List<Task> LoadTextureTasks { get; }
-
-        /// <summary>
-        /// 動かすか
-        /// </summary>
-        public bool IsMove
-        {
-            get => _isMove;
-            set
-            {
-                if (!value)
-                {
-                    UndoRedoManager.ChangeProperty(this, Position, prePosition, "Position");
-                    OnPropertyChanged("Position");
-                }
-                else prePosition = Position;
-                _isMove = value;
-            }
-        }
 
         [FileInput("背景画像/Animation", "Readable File|*.png;*.bg|PNG File|*.png|Back Ground Script|*.bg", "root")]
         public string TexturePath
@@ -148,12 +128,6 @@ namespace SatCore.MapEditor.Object
 
         public string Name => TexturePath;
 
-        [Button("カーソルキーで移動")]
-        public void Move()
-        {
-            IsMove = !IsMove;
-        }
-
         public BackGround()
         {
             LoadTextureTasks = new List<Task>();
@@ -172,29 +146,6 @@ namespace SatCore.MapEditor.Object
             if (Layer is MapLayer map)
             {
                 base.Position = Position - map.ScrollCamera.Src.Position.To2DF() * (Zoom - 1);
-            }
-
-            if (IsMove)
-            {
-                var _position = Position;
-                if (Input.GetInputState(Inputs.B) > 0)
-                {
-                    if (Input.GetInputState(Inputs.Up) > 0) _position.Y -= 10;
-                    if (Input.GetInputState(Inputs.Down) > 0) _position.Y += 10;
-                    if (Input.GetInputState(Inputs.Left) > 0) _position.X -= 10;
-                    if (Input.GetInputState(Inputs.Right) > 0) _position.X += 10;
-                }
-                else
-                {
-                    if (Input.GetInputState(Inputs.Up) > 0) _position.Y -= 5;
-                    if (Input.GetInputState(Inputs.Down) > 0) _position.Y += 5;
-                    if (Input.GetInputState(Inputs.Left) > 0) _position.X -= 5;
-                    if (Input.GetInputState(Inputs.Right) > 0) _position.X += 5;
-                }
-                Position = _position;
-
-                if (Input.GetInputState(Inputs.Esc) == 1
-                    || Mouse.LeftButton == asd.ButtonState.Push) IsMove = false;
             }
             base.OnUpdate();
         }
