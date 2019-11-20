@@ -65,15 +65,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attribute\BoolInputAttribute.cs" />
-    <Compile Include="Attribute\ButtonAttribute.cs" />
+    <Compile Include="Attribute\ScriptAttribute.cs" />
     <Compile Include="CharacterImageEditor\CharacterImage.cs" />
     <Compile Include="CharacterImageEditor\CharacterImageEditor.cs" />
-    <Compile Include="Attribute\DirectoryInputAttribute.cs" />
-    <Compile Include="Attribute\FileInputAttribute.cs" />
-    <Compile Include="Attribute\GroupAttribute.cs" />
-    <Compile Include="Attribute\IOAttribute.cs" />
-    <Compile Include="Attribute\ListInputAttribute.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="MapEditor\IActor.cs" />
@@ -105,23 +99,21 @@
     <Compile Include="ScriptEditor\MapLayer.cs" />
     <Compile Include="ScriptEditor\ScriptEditor.cs" />
     <Compile Include="Mouse.cs" />
-    <Compile Include="Attribute\NumberInputAttribute.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="PlayersListDialog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Attribute\ScriptAttribute.cs" />
-    <Compile Include="Attribute\TextAreaInputAttribute.cs" />
-    <Compile Include="Attribute\TextInputAttribute.cs" />
-    <Compile Include="Attribute\TextOutputAttribute.cs" />
     <Compile Include="UndoRedoCollection.cs" />
     <Compile Include="UndoRedoManager.cs" />
     <Compile Include="BaseEditorScene.cs" />
-    <Compile Include="Attribute\VectorInputAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AltseedInspector\InspectorModel\InspectorModel.csproj">
+      <Project>{388e3c63-bdcf-42b6-b2bb-be06b5e7bbaa}</Project>
+      <Name>InspectorModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BaseComponent\BaseComponent\BaseComponent.csproj">
       <Project>{5e96b148-501f-48d1-b996-0dce73a323c9}</Project>
       <Name>BaseComponent</Name>

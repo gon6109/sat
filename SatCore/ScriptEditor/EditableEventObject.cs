@@ -1,7 +1,7 @@
 ﻿using BaseComponent;
 using Microsoft.CodeAnalysis.Scripting;
 using PhysicAltseed;
-using SatCore.Attribute;
+using InspectorModel;
 using SatPlayer;
 using SatPlayer.Game;
 using SatPlayer.Game.Object;

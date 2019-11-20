@@ -1,6 +1,6 @@
 ﻿using asd;
 using BaseComponent;
-using SatCore.Attribute;
+using InspectorModel;
 using SatCore.MapEditor.Object.MapEvent;
 using SatIO.MapEventIO;
 using System;
@@ -26,6 +26,9 @@ namespace SatCore.CharacterImageEditor
 
         private DiffImage _selectedDiff;
 
+        [RootPathBinding("root")]
+        public string RootPath => Config.Instance.RootPath;
+
         [TextInput("名前")]
         public new string Name
         {
@@ -38,7 +41,7 @@ namespace SatCore.CharacterImageEditor
             }
         }
 
-        [FileInput("キャラ画像", "PNG File|*.png")]
+        [FileInput("キャラ画像", "PNG File|*.png", "root")]
         public new string BaseImagePath
         {
             get => base.BaseImagePath;
@@ -53,9 +56,10 @@ namespace SatCore.CharacterImageEditor
             }
         }
 
-        [ListInput("差分", "SelectedDiff", "AddDiff")]
+        [ListInput("差分")]
         public new UndoRedoCollection<DiffImage> DiffImages { get; }
 
+        [SelectedItemBinding("差分")]
         public DiffImage SelectedDiff
         {
             get => _selectedDiff;
@@ -67,14 +71,21 @@ namespace SatCore.CharacterImageEditor
             }
         }
 
-        public Texture2D BaseImage { get; private set; }
-
-        asd.TextureObject2D diffObject;
-
+        [AddButtonMethodBinding("差分")]
         public void AddDiff()
         {
             DiffImages.Add(new DiffImage());
         }
+
+        [RemoveButtonMethodBinding("差分")]
+        public void RemoveDiff(DiffImage diffImage)
+        {
+            DiffImages.Remove(diffImage);
+        }
+
+        public Texture2D BaseImage { get; private set; }
+
+        asd.TextureObject2D diffObject;
 
         public EditableCharacterImage()
         {
@@ -132,7 +143,10 @@ namespace SatCore.CharacterImageEditor
             private string _path;
             private string _name;
 
-            [FileInput("差分画像", "PNG File|*.png")]
+            [RootPathBinding("root")]
+            public string RootPath => Config.Instance.RootPath;
+
+            [FileInput("差分画像", "PNG File|*.png", "root")]
             public string Path
             {
                 get => _path;

@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 using BaseComponent;
 using SatPlayer;
 using Microsoft.CodeAnalysis.Scripting;
-using SatCore.Attribute;
+using InspectorModel;
 using System.IO;
 using SatScript.MapObject;
 
@@ -29,6 +29,9 @@ namespace SatCore.MapEditor.Object
         private string _scriptPath;
         private asd.Vector2DF _position;
         bool _isActivePhysic;
+
+        [RootPathBinding("root")]
+        public string RootPath => Config.Instance.RootPath;
 
         [TextOutput("ID")]
         public new int ID { get => base.ID; set => base.ID = value; }
@@ -54,7 +57,7 @@ namespace SatCore.MapEditor.Object
         /// <summary>
         /// スクリプトへのパス
         /// </summary>
-        [FileInput("スクリプト", "EventObject File|*.eobj|All File|*.*")]
+        [FileInput("スクリプト", "EventObject File|*.eobj|All File|*.*", "root")]
         public string ScriptPath
         {
             get => _scriptPath;

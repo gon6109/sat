@@ -10,7 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using SatCore.Attribute;
+using InspectorModel;
 using asd;
 
 namespace SatCore.MapEditor.Object
@@ -35,6 +35,9 @@ namespace SatCore.MapEditor.Object
         asd.Vector2DF prePosition;
         private Vector2DF _position;
 
+        [RootPathBinding("root")]
+        public string RootPath => Config.Instance.RootPath;
+
         List<Task> LoadTextureTasks { get; }
 
         /// <summary>
@@ -55,7 +58,7 @@ namespace SatCore.MapEditor.Object
             }
         }
 
-        [FileInput("背景画像/Animation", "Readable File|*.png;*.bg|PNG File|*.png|Back Ground Script|*.bg")]
+        [FileInput("背景画像/Animation", "Readable File|*.png;*.bg|PNG File|*.png|Back Ground Script|*.bg", "root")]
         public string TexturePath
         {
             get => _texturePath;

@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
 using BaseComponent;
 using SatPlayer.Game.Object;
 using SatPlayer.Game;
-using SatCore.Attribute;
+using InspectorModel;
 using SatCore.MapEditor.Object;
 using System.Threading.Tasks;
 using MapObject = SatCore.MapEditor.Object.MapObject;

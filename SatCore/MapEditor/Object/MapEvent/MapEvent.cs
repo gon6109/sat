@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SatPlayer.Game.Object;
 using SatPlayer.Game;
-using SatCore.Attribute;
+using InspectorModel;
 
 namespace SatCore.MapEditor.Object.MapEvent
 {
@@ -36,6 +36,9 @@ namespace SatCore.MapEditor.Object.MapEvent
             }
             set => base.Shape = value;
         }
+
+        [RootPathBinding("root")]
+        public string RootPath => Config.Instance.RootPath;
 
         [TextOutput("ID")]
         public int ID { get; set; }
@@ -62,12 +65,10 @@ namespace SatCore.MapEditor.Object.MapEvent
             }
         }
 
-        [ListInput("動かすキャラ", additionButtonEventMethodName: "AddActor")]
+        [ListInput("動かすキャラ")]
         public UndoRedoCollection<Actor> Actors { get; set; }
 
-        [Group("カメラ")]
-        public Camera MainCamera { get; set; }
-
+        [AddButtonMethodBinding("動かすキャラ")]
         public void AddActor()
         {
             if (((MapLayer)Layer).CurrentToolType != ToolType.Select ||
@@ -75,6 +76,9 @@ namespace SatCore.MapEditor.Object.MapEvent
                 return;
             ((MapLayer)Layer).CurrentToolType = ToolType.SelectEventObject;
         }
+
+        [Group("カメラ")]
+        public Camera MainCamera { get; set; }
 
         public void AddEventObjectActor(EventObject actorObject, int id, asd.Vector2DF initPosition)
         {
@@ -140,9 +144,10 @@ namespace SatCore.MapEditor.Object.MapEvent
             }
         }
 
-        [ListInput("キャラグラフィックデータ", additionButtonEventMethodName: "AddCharacterImageAsync")]
+        [ListInput("キャラグラフィックデータ")]
         public UndoRedoCollection<CharacterImage> CharacterImages { get; set; }
 
+        [AddButtonMethodBinding("キャラグラフィックデータ")]
         public async Task AddCharacterImageAsync()
         {
             var file = RequireOpenFileDialog();
@@ -155,9 +160,10 @@ namespace SatCore.MapEditor.Object.MapEvent
 
         public event Func<MapEventIO.ActorIO, Task<IActor>> SearchActor = delegate { return null; };
 
-        [ListInput("シナリオ", "SelectedComponent")]
+        [ListInput("シナリオ")]
         public UndoRedoCollection<MapEventComponent> EventComponents { get; set; }
 
+        [SelectedItemBinding("シナリオ")]
         public MapEventComponent SelectedComponent
         {
             get => _selectedComponent;
@@ -262,7 +268,7 @@ namespace SatCore.MapEditor.Object.MapEvent
             EventComponents.Add(new TalkComponent(CharacterImages));
         }
 
-        [FileInput("終了時遷移先マップ", "Binary Map File|*.map|All File|*.*")]
+        [FileInput("終了時遷移先マップ", "Binary Map File|*.map|All File|*.*", "root")]
         public string ToMapPath
         {
             get => _toMapPath;
@@ -274,8 +280,27 @@ namespace SatCore.MapEditor.Object.MapEvent
             }
         }
 
-        [ListInput("終了時プレイアブルキャラ", additionButtonEventMethodName: "AddPlayerData")]
+        [ListInput("終了時プレイアブルキャラ")]
         public UndoRedoCollection<PlayerName> PlayerNames { get; set; }
+
+        [AddButtonMethodBinding("終了時プレイアブルキャラ")]
+        public void AddPlayerData()
+        {
+            PlayersListDialog playersListDialog = new PlayersListDialog();
+            if (playersListDialog.Show() != PlayersListDialogResult.OK) return;
+
+            var playerName = new PlayerName()
+            {
+                Name = playersListDialog.PlayerName,
+            };
+            PlayerNames.Add(playerName);
+        }
+
+        [RemoveButtonMethodBinding("終了時プレイアブルキャラ")]
+        public void RemovePlayerData(PlayerName playerName)
+        {
+            PlayerNames.Remove(playerName);
+        }
 
         [BoolInput("ドアIDを遷移に用いるか")]
         public bool IsUseDoorID
@@ -311,18 +336,6 @@ namespace SatCore.MapEditor.Object.MapEvent
                 _doorID = value;
                 OnPropertyChanged();
             }
-        }
-
-        public void AddPlayerData()
-        {
-            PlayersListDialog playersListDialog = new PlayersListDialog();
-            if (playersListDialog.Show() != PlayersListDialogResult.OK) return;
-
-            var playerName = new PlayerName()
-            {
-                Name = playersListDialog.PlayerName,
-            };
-            PlayerNames.Add(playerName);
         }
 
         public asd.RectF Rect

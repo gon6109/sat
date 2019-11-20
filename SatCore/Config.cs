@@ -11,7 +11,7 @@ namespace SatCore
     {
         public static Config Instance { get; set; } = new Config();
 
-        public string PlayerExePath;
+        public string RootPath;
 
         public bool isFullSize;
 

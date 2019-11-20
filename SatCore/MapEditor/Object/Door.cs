@@ -6,7 +6,7 @@ using SatIO;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using BaseComponent;
-using SatCore.Attribute;
+using InspectorModel;
 
 namespace SatCore.MapEditor.Object
 {
@@ -26,6 +26,9 @@ namespace SatCore.MapEditor.Object
 
         protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        [RootPathBinding("root")]
+        public string RootPath => Config.Instance.RootPath;
 
         /// <summary>
         /// IDを設定・取得
@@ -68,7 +71,7 @@ namespace SatCore.MapEditor.Object
         /// <summary>
         /// リソースへのパス
         /// </summary>
-        [FileInput("アニメーションスクリプトへのパス", "Script File|*.csx|All File|*.*")]
+        [FileInput("アニメーションスクリプトへのパス", "Script File|*.csx|All File|*.*", "root")]
         public string ResourcePath
         {
             get => _resourcePath;
@@ -95,7 +98,7 @@ namespace SatCore.MapEditor.Object
         /// <summary>
         /// 遷移先のマップ名
         /// </summary>
-        [FileInput("遷移先のマップ名", "Binary Map File|*.map|All File|*.*")]
+        [FileInput("遷移先のマップ名", "Binary Map File|*.map|All File|*.*", "root")]
         public string MoveToMap
         {
             get => _moveToMap;
@@ -110,7 +113,7 @@ namespace SatCore.MapEditor.Object
         /// <summary>
         /// 解放条件スクリプト
         /// </summary>
-        [FileInput("解放条件スクリプトへのパス", "Script File|*.csx|All File|*.*")]
+        [FileInput("解放条件スクリプトへのパス", "Script File|*.csx|All File|*.*", "root")]
         public string KeyScriptPath
         {
             get => _keyScriptPath;

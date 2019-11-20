@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace SatCore.Attribute
+namespace InspectorModel
 {
     /// <summary>
     /// スクリプト
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
-    public class ScriptAttribute : IOAttribute
+    public class ScriptAttribute : BaseAttribute
     {
         public ScriptAttribute(string itemName, string type)
         {

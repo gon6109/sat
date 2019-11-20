@@ -1,4 +1,4 @@
-﻿using SatCore.Attribute;
+﻿using InspectorModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

@@ -1,5 +1,5 @@
 ﻿using BaseComponent;
-using SatCore.Attribute;
+using InspectorModel;
 using SatPlayer.Game.Object;
 using System;
 using System.Collections.Generic;
@@ -24,9 +24,12 @@ namespace SatCore.ScriptEditor
 
         public ScriptType Script { get; }
 
-        public string Path { get; set; }
+        public new string Path { get; set; }
 
-        [FileInput("テスト用プレイヤー", "Player Script|*.pc|All File|*.*")]
+        [RootPathBinding("root")]
+        public string RootPath => Config.Instance.RootPath;
+
+        [FileInput("テスト用プレイヤー", "Player Script|*.pc|All File|*.*", "root")]
         public string PlayerPath
         {
             get => playerPath;
