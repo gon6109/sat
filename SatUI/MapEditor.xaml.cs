@@ -728,5 +728,10 @@ namespace SatUI
                 else
                     scene.RemoveEvent();
         }
+
+        private void BackGround_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
