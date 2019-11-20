@@ -38,9 +38,10 @@ namespace SatCore.MapEditor.Object.MapEvent
             }
         }
 
-        [ListInput("登場キャラ", "SelectedActor")]
+        [ListInput("登場キャラ")]
         public ObservableCollection<MapEvent.Actor> Actors { get; set; }
 
+        [SelectedItemBinding("登場キャラ")]
         public MapEvent.Actor SelectedActor { get; set; }
 
         public MapEvent.Camera MainCamera { get; set; }

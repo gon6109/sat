@@ -30,6 +30,9 @@ namespace SatCore.MapEditor.Object
         protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
+        [RootPathBinding("root")]
+        public string RootPath => Config.Instance.RootPath;
+
         [VectorInput("座標")]
         public new asd.Vector2DF Position
         {
@@ -51,7 +54,7 @@ namespace SatCore.MapEditor.Object
         /// <summary>
         /// スクリプトへのパス
         /// </summary>
-        [FileInput("スクリプト", "MapObject File|*.mobj|All File|*.*")]
+        [FileInput("スクリプト", "MapObject File|*.mobj|All File|*.*", "root")]
         public string ScriptPath
         {
             get => _scriptPath;

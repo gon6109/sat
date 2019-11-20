@@ -65,6 +65,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attribute\ScriptAttribute.cs" />
     <Compile Include="CharacterImageEditor\CharacterImage.cs" />
     <Compile Include="CharacterImageEditor\CharacterImageEditor.cs" />
     <Compile Include="Config.cs" />

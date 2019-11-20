@@ -169,7 +169,7 @@ namespace SatCore.MapEditor.Object.MapEvent
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
             public string Name => "Talk Element";
-            public CharacterImage CharacterImage
+            public virtual CharacterImage CharacterImage
             {
                 get => _characterImage;
                 set
@@ -240,8 +240,11 @@ namespace SatCore.MapEditor.Object.MapEvent
                 }
             }
 
-            [ListInput("キャラ一覧", "CharacterImage")]
+            [ListInput("キャラ一覧")]
             public new ObservableCollection<CharacterImage> CharacterImages { get => base.CharacterImages; set => base.CharacterImages = value; }
+
+            [SelectedItemBinding("キャラ一覧")]
+            public override CharacterImage CharacterImage { get => base.CharacterImage; set => base.CharacterImage = value; }
 
             public ShowCharacterElement(ObservableCollection<CharacterImage> characterImages) : base(characterImages)
             {
@@ -268,8 +271,11 @@ namespace SatCore.MapEditor.Object.MapEvent
                 }
             }
 
-            [ListInput("キャラ一覧", "CharacterImage")]
+            [ListInput("キャラ一覧")]
             public new ObservableCollection<CharacterImage> CharacterImages { get => base.CharacterImages; set => base.CharacterImages = value; }
+
+            [SelectedItemBinding("キャラ一覧")]
+            public override CharacterImage CharacterImage { get => base.CharacterImage; set => base.CharacterImage = value; }
 
             public TalkElement(ObservableCollection<CharacterImage> characterImages) : base(characterImages)
             {
@@ -282,6 +288,7 @@ namespace SatCore.MapEditor.Object.MapEvent
 
             public new string Name => "Change " + (CharacterImage != null ? CharacterImage.Name : "") + "'s diff image to " + DiffImage?.Name;
 
+            [SelectedItemBinding("差分一覧")]
             public CharacterImage.DiffImage DiffImage
             {
                 get => _diffImage;
@@ -294,7 +301,8 @@ namespace SatCore.MapEditor.Object.MapEvent
                 }
             }
 
-            public new CharacterImage CharacterImage
+            [SelectedItemBinding("キャラ一覧")]
+            public override CharacterImage CharacterImage
             {
                 get => base.CharacterImage;
                 set
@@ -315,10 +323,10 @@ namespace SatCore.MapEditor.Object.MapEvent
                 }
             }
 
-            [ListInput("差分一覧", "DiffImage")]
+            [ListInput("差分一覧")]
             public ObservableCollection<CharacterImage.DiffImage> DiffImages { get; private set; }
 
-            [ListInput("キャラ一覧", "CharacterImage")]
+            [ListInput("キャラ一覧")]
             public new ObservableCollection<CharacterImage> CharacterImages { get => base.CharacterImages; set => base.CharacterImages = value; }
 
             public ChangeDiffElement(ObservableCollection<CharacterImage> characterImages) : base(characterImages)
@@ -331,8 +339,11 @@ namespace SatCore.MapEditor.Object.MapEvent
         {
             public new string Name => "Hide " + (CharacterImage != null ? CharacterImage.Name : "");
 
-            [ListInput("キャラ一覧", "CharacterImage")]
+            [ListInput("キャラ一覧")]
             public new ObservableCollection<CharacterImage> CharacterImages { get => base.CharacterImages; set => base.CharacterImages = value; }
+
+            [SelectedItemBinding("キャラ一覧")]
+            public override CharacterImage CharacterImage { get => base.CharacterImage; set => base.CharacterImage = value; }
 
             public HideCharacterElement(ObservableCollection<CharacterImage> characterImages) : base(characterImages)
             {

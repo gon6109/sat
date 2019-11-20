@@ -39,7 +39,7 @@ namespace SatUI
                 using (FileStream data = new FileStream("init.config", FileMode.Create))
                 {
                     BinaryFormatter serializer = new BinaryFormatter();
-                    SatCore.Config.Instance.PlayerExePath = MainWindow.PlayerExePath;
+                    SatCore.Config.Instance.RootPath = MainWindow.RootPath;
                     SatCore.Config.Instance.isFullSize = MainWindow.WindowState == WindowState.Maximized ? true : false;
                     SatCore.Config.Instance.Height = (int)MainWindow.Height;
                     SatCore.Config.Instance.Width = (int)MainWindow.Width;
@@ -59,7 +59,7 @@ namespace SatUI
                 using (var stream = IO.GetStream("init.config"))
                 {
                     SatCore.Config.Instance = (SatCore.Config)deserializer.Deserialize(stream);
-                    MainWindow.PlayerExePath = SatCore.Config.Instance.PlayerExePath;
+                    MainWindow.RootPath = SatCore.Config.Instance.RootPath;
                     MainWindow.WindowState = SatCore.Config.Instance.isFullSize ? WindowState.Maximized : WindowState.Normal;
                     MainWindow.Height = SatCore.Config.Instance.Height;
                     MainWindow.Width = SatCore.Config.Instance.Width;

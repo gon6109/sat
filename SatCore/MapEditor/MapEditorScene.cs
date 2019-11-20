@@ -1,15 +1,12 @@
-﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using BaseComponent;
+﻿using BaseComponent;
 using InspectorModel;
 using SatCore.MapEditor.Object;
+using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace SatCore.MapEditor
 {
@@ -27,6 +24,9 @@ namespace SatCore.MapEditor
 
         public MapLayer Map { get; }
 
+        [RootPathBinding("root")]
+        public string RootPath => Config.Instance.RootPath;
+
         [TextInput("マップ名")]
         public string MapName
         {
@@ -39,7 +39,7 @@ namespace SatCore.MapEditor
             }
         }
 
-        [ListInput("背景", selectedObjectBindingPath: "SelectedBackGround", addButtonEventMethodName: "AddBackGround")]
+        [ListInput("背景")]
         public UndoRedoCollection<BackGround> BackGrounds { get; }
 
         bool isSelectedBackGround;
@@ -47,6 +47,7 @@ namespace SatCore.MapEditor
         /// <summary>
         /// 選択されている背景
         /// </summary>
+        [SelectedItemBinding("背景")]
         public BackGround SelectedBackGround
         {
             get => _selectedBackGround;
@@ -58,12 +59,19 @@ namespace SatCore.MapEditor
             }
         }
 
+        [AddButtonMethodBinding("背景")]
         public void AddBackGround()
         {
             BackGrounds.Add(new BackGround());
         }
 
-        [FileInput("BGM", "WAVE File|*.wav|All File|*.*")]
+        [RemoveButtonMethodBinding("背景")]
+        public void RemoveBackGround(BackGround backGround)
+        {
+            BackGrounds.Remove(backGround);
+        }
+
+        [FileInput("BGM", "WAVE File|*.wav|All File|*.*", "root")]
         public string BGMPath
         {
             get => _bGMPath;
@@ -130,14 +138,22 @@ namespace SatCore.MapEditor
         public event Action<string, string, INotifyPropertyChanged
             > OnRequestShowProgressDialog = delegate { };
 
-        [ListInput("Map Objectテンプレート", "SelectedTemplate", "AddTemplate")]
+        [ListInput("Map Objectテンプレート")]
         public ObservableCollection<MapObjectTemplate> MapObjectTemplates { get; set; }
 
+        [SelectedItemBinding("Map Objectテンプレート")]
         public MapObjectTemplate SelectedTemplate { get; set; }
 
+        [AddButtonMethodBinding("Map Objectテンプレート")]
         public void AddTemplate()
         {
             MapObjectTemplates.Add(new MapObjectTemplate());
+        }
+
+        [RemoveButtonMethodBinding("Map Objectテンプレート")]
+        public void RemoveTemplate(MapObjectTemplate mapObjectTemplate)
+        {
+            MapObjectTemplates.Remove(mapObjectTemplate);
         }
 
         [Group("マップヴューア")]
@@ -320,9 +336,10 @@ namespace SatCore.MapEditor
             private (int taskCount, int progress) progressInfo;
             private bool isCancel;
 
-            [ListInput("プレイヤー", addButtonEventMethodName: "AddPlayerData")]
+            [ListInput("プレイヤー")]
             public ObservableCollection<PlayerName> PlayerNames { get; set; }
 
+            [AddButtonMethodBinding("プレイヤー")]
             public void AddPlayerData()
             {
                 PlayersListDialog playersListDialog = new PlayersListDialog();
@@ -333,6 +350,12 @@ namespace SatCore.MapEditor
                     Name = playersListDialog.PlayerName,
                 };
                 PlayerNames.Add(playerName);
+            }
+
+            [RemoveButtonMethodBinding("プレイヤー")]
+            public void RemovePlayerData(PlayerName playerName)
+            {
+                PlayerNames.Remove(playerName);
             }
 
             [VectorInput("初期座標")]
