@@ -11,14 +11,13 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using InspectorModel;
-using asd;
 
 namespace SatCore.MapEditor.Object
 {
     /// <summary>
     /// 背景
     /// </summary>
-    public class BackGround : MultiAnimationObject2D, IListInput, ICopyPasteObject, INotifyPropertyChanged
+    public class BackGround : MultiAnimationObject2D, IListInput, ICopyPasteObject, IMovable, INotifyPropertyChanged
     {
         static ScriptOptions options = ScriptOptions.Default.WithImports("SatPlayer", "System")
                                      .WithReferences(System.Reflection.Assembly.GetAssembly(typeof(MapObject))
@@ -31,7 +30,9 @@ namespace SatCore.MapEditor.Object
 
         private string _texturePath;
         private float _zoom;
-        private Vector2DF _position;
+        private asd.Vector2DF _position;
+
+        public asd.RectangleShape Shape { get; }
 
         [RootPathBinding("root")]
         public string RootPath => Config.Instance.RootPath;
@@ -134,6 +135,7 @@ namespace SatCore.MapEditor.Object
             _zoom = 1;
             UpdatePriority = 10;
             DrawingPriority = -1;
+            Shape = new asd.RectangleShape();
         }
 
         protected override void OnAdded()
@@ -146,6 +148,7 @@ namespace SatCore.MapEditor.Object
             if (Layer is MapLayer map)
             {
                 base.Position = Position - map.ScrollCamera.Src.Position.To2DF() * (Zoom - 1);
+                Shape.DrawingArea = new asd.RectF(Position - map.ScrollCamera.Src.Position.To2DF() * (Zoom - 1), Texture?.Size.To2DF() ?? default);
             }
             base.OnUpdate();
         }
@@ -183,6 +186,18 @@ namespace SatCore.MapEditor.Object
             if (await backGround.LoadTextureAsync(backGroundIO.TexturePath))
                 backGround._texturePath = backGroundIO.TexturePath;
             return backGround;
+        }
+
+        asd.Vector2DF pos;
+
+        public void StartMove()
+        {
+            pos = Position;
+        }
+
+        public void EndMove()
+        {
+            UndoRedoManager.ChangeProperty(this, Position, pos, "Position");
         }
     }
 }

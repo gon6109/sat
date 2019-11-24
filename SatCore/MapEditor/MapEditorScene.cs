@@ -39,38 +39,6 @@ namespace SatCore.MapEditor
             }
         }
 
-        [ListInput("背景")]
-        public UndoRedoCollection<BackGround> BackGrounds { get; }
-
-        bool isSelectedBackGround;
-
-        /// <summary>
-        /// 選択されている背景
-        /// </summary>
-        [SelectedItemBinding("背景")]
-        public BackGround SelectedBackGround
-        {
-            get => _selectedBackGround;
-            set
-            {
-                isSelectedBackGround = true;
-                OnCopyObjectChanged(true, copyObject != null);
-                _selectedBackGround = value;
-            }
-        }
-
-        [AddButtonMethodBinding("背景")]
-        public void AddBackGround()
-        {
-            BackGrounds.Add(new BackGround());
-        }
-
-        [RemoveButtonMethodBinding("背景")]
-        public void RemoveBackGround(BackGround backGround)
-        {
-            BackGrounds.Remove(backGround);
-        }
-
         [FileInput("BGM", "WAVE File|*.wav|All File|*.*", "root")]
         public string BGMPath
         {
@@ -86,7 +54,6 @@ namespace SatCore.MapEditor
         public bool IsCanCopy { get; }
 
         ICopyPasteObject copyObject;
-        private BackGround _selectedBackGround;
         private string _mapName;
 
         /// <summary>
@@ -95,12 +62,7 @@ namespace SatCore.MapEditor
         public void Copy()
         {
             UndoRedoManager.Enable = false;
-            if (isSelectedBackGround)
-            {
-                copyObject = SelectedBackGround.Copy();
-                OnCopyObjectChanged(Map.SelectedObject is ICopyPasteObject, copyObject != null);
-            }
-            else if (Map.SelectedObject is ICopyPasteObject)
+            if (Map.SelectedObject is ICopyPasteObject)
             {
                 copyObject = ((ICopyPasteObject)Map.SelectedObject).Copy();
                 OnCopyObjectChanged(Map.SelectedObject is ICopyPasteObject, copyObject != null);
@@ -115,7 +77,7 @@ namespace SatCore.MapEditor
         {
             if (copyObject is BackGround)
             {
-                BackGrounds.Add((BackGround)copyObject);
+                Map.BackGrounds.Add((BackGround)copyObject);
                 UndoRedoManager.Enable = false;
                 copyObject = copyObject.Copy();
                 UndoRedoManager.Enable = true;
@@ -135,8 +97,7 @@ namespace SatCore.MapEditor
 
         public event Action<bool, bool> OnCopyObjectChanged = delegate { };
 
-        public event Action<string, string, INotifyPropertyChanged
-            > OnRequestShowProgressDialog = delegate { };
+        public event Action<string, string, INotifyPropertyChanged> OnRequestShowProgressDialog = delegate { };
 
         [ListInput("Map Objectテンプレート")]
         public ObservableCollection<MapObjectTemplate> MapObjectTemplates { get; set; }
@@ -158,18 +119,13 @@ namespace SatCore.MapEditor
 
         [Group("マップヴューア")]
         public MapViewer Viewer { get; set; }
-        public bool IsRemoveBackGround { get; private set; }
 
         public MapEditorScene()
         {
             Map = new MapLayer();
 
-            BackGrounds = new UndoRedoCollection<BackGround>();
-            BackGrounds.CollectionChanged += BackGrounds_CollectionChanged;
-
             Map.OnChangeSelectedObject += () =>
             {
-                isSelectedBackGround = false;
                 OnCopyObjectChanged(Map.SelectedObject is ICopyPasteObject, copyObject != null);
             };
             OnCopyObjectChanged += (isCanCopy, isCanPaste) => { };
@@ -197,44 +153,6 @@ namespace SatCore.MapEditor
             AddLayer(Map);
         }
 
-        /// <summary>
-        /// 背景更新時
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BackGrounds_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
-                    Map.AddObject((BackGround)e.NewItems[0]);
-                    break;
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
-                    ((BackGround)e.OldItems[0]).Dispose();
-                    break;
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Replace:
-                    RemoveBackGround();
-                    break;
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Move:
-                    RemoveBackGround();
-                    break;
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
-                    RemoveBackGround();
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        void RemoveBackGround()
-        {
-            foreach (var item in Map.Objects.OfType<BackGround>())
-            {
-                Map.RemoveObject(item);
-            }
-            IsRemoveBackGround = true;
-        }
-
         protected override void OnUpdated()
         {
             if (Input.GetInputState(Inputs.Esc) == 1)
@@ -244,13 +162,6 @@ namespace SatCore.MapEditor
             {
                 OnRequestShowProgressDialog("Loading Map", "Progress", Viewer);
                 Viewer.IsRequireProgressDialog = false;
-            }
-
-            if (IsRemoveBackGround)
-            {
-                foreach (var item in BackGrounds)
-                    Map.AddObject(item);
-                IsRemoveBackGround = false;
             }
 
             base.OnUpdated();
@@ -281,27 +192,14 @@ namespace SatCore.MapEditor
                 Debug.PrintCount("Update");
 
                 Debug.PrintTime();
-                var mapdata = await SatIO.BaseIO.LoadAsync<SatIO.MapIO>(path);
-                MapName = mapdata.MapName;
+                var mapData = await SatIO.BaseIO.LoadAsync<SatIO.MapIO>(path);
+                MapName = mapData.MapName;
                 Logger.Debug("File Loaded");
                 Debug.PrintCount("Update");
                 Debug.PrintTime();
 
-                if (mapdata.BackGrounds != null)
-                {
-                    foreach (var item in mapdata.BackGrounds)
-                    {
-                        Debug.SetFlag("Timer", true);
-                        BackGrounds.Add(await BackGround.CreateBackGroudAsync(item));
-                        Debug.SetFlag("Timer", false);
-                        Logger.Debug("BackGround Loaded");
-                        Debug.PrintCount("Update");
-                        Debug.PrintTime();
-                    }
-                }
-
-                await Map.LoadMapDataAsync(mapdata);
-                BGMPath = mapdata.BGMPath;
+                await Map.LoadMapDataAsync(mapData);
+                BGMPath = mapData.BGMPath;
                 Debug.PrintTime();
             }
             catch (Exception e)
@@ -316,7 +214,6 @@ namespace SatCore.MapEditor
             var mapdata = new SatIO.MapIO()
             {
                 BGMPath = BGMPath,
-                BackGrounds = BackGrounds.Select(obj => obj.ToIO()).ToList(),
                 MapName = MapName,
             };
             Map.SaveMapData(mapdata);

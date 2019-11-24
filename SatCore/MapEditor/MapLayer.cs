@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using MapObject = SatCore.MapEditor.Object.MapObject;
 using SavePoint = SatCore.MapEditor.Object.SavePoint;
 using EventObject = SatCore.MapEditor.Object.EventObject;
+using BackGround = SatCore.MapEditor.Object.BackGround;
 
 namespace SatCore.MapEditor
 {
@@ -88,6 +89,82 @@ namespace SatCore.MapEditor
                 return triangle.Shape;
             return null;
         }).OfType<PhysicalShape>();
+
+        [ListInput("背景")]
+        public UndoRedoCollection<BackGround> BackGrounds { get; }
+
+        private BackGround _selectedBackGround;
+
+        /// <summary>
+        /// 選択されている背景
+        /// </summary>
+        [SelectedItemBinding("背景")]
+        public BackGround SelectedBackGround
+        {
+            get => _selectedBackGround;
+            set
+            {
+                _selectedBackGround = value;
+                if (CurrentToolType == ToolType.BackGround)
+                {
+                    SelectedObject = _selectedBackGround;
+                    OnChangedSelectedBackGround();
+                }
+                OnPropertyChanged();
+            }
+        }
+
+        [AddButtonMethodBinding("背景")]
+        public void AddBackGround()
+        {
+            BackGrounds.Add(new BackGround());
+        }
+
+        [RemoveButtonMethodBinding("背景")]
+        public void RemoveBackGround(BackGround backGround)
+        {
+            BackGrounds.Remove(backGround);
+        }
+
+        public bool IsRemoveBackGround { get; private set; }
+
+        /// <summary>
+        /// 背景更新時
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BackGrounds_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                    AddObject((BackGround)e.NewItems[0]);
+                    break;
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                    ((BackGround)e.OldItems[0]).Dispose();
+                    break;
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Replace:
+                    RemoveBackGround();
+                    break;
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Move:
+                    RemoveBackGround();
+                    break;
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
+                    RemoveBackGround();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        void RemoveBackGround()
+        {
+            foreach (var item in Objects.OfType<BackGround>())
+            {
+                RemoveObject(item);
+            }
+            IsRemoveBackGround = true;
+        }
 
         ToolType currentToolType;
         /// <summary>
@@ -174,14 +251,19 @@ namespace SatCore.MapEditor
             cursorShape = new asd.CircleShape();
             ScrollCamera.Src = new asd.RectI(0, 0, asd.Engine.WindowSize.X, asd.Engine.WindowSize.Y);
             ScrollCamera.Dst = new asd.RectI(0, 0, asd.Engine.WindowSize.X, asd.Engine.WindowSize.Y);
+
             dotObjects = new List<asd.GeometryObject2D>();
             polygonObject = new asd.GeometryObject2D();
             PhysicalWorld = new PhysicalWorld(new asd.RectF(-200, -200, 20400, 5400), new asd.Vector2DF(0, 8000));
             Zoom = 1.0f;
+
             WorldBoxObject = new RectangleLineShapeObject2D();
             WorldBoxObject.Thickness = 2 * Zoom;
             WorldBoxObject.Color = new asd.Color(0, 255, 255);
             AddObject(WorldBoxObject);
+
+            BackGrounds = new UndoRedoCollection<BackGround>();
+            BackGrounds.CollectionChanged += BackGrounds_CollectionChanged;
         }
 
         /// <summary>
@@ -191,6 +273,19 @@ namespace SatCore.MapEditor
         public async Task LoadMapDataAsync(MapIO mapData)
         {
             WorldSize = mapData.Size;
+
+            if (mapData.BackGrounds != null)
+            {
+                foreach (var item in mapData.BackGrounds)
+                {
+                    Debug.SetFlag("Timer", true);
+                    BackGrounds.Add(await BackGround.CreateBackGroudAsync(item));
+                    Debug.SetFlag("Timer", false);
+                    Logger.Debug("BackGround Loaded");
+                    Debug.PrintCount("Update");
+                    Debug.PrintTime();
+                }
+            }
 
             Debug.PrintCount("Update");
             if (mapData.MapObjects != null)
@@ -322,6 +417,8 @@ namespace SatCore.MapEditor
         {
             mapData.Size = WorldSize;
 
+            mapData.BackGrounds = BackGrounds.Select(obj => obj.ToIO()).ToList();
+
             foreach (var item in CollisionBoxes)
             {
                 var temp = new CollisionBoxIO()
@@ -339,32 +436,22 @@ namespace SatCore.MapEditor
                 mapData.CollisionTriangles.Add(temp);
             }
 
-            foreach (var item in MapObjects)
-            {
-                mapData.MapObjects.Add(item.ToIO());
-            }
+            mapData.MapObjects = MapObjects.Select(obj => obj.ToIO()).ToList();
 
-            foreach (var item in EventObjects.Union(MapEvents.SelectMany(obj => obj.Actors.Select(actor => actor.ToObject2D()).OfType<EventObject>())))
-            {
-                mapData.EventObjects.Add(item.ToIO());
-            }
+            mapData.EventObjects = EventObjects.Union(MapEvents
+                .SelectMany(obj => obj.Actors.Select(actor => actor.ToObject2D()).OfType<EventObject>()))
+                .Select(obj => obj.ToIO()).ToList();
 
-            foreach (var item in MapEvents)
-            {
-                mapData.MapEvents.Add(item.ToIO());
-            }
+            mapData.MapEvents = MapEvents.Select(obj => obj.ToIO()).ToList();
 
-            foreach (var item in Doors)
-            {
-                mapData.Doors.Add(item.ToIO());
-            }
+            mapData.Doors = Doors.Select(obj => obj.ToIO()).ToList();
 
             foreach (var item in CameraRestrictions)
             {
                 var temp = new CameraRestrictionIO()
                 {
-                    Position = ((asd.RectangleShape)item.Shape).DrawingArea.Position,
-                    Size = ((asd.RectangleShape)item.Shape).DrawingArea.Size
+                    Position = item.Shape.DrawingArea.Position,
+                    Size = item.Shape.DrawingArea.Size
                 };
                 mapData.CameraRestrictions.Add(temp);
             }
@@ -465,6 +552,14 @@ namespace SatCore.MapEditor
                 case ToolType.SavePoint:
                     SetSavePoint();
                     break;
+                case ToolType.BackGround:
+                    if (!OperationBackGround())
+                    {
+                        SelectBackGround();
+                        if (SelectedObject == null && Mouse.LeftButton == asd.ButtonState.Hold)
+                            ScrollCamera.Src = new asd.RectI(ScrollCamera.Src.Position - GetMouseMoveVector().To2DI(), ScrollCamera.Src.Size);
+                    }
+                    break;
             }
         }
 
@@ -480,6 +575,13 @@ namespace SatCore.MapEditor
             WorldBoxObject.DrawingArea = new asd.RectF(default, WorldSize);
 
             preMousePosition = Mouse.Position;
+
+            if (IsRemoveBackGround)
+            {
+                foreach (var item in BackGrounds)
+                    AddObject(item);
+                IsRemoveBackGround = false;
+            }
         }
 
         void SetCollisionBox()
@@ -790,6 +892,60 @@ namespace SatCore.MapEditor
             return result;
         }
 
+        void SelectBackGround()
+        {
+            if (Mouse.LeftButton == asd.ButtonState.Push ||
+                (SelectedObject != null && (!SelectedObject.IsAlive || SelectedObject.Layer == null)))
+            {
+                if (SelectedObject is SatCore.MapEditor.Object.BackGround backGround
+                    && backGround.Shape.GetIsCollidedWith(cursorShape)) return;
+
+                SelectedObject = null;
+            }
+            else return;
+
+            foreach (var item in BackGrounds)
+            {
+                if (item.Shape.GetIsCollidedWith(cursorShape))
+                {
+                    SelectedObject = item;
+                }
+            }
+
+            if (SelectedObject is BackGround backGround1)
+                SelectedBackGround = backGround1;
+            else
+                SelectedBackGround = null;
+        }
+
+        void OnChangedSelectedBackGround()
+        {
+            if (polygonObject != null)
+                polygonObject.Shape = new asd.RectangleShape();
+            InitOperationTool();
+
+            if (SelectedBackGround != null)
+            {
+                polygonObject = new asd.GeometryObject2D();
+                polygonObject.Shape = SelectedBackGround.Shape;
+                polygonObject.Color = new asd.Color(255, 0, 0, 50);
+                AddObject(polygonObject);
+            }
+
+            OnChangeSelectedObject();
+        }
+
+        bool OperationBackGround()
+        {
+            if (SelectedObject is BackGround backGround)
+                return DragObject(backGround, backGround.Shape, () =>
+                {
+                    ((BackGround)SelectedObject).Position += GetMouseMoveVector();
+                });
+            else
+                return false;
+        }
+
         void SelectObject()
         {
             if (Mouse.LeftButton == asd.ButtonState.Push ||
@@ -863,6 +1019,7 @@ namespace SatCore.MapEditor
             {
                 if (item.Shape.GetIsCollidedWith(cursorShape)) SelectedObject = item;
             }
+
             InitOperationTool();
             OnChangeSelectedObject();
         }
@@ -1324,6 +1481,7 @@ namespace SatCore.MapEditor
         SelectEventObject,
         CameraRestriction,
         SavePoint,
+        BackGround
     }
 
     public enum SelectType
@@ -1336,6 +1494,6 @@ namespace SatCore.MapEditor
         EventObject,
         Event,
         CameraRestriction,
-        SavePoint,
+        SavePoint
     }
 }

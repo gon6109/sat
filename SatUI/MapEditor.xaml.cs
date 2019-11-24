@@ -368,83 +368,102 @@ namespace SatUI
 
         private void select_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
-
-            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Select;
-            EditorPanel.Cursor = Cursors.Arrow;
-            Reset(obj => obj is AltseedInspector.Property property && property.Title != "General" && property.Title != "Map");
+            if (asd.Engine.CurrentScene is SatCore.MapEditor.MapEditorScene scene)
+            {
+                scene.Map.CurrentToolType = SatCore.MapEditor.ToolType.Select;
+                EditorPanel.Cursor = Cursors.Arrow;
+                Reset(obj => obj is AltseedInspector.Property property && property.Title != "General" && property.Title != "Map");
+            }
         }
 
         private void box_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
-
-            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Box;
-            EditorPanel.Cursor = Cursors.Cross;
-            Reset(obj => obj is AltseedInspector.Property property && property.Title != "General" && property.Title != "Map");
+            if (asd.Engine.CurrentScene is SatCore.MapEditor.MapEditorScene scene)
+            {
+                scene.Map.CurrentToolType = SatCore.MapEditor.ToolType.Box;
+                EditorPanel.Cursor = Cursors.Cross;
+                Reset(obj => obj is AltseedInspector.Property property && property.Title != "General" && property.Title != "Map");
+            }
         }
 
         private void triangle_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
-
-            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Triangle;
-            EditorPanel.Cursor = Cursors.Cross;
-            Reset(obj => obj is AltseedInspector.Property property && property.Title != "General" && property.Title != "Map");
+            if (asd.Engine.CurrentScene is SatCore.MapEditor.MapEditorScene scene)
+            {
+                scene.Map.CurrentToolType = SatCore.MapEditor.ToolType.Triangle;
+                EditorPanel.Cursor = Cursors.Cross;
+                Reset(obj => obj is AltseedInspector.Property property && property.Title != "General" && property.Title != "Map");
+            }
         }
 
         private void door_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
-
-            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Door;
-            EditorPanel.Cursor = Cursors.Arrow;
-            Reset(obj => obj is AltseedInspector.Property property && property.Title != "General" && property.Title != "Map");
+            if (asd.Engine.CurrentScene is SatCore.MapEditor.MapEditorScene scene)
+            {
+                scene.Map.CurrentToolType = SatCore.MapEditor.ToolType.Door;
+                EditorPanel.Cursor = Cursors.Arrow;
+                Reset(obj => obj is AltseedInspector.Property property && property.Title != "General" && property.Title != "Map");
+            }
         }
 
         private void mapObject_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
-
-            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Object;
-            EditorPanel.Cursor = Cursors.Arrow;
-            Reset(obj => obj is AltseedInspector.Property property && property.Title != "General" && property.Title != "Map");
+            if (asd.Engine.CurrentScene is SatCore.MapEditor.MapEditorScene scene)
+            {
+                scene.Map.CurrentToolType = SatCore.MapEditor.ToolType.Object;
+                EditorPanel.Cursor = Cursors.Arrow;
+                Reset(obj => obj is AltseedInspector.Property property && property.Title != "General" && property.Title != "Map");
+            }
         }
 
         private void npc_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
-
-            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.EventObject;
-            EditorPanel.Cursor = Cursors.Arrow;
-            Reset(obj => obj is AltseedInspector.Property property && property.Title != "General" && property.Title != "Map");
+            if (asd.Engine.CurrentScene is SatCore.MapEditor.MapEditorScene scene)
+            {
+                scene.Map.CurrentToolType = SatCore.MapEditor.ToolType.EventObject;
+                EditorPanel.Cursor = Cursors.Arrow;
+                Reset(obj => obj is AltseedInspector.Property property && property.Title != "General" && property.Title != "Map");
+            }
         }
 
         private void mapEvent_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
-
-            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.Event;
-            EditorPanel.Cursor = Cursors.Cross;
-            Reset(obj => obj is AltseedInspector.Property property && property.Title != "General" && property.Title != "Map");
+            if (asd.Engine.CurrentScene is SatCore.MapEditor.MapEditorScene scene)
+            {
+                scene.Map.CurrentToolType = SatCore.MapEditor.ToolType.Event;
+                EditorPanel.Cursor = Cursors.Cross;
+                Reset(obj => obj is AltseedInspector.Property property && property.Title != "General" && property.Title != "Map");
+            }
         }
 
         private void Camera_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
-
-            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.CameraRestriction;
-            EditorPanel.Cursor = Cursors.Cross;
-            Reset(obj => obj is AltseedInspector.Property property && property.Title != "General" && property.Title != "Map");
+            if (asd.Engine.CurrentScene is SatCore.MapEditor.MapEditorScene scene)
+            {
+                scene.Map.CurrentToolType = SatCore.MapEditor.ToolType.CameraRestriction;
+                EditorPanel.Cursor = Cursors.Cross;
+                Reset(obj => obj is AltseedInspector.Property property && property.Title != "General" && property.Title != "Map");
+            }
         }
 
         private void SavePoint_Click(object sender, RoutedEventArgs e)
         {
-            if (asd.Engine.CurrentScene as SatCore.MapEditor.MapEditorScene == null) return;
+            if (asd.Engine.CurrentScene is SatCore.MapEditor.MapEditorScene scene)
+            {
+                scene.Map.CurrentToolType = SatCore.MapEditor.ToolType.SavePoint;
+                EditorPanel.Cursor = Cursors.Cross;
+                Reset(obj => obj is AltseedInspector.Property property && property.Title != "General" && property.Title != "Map");
+            }
+        }
 
-            ((SatCore.MapEditor.MapEditorScene)asd.Engine.CurrentScene).Map.CurrentToolType = SatCore.MapEditor.ToolType.SavePoint;
-            EditorPanel.Cursor = Cursors.Cross;
-            Reset(obj => obj is AltseedInspector.Property property && property.Title != "General" && property.Title != "Map");
+        private void BackGround_Click(object sender, RoutedEventArgs e)
+        {
+            if (asd.Engine.CurrentScene is SatCore.MapEditor.MapEditorScene scene)
+            {
+                scene.Map.CurrentToolType = SatCore.MapEditor.ToolType.BackGround;
+                EditorPanel.Cursor = Cursors.Arrow;
+                Reset(obj => obj is AltseedInspector.Property property && property.Title != "General" && property.Title != "Map");
+            }
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
@@ -727,11 +746,6 @@ namespace SatUI
                     e.Cancel = true;
                 else
                     scene.RemoveEvent();
-        }
-
-        private void BackGround_Click(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }
